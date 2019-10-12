@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	$baseTexture "models\cpthazama\halo3\weapons\plasmarifle_current"
+	$selfillium 1
+	$translucent 1
+
+	"$detail" "models\cpthazama\halo3\weapons\plasmarifle_current"
+	$detailscale 1
+	$detailblendmode 5
+	$detailblendfactor 1
+}

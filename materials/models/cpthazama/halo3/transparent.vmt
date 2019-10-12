@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/cpthazama/halo3/transparent"
+	$alphatest 1
+}

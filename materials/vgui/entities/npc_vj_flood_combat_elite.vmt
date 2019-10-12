@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+	"$basetexture" "vgui/entities/npc_vj_flood_combat_elite"
+	"$nolod" 1
+	"$vertexalpha" 1
+	"$vertexcolor" 1
+}

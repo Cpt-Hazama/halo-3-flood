@@ -1,0 +1,7 @@
+"LightmappedGeneric"
+{
+	"$basetexture" "models/cpthazama/halo3/reflection"
+	"$surfaceprop" "metal"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models/cpthazama/halo3/reflection_n"
+}

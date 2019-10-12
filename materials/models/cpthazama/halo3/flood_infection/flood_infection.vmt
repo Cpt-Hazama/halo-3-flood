@@ -1,0 +1,19 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/cpthazama/halo3/flood_infection/flood_infection"
+	"$bumpmap" "models/cpthazama/halo3/flood_infection/flood_infection_n"
+	
+	
+	$nodecal 1
+	"$phongexponenttexture"	"models/cpthazama/halo3/exp_255"
+	"$phongalbedotint" "1"
+	"$phongexponent"	"8"
+	"$phong" "1"
+	"$phongboost"	"0.5"
+	"$phongtint" "[1 0.55 0.22]"
+	"$phongfresnelranges"	"[1 5 10]"
+	
+	//"$envmap" "models/cpthazama/halo3/default_cube_h4_a"
+	//"$normalmapalphaenvmapmask"	"1"
+	//"$envmaptint"	"[0.002 0.002 0.002]"
+}

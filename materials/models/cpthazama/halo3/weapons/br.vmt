@@ -1,0 +1,18 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/cpthazama/halo3/weapons/br"
+	"$bumpmap" "models/cpthazama/halo3/weapons/br_n"
+	$emissiveBlendEnabled 1
+    $emissiveBlendTexture    "dev/null"
+    $emissiveBlendBaseTexture    "models/cpthazama/halo3/weapons/br_g"
+    $emissiveBlendFlowTexture    "dev/null"
+    $emissiveBlendTint "[1 1 3]"
+    $emissiveBlendStrength 1
+    $emissiveBlendScrollVector "[0 0]"
+    
+  "$nodecal" 1
+    $phong 1
+   $phongexponent			1			
+	$phongboost				0.3
+	$phongfresnelranges		"[0 0.5 1]"    
+}

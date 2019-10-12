@@ -1,0 +1,9 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "flood_overlay"
+	$alphatest 1
+    $phong 1
+	$phongexponent			1			
+	$phongboost				2
+	$phongfresnelranges		"[0 0.5 1]"    
+}

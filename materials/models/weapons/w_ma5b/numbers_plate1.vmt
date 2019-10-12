@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture" "models/Weapons/w_ma5b/numbers_plate1"
+	"$additive" 1
+	"$model" 1
+}

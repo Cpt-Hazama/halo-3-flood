@@ -1,0 +1,14 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "predatorcz/halo/flood/human.pmd/floodhuman"
+	"$bumpmap" "predatorcz/halo/flood/human.pmd/floodhuman_n"
+  $detailblendfactor 1
+  "$detail" "predatorcz/halo/flood/shared.pmd/detail"
+  $selfillum 1
+  "$nodecal" 1
+  $phong 1
+   $phongexponent			5				
+	$phongboost				0.5
+	$phongfresnelranges		"[0 0.5 1]"
+  $BasemapLuminancePhongMask 1
+}

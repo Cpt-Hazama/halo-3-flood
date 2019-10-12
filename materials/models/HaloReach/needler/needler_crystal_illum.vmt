@@ -1,0 +1,7 @@
+"UnlitGeneric"
+    {
+	"$basetexture" "models\HaloReach\Needler\needler_crystal_illum"
+	"$bumpmap" "models\HaloReach\Needler\needler_crystal_illum_normal"
+	"$selfillum" "1"
+	"$translucent" "1"
+}
