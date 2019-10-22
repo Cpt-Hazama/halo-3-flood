@@ -68,7 +68,7 @@ function ENT:CustomInitialize()
 			self.HasCamo = true
 		end
 	end
-	self:SetColor(Color(math.random(0,255),math.random(0,255),math.random(0,255)))
+	-- self:SetColor(Color(math.random(0,255),math.random(0,255),math.random(0,255)))
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:FloodControl()

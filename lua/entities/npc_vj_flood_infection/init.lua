@@ -399,70 +399,83 @@ end)
 hook.Add("OnNPCKilled","VJ_Halo3FloodSNPCs_Infection",function(victim,inflictor,attacker)
 	if inflictor.IsHalo3Infection then
 		if inflictor == attacker then
-			if victim == nil then return end
-			local flood_type
-			if victim:GetClass() == "npc_citizen" || victim:GetClass() == "npc_alyx" || victim:GetClass() == "npc_barney" || victim:GetClass() == "npc_kleiner" || victim:GetClass() == "npc_eli" || victim:GetClass() == "npc_magnusson" || victim:GetClass() == "npc_monk" || victim:GetClass() == "npc_mossman" || victim:GetClass() == "npc_breen" then
-				flood_type = "Soldier"
-			elseif victim:GetClass() == "npc_combine_s" || victim:GetClass() == "npc_metropolice" then
-				flood_type = "Soldier"
-			elseif victim.IsVJBaseSNPC_Human then
-				flood_type = "Soldier"
+			if !IsValid(victim) then return end
+			local pos = victim:GetPos()
+			local ang = victim:GetAngles()
+			local wep = nil
+			local class = "npc_vj_flood_combat"
+			if IsValid(victim:GetActiveWeapon()) && victim:GetActiveWeapon().IsVJBaseWeapon then
+				wep = victim:GetActiveWeapon():GetClass()
 			end
-			local flood = ents.Create("npc_vj_flood_combat")
-			if flood_type == nil then return end
-			local weapon
-			flood:SetPos(victim:GetPos())
-			flood:SetAngles(victim:GetAngles())
-			flood.CanSpawnWithWeapon = false
-			flood:Spawn()
-			flood:Activate()
-			flood.CanSpawnWithWeapon = false
-			if flood.SoundTbl_BeforeMeleeAttack && type(flood.SoundTbl_BeforeMeleeAttack) == "table" then
-				if type(VJ_PICKRANDOMTABLE(flood.SoundTbl_BeforeMeleeAttack)) != "boolean" then
-					sound.Play(VJ_PICKRANDOMTABLE(flood.SoundTbl_BeforeMeleeAttack),flood:GetPos(),90,100 *GetConVarNumber("host_timescale"))
-				end
+			local time = 0
+			if victim.MorphAnimation then
+				time = victim:DecideAnimationLength("Morph_to_flood",false)
 			end
-			undo.ReplaceEntity(victim,flood)
-			for i = 0, victim:GetBoneCount() -1 do
-				-- ParticleEffect("vj_impact1_yellow",victim:GetBonePosition(i),Angle(0,0,0),nil)
-				ParticleEffect("cpt_blood_flood",victim:GetBonePosition(i),Angle(0,0,0),nil)
+			if victim.InfectionClass then
+				class = victim.InfectionClass
 			end
 			if victim.IsVJBaseSNPC == true then
 				victim.HasDeathRagdoll = false
 			end
-			if victim.IsVJBaseSNPC_Human then
-				if flood_type == "Soldier" || flood_type == "Elite" then
-					if IsValid(victim:GetActiveWeapon()) then
-						flood:Give(victim:GetActiveWeapon():GetClass())
-						victim:GetActiveWeapon():Remove()
-					end
+			if victim.IsVJBaseSNPC then
+				for i = 1,math.Round(time) do
+					timer.Simple(i *0.4,function()
+						if IsValid(victim) then
+							for i = 0, victim:GetBoneCount() -1 do
+								if math.random(1,4) == 1 then
+									ParticleEffect("cpt_blood_flood",victim:GetBonePosition(i),Angle(0,0,0),nil)
+								end
+							end
+						end
+					end)
 				end
-			end
-			if victim then
+				timer.Simple(time,function()
+					if IsValid(victim) then
+						for i = 0, victim:GetBoneCount() -1 do
+							ParticleEffect("cpt_blood_flood",victim:GetBonePosition(i),Angle(0,0,0),nil)
+						end
+						victim:Remove()
+					end
+				end)
+			else
+				for i = 0, victim:GetBoneCount() -1 do
+					ParticleEffect("cpt_blood_flood",victim:GetBonePosition(i),Angle(0,0,0),nil)
+				end
 				victim:Remove()
 			end
 			if IsValid(inflictor) then
 				inflictor:Remove()
 			end
-			flood:SetNoDraw(true)
-			flood.MovementType = VJ_MOVETYPE_STATIONARY
-			local time = flood:SequenceDuration(flood:LookupSequence(ACT_GET_UP_STAND))
-			timer.Simple(0.04,function()
-				if IsValid(flood) then
-					flood:PlayVJFloodAnimation(ACT_GET_UP_STAND,false)
-					flood:EmitSound("vj_halo3flood/combatform/reanimation_ground_human.wav")
+			timer.Simple(time +0.01,function()
+				local flood = ents.Create(class)
+				flood:SetPos(pos)
+				flood:SetAngles(ang)
+				flood:Spawn()
+				flood:Activate()
+				undo.ReplaceEntity(inflictor,flood)
+				if wep then
+					flood:Give(wep)
 				end
-			end)
-			timer.Simple(0.1,function()
-				if IsValid(flood) then
-					flood:SetNoDraw(false)
-					flood:CreateMuffins()
-				end
-			end)
-			timer.Simple(time,function()
-				if IsValid(flood) then
-					flood.MovementType = VJ_MOVETYPE_GROUND
-				end
+				flood:SetNoDraw(true)
+				flood.MovementType = VJ_MOVETYPE_STATIONARY
+				local time = flood:SequenceDuration(flood:LookupSequence(ACT_GET_UP_STAND))
+				timer.Simple(0.04,function()
+					if IsValid(flood) then
+						flood:PlayVJFloodAnimation(ACT_GET_UP_STAND,false)
+						VJ_EmitSound(flood,"vj_halo3flood/combatform/reanimation_ground_human.wav",80,100)
+					end
+				end)
+				timer.Simple(0.1,function()
+					if IsValid(flood) then
+						flood:SetNoDraw(false)
+						flood:CreateMuffins()
+					end
+				end)
+				timer.Simple(time,function()
+					if IsValid(flood) then
+						flood.MovementType = VJ_MOVETYPE_GROUND
+					end
+				end)
 			end)
 		end
 	end

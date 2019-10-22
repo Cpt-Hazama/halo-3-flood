@@ -10,6 +10,7 @@ SWEP.Category					= "VJ Base"
 	-- Main Settings ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.MadeForNPCsOnly 			= true -- Is tihs weapon meant to be for NPCs only?
 SWEP.WorldModel					= "models/cpthazama/halo3/weapons/plasmarifle.mdl"
+SWEP.AnimationType 				= "Rifle"
 SWEP.HoldType 					= "ar2"
 	-- NPC Settings ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.NPC_NextPrimaryFire 		= 1.8 -- Next time it can use primary fire

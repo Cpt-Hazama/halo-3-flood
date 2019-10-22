@@ -16,6 +16,7 @@ end
 	-- Main Settings ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.MadeForNPCsOnly 			= true -- Is tihs weapon meant to be for NPCs only?
 SWEP.WorldModel					= "models/cpthazama/halo3fl/needler.mdl"
+SWEP.AnimationType 				= "Pistol"
 SWEP.HoldType 					= "pistol"
 	-- NPC Settings ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.NPC_NextPrimaryFire 		= 0.5 -- Next time it can use primary fire

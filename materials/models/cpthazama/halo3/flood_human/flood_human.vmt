@@ -7,9 +7,9 @@
 	$nodecal 1
 	"$phongexponenttexture"	"models/cpthazama/halo3/exp_255"
 	"$phongalbedotint" "1"
-	"$phongexponent"	"45"
+	"$phongexponent"	"60"
 	"$phong" "1"
-	"$phongboost"	"0.7"
+	"$phongboost"	"0.5"
 	"$phongtint" "[1 0.55 0.22]"
 	"$phongfresnelranges"	"[1 5 10]"
 	
