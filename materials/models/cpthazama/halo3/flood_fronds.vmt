@@ -3,17 +3,28 @@
 	"$basetexture" "models/cpthazama/halo3/flood_fronds"
 	"$alphatest" 1
 	$emissiveBlendEnabled 1
-    $emissiveBlendTexture    "dev/null"
-    $emissiveBlendBaseTexture    "models/cpthazama/halo3/flood_fronds_g"
-    $emissiveBlendFlowTexture    "dev/null"
-    $emissiveBlendTint "[0.2 0.001 0.007]"
-    $emissiveBlendStrength 1
-    $emissiveBlendScrollVector "[0 0]"
-  $phong 1
-  $nodecal 1
-    
-   $phongexponent			5
+	$emissiveBlendTexture    "dev/null"
+	$emissiveBlendBaseTexture    "models/cpthazama/halo3/flood_fronds_g"
+	$emissiveBlendFlowTexture    "dev/null"
+	$emissiveBlendTint "[0.3 0.04 0.02]"
+	$emissiveBlendStrength 1
+	$emissiveBlendScrollVector "[0 0]"
+	$phong 1
+	$nodecal 1
+	$nocull 1
+
+	"Proxies"
+	{
+		"TextureScroll"
+		{
+			"texturescrollvar" "$basetexturetransform"
+			"texturescrollrate" 0.4
+			"texturescrollangle" 0
+		}
+	}
+
+	$phongexponent			5
 	$phongboost				0.5
 	$phongfresnelranges		"[0 0.5 1]"
-  $BasemapLuminancePhongMask 1
+	$BasemapLuminancePhongMask 1
 }

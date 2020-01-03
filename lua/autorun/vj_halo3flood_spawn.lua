@@ -14,22 +14,13 @@ local VJExists = file.Exists("lua/autorun/vj_base_autorun.lua","GAME")
 if VJExists == true then
 	include('autorun/vj_controls.lua')
 	
-	if SERVER then
-		hook.Add("Think","VJ_Halo3Flood_MuffinsThink",function()
-			-- for _,v in ipairs(ents.GetAll()) do
-				-- if v.tbl_EnemyMuffins && table.Count(v.tbl_EnemyMuffins) > 0 then
-					-- for bone,muf in pairs(v.tbl_EnemyMuffins) do
-						-- if IsValid(muf) then
-							-- if muf:GetPos() == v:GetPos() then SafeRemoveEntity(muf) end
-							-- local bonepos,boneang = v:GetBonePosition(bone)
-							-- muf:SetPos(bonepos)
-							-- muf:SetAngles(boneang)
-						-- end
-					-- end
-				-- end
-			-- end
-		end)
-	end
+	VJ_FLOOD_NODEPOS = {}
+	
+	hook.Add("EntityRemoved","VJ_AddNodes_FLOOD",function(ent)
+		if ent:GetClass() == "info_node" then
+			table.insert(VJ_FLOOD_NODEPOS,ent:GetPos())
+		end
+	end)
 	
 	hook.Add("PlayerDeath","VJ_Halo3Flood_MuffinRemove",function(ply)
 		for _,v in pairs(ply.tbl_EnemyMuffins) do
@@ -178,6 +169,7 @@ if VJExists == true then
 		"weapon_vj_halo_plasmarifle",
 		"weapon_vj_halo_spiker"
 	}
+	
 	local vCat = "Halo 3 Flood"
 	VJ.AddNPC("Flood Combat Form","npc_vj_flood_combat",vCat)
 	VJ.AddNPC("Flood Carrier Form","npc_vj_flood_carrier",vCat)
@@ -192,6 +184,7 @@ if VJExists == true then
 	VJ.AddNPC("Flood Combat Spawner","sent_vj_flood_randcombat",vCat)
 	VJ.AddNPC("Pure Flood Spawner","sent_vj_flood_randpureflood",vCat)
 	VJ.AddNPC("Flood Infection Spawner","sent_vj_flood_randinfection",vCat)
+	VJ.AddNPC("Map Flood Spawner","sent_vj_flood_director",vCat)
 
 	-- Precache Particles -------------------------------------------------------------------------------------------------------------------------
 	game.AddParticles("particles/flood.pcf")
@@ -203,6 +196,49 @@ if VJExists == true then
 	-- f_hdyn_chest
 	-- f_hydn_chest_chunks
 	-- f_inf_chunks
+	
+	-- Director --
+	VJ.AddConVar("vj_flood_director_enabled",1)
+	VJ.AddConVar("vj_flood_director_maxci",80)
+	VJ.AddConVar("vj_flood_director_mobcount",35)
+	VJ.AddConVar("vj_flood_director_spawnmax",2000)
+	VJ.AddConVar("vj_flood_director_spawnmin",650)
+	VJ.AddConVar("vj_flood_director_mobchance",100)
+	VJ.AddConVar("vj_flood_director_mobcooldownmin",120)
+	VJ.AddConVar("vj_flood_director_mobcooldownmax",180)
+	VJ.AddConVar("vj_flood_director_delaymin",0.85)
+	VJ.AddConVar("vj_flood_director_delaymax",3)
+	VJ.AddConVar("vj_flood_director_pureonly",0)
+	VJ.AddClientConVar("vj_flood_director_music",1)
+
+	if CLIENT then
+		hook.Add("PopulateToolMenu", "VJ_ADDTOMENU_FLOODDIR", function()
+			spawnmenu.AddToolMenuOption("DrVrej", "SNPC Configures", "Halo 3 Flood - Director", "Halo 3 Flood - Director", "", "", function(Panel)
+				if !game.SinglePlayer() then
+				if !LocalPlayer():IsAdmin() or !LocalPlayer():IsSuperAdmin() then
+					Panel:AddControl( "Label", {Text = "You are not an admin!"})
+					Panel:AddControl("Checkbox", {Label = "Enable Music?", Command = "vj_flood_director_music"})
+					Panel:ControlHelp("Notice: Only admins can change this settings")
+					return
+					end
+				end
+				Panel:AddControl("Label", {Text = "Notice: Only admins can change this settings."})
+				Panel:AddControl("Checkbox", {Label = "Enable AI Director processing?", Command = "vj_flood_director_enabled"})
+				Panel:AddControl("Checkbox", {Label = "Enable Music?", Command = "vj_flood_director_music"})
+				Panel:AddControl("Checkbox", {Label = "Pure Flood Only", Command = "vj_flood_director_pureonly"})
+				Panel:AddControl("Slider", { Label 	= "Max Flood", Command = "vj_flood_director_maxci", Type = "Float", Min = "5", Max = "400"})
+				Panel:AddControl("Slider", { Label 	= "Min Distance they can spawn from players", Command = "vj_flood_director_spawnmin", Type = "Float", Min = "150", Max = "30000"})
+				Panel:AddControl("Slider", { Label 	= "Max Distance they can spawn from players", Command = "vj_flood_director_spawnmax", Type = "Float", Min = "150", Max = "30000"})
+				Panel:AddControl("Slider", { Label 	= "Min time between spawns", Command = "vj_flood_director_delaymin", Type = "Float", Min = "0.1", Max = "15"})
+				Panel:AddControl("Slider", { Label 	= "Max time between spawns", Command = "vj_flood_director_delaymax", Type = "Float", Min = "0.2", Max = "15"})
+				Panel:AddControl("Slider", { Label 	= "Max Mob Flood", Command = "vj_flood_director_mobcount", Type = "Float", Min = "5", Max = "400"})
+				Panel:ControlHelp("Must be greater than Max Flood option, otherwise nothing will spawn!")
+				Panel:AddControl("Slider", { Label 	= "Chance that a mob will appear", Command = "vj_flood_director_mobchance", Type = "Float", Min = "1", Max = "500"})
+				Panel:AddControl("Slider", { Label 	= "Min cooldown time for mob spawns", Command = "vj_flood_director_mobcooldownmin", Type = "Float", Min = "1", Max = "800"})
+				Panel:AddControl("Slider", { Label 	= "Max cooldown time for mob spawns", Command = "vj_flood_director_mobcooldownmax", Type = "Float", Min = "1", Max = "800"})
+			end, {})
+		end)
+	end
 
 	-- Menu -------------------------------------------------------------------------------------------------------------------------
 	local AddConvars = {}

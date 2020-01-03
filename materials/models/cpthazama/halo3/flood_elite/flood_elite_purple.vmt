@@ -1,0 +1,29 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/cpthazama/halo3/flood_elite/flood_elite_purple"
+	"$bumpmap" "models/cpthazama/halo3/flood_elite/flood_elite_n"
+	
+	$nodecal 1
+	"$AmbientOcclusion"		"1"
+
+	"$phong"				"1"
+	"$phongexponent"			"60"
+	"$phongboost"			"5"
+	"$phongtint"			"[1 0.55 0.22]"
+	"$phongfresnelranges"		"[0.67 0.83 1]"
+	"$phongalbedotint" 			"1"
+	"$phongwarptexture" 		"models/cpthazama/halo3/phongwarp_metal2"
+	//"$phongexponenttexture"	"models/cpthazama/halo3/exp_255"
+	
+	//"$envmap" "models/cpthazama/halo3/default_cube_h4_a"
+	"$normalmapalphaenvmapmask"	"1"
+	//"$envmaptint"	"[0.02 0.02 0.02]"
+
+	//"$color2"  "[0.67 0.51 0.21]"
+	//"$blendtintbybasealpha" "1"
+	//"$blendtintcoloroverbase" "0"
+
+	"$rimlight"			"1"
+	"$rimlightexponent"			"2"
+	"$rimlightboost"			"0.2"
+}

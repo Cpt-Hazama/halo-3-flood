@@ -68,6 +68,7 @@ function ENT:CustomInitialize()
 			self.HasCamo = true
 		end
 	end
+	self:SetSkin(math.random(0,6))
 	-- self:SetColor(Color(math.random(0,255),math.random(0,255),math.random(0,255)))
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
