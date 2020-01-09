@@ -205,7 +205,7 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
-	self:SetCollisionBounds(Vector(35,35,105),Vector(-35,-35,0))
+	self:SetCollisionBounds(Vector(26,26,85),Vector(-26,-26,0))
 	self.IsBlocking = false
 	self.Transforming = false
 	self.NextSpitT = CurTime() +math.Rand(8,20)

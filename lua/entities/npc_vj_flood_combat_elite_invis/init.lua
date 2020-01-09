@@ -14,7 +14,7 @@ function ENT:CustomInitialize()
 		-- ["5"] = {Hitgroup = {5}, Health = 50, Bodygroup = 8, Gib = "models/predatorcz/halo/flood/shared.PMD/limb1.mdl", IsDead = false}, // Right Arm
 		-- ["4"] = {Hitgroup = {4}, Health = 50, Bodygroup = 9, Gib = "models/predatorcz/halo/flood/shared.PMD/limb2.mdl", IsDead = false} // Left Arm
 	}
-	self:SetCollisionBounds(Vector(24,24,90),Vector(-24,-24,0))
+	self:SetCollisionBounds(Vector(21,21,75),Vector(-21,-21,0))
 	self:CapabilitiesAdd(bit.bor(CAP_MOVE_JUMP)) // No animations for this but these guys jump all over so this will allow them to get out of those positions
 	timer.Simple(GetConVarNumber("vj_halo_developmenttime") +50,function()
 		if self:IsValid() then

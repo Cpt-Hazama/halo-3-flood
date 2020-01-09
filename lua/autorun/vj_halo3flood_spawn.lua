@@ -131,7 +131,7 @@ if VJExists == true then
 		if !self.VJ_IsBeingControlled then return end
 		local ply = ply or self.VJ_TheController
 		self.VJ_TheControllerEntity:StopControlling()
-		local SpawnControllerObject = ents.Create("ob_vj_npccontroller")
+		local SpawnControllerObject = ents.Create("obj_vj_npccontroller")
 		SpawnControllerObject.TheController = ply
 		SpawnControllerObject:SetControlledNPC(newent)
 		SpawnControllerObject:Spawn()
@@ -139,7 +139,7 @@ if VJExists == true then
 	end
 	
 	function NPC:VJ_PlayerInfection(newent,ply)
-		local SpawnControllerObject = ents.Create("ob_vj_npccontroller")
+		local SpawnControllerObject = ents.Create("obj_vj_npccontroller")
 		SpawnControllerObject.TheController = ply
 		SpawnControllerObject:SetControlledNPC(newent)
 		SpawnControllerObject:Spawn()

@@ -132,7 +132,7 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
-	self:SetCollisionBounds(Vector(35,35,75),Vector(-35,-35,0))
+	self:SetCollisionBounds(Vector(24,24,55),Vector(-24,-24,0))
 	self:CapabilitiesAdd(bit.bor(CAP_MOVE_JUMP))
 	if GetConVarNumber("vj_halo_transform") == 1 then
 		self.NextTransformT = CurTime() +math.Rand(15,20)

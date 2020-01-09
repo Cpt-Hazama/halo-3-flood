@@ -98,7 +98,7 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
-	self:SetCollisionBounds(Vector(35,35,100),Vector(-35,-35,0))
+	self:SetCollisionBounds(Vector(28,28,85),Vector(-28,-28,0))
 	self.MovementType = VJ_MOVETYPE_STATIONARY
 	self.NextNeedleAttackT = CurTime() +1.5
 	if GetConVarNumber("vj_halo_transform") == 1 then
