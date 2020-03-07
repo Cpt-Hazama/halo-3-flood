@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	$baseTexture "models\cpthazama\halo3\weapons\rocket_launcher_decal"
+	$alphatest 1
+}

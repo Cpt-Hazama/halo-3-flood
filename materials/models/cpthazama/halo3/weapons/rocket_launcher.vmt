@@ -1,0 +1,11 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/cpthazama/halo3/weapons/rocket_launcher"
+	"$bumpmap" "models/cpthazama/halo3/weapons/rocket_launcher_n"
+    
+  "$nodecal" 1
+    $phong 1
+   $phongexponent			1			
+	$phongboost				0.3
+	$phongfresnelranges		"[0 0.5 1]"    
+}

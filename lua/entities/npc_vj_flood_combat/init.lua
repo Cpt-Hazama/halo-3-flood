@@ -501,9 +501,15 @@ function ENT:CustomInitialize()
 	if self.CanSpawnWithWeapon then
 		local vUNSCWep = {
 			"weapon_vj_halo_br",
-			-- "weapon_vj_halo_ma5b",
+			"weapon_vj_halo_br",
+			"weapon_vj_halo_br",
+			"weapon_vj_halo_br",
 			"weapon_vj_halo_shotgun",
-			"weapon_vj_halo_smg"
+			"weapon_vj_halo_shotgun",
+			"weapon_vj_halo_shotgun",
+			"weapon_vj_halo_smg",
+			"weapon_vj_halo_smg",
+			"weapon_vj_halo_rpg"
 		}
 		timer.Simple(0.001,function()
 			if IsValid(self) then
@@ -616,9 +622,8 @@ function ENT:CustomOnThink()
 	self:CustomOnThink_Muffins()
 	self:CustomOnThink_Flood()
 	if self.Dead then return end
-	if self:GetSequenceName(self:GetSequence()) == "overlay" && self:GetVelocity().z < 0 then
-		self:StartEngineTask(GetTaskID("TASK_SET_ACTIVITY"),ACT_JUMP)
-		self:MaintainActivity()
+	if self:GetActivity() == ACT_JUMP && !self.LeapAttacking && self:IsOnGround() then
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
 	end
 	-- self.NextMeleeAttackTime = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	-- self.NextAnyAttackTime_Melee = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)

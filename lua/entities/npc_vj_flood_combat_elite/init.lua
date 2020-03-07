@@ -448,9 +448,13 @@ function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
 			sdmg = 1
 		end
 		dmginfo:SetDamage(1)
+		ParticleEffect("npcarmor_hit",dmginfo:GetDamagePosition(),Angle(0,0,0),self)
+		VJ_EmitSound(self,"ambient/energy/zap" .. math.random(1,3) .. ".wav",65,math.random(90,110))
 		self.ShieldHealth = self.ShieldHealth -sdmg
 		if self.ShieldHealth <= 0 then
 			self.HasShield = false
+			ParticleEffectAttach("npcarmor_break",PATTACH_POINT_FOLLOW,self,self:LookupAttachment("origin"))
+			VJ_EmitSound(self,"ambient/energy/weld" .. math.random(1,2) .. ".wav",85,100)
 		end
 	end
 end
@@ -563,11 +567,11 @@ ENT.AllowWeaponReloading = false
 ENT.NextWepCheckT = 1
 ENT.WeaponSpread = 1
 function ENT:CustomOnThink_AIEnabled()
-	if self:GetSequenceName(self:GetSequence()) == "overlay" && self:GetVelocity().z < 0 then
-		self:StartEngineTask(GetTaskID("TASK_SET_ACTIVITY"),ACT_JUMP)
-		self:MaintainActivity()
+	if self:GetActivity() == ACT_JUMP && !self.LeapAttacking && self:IsOnGround() then
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
 	end
 	self.Bleeds = not self.HasShield
+	self.HasPoseParameterLooking = IsValid(self:GetActiveWeapon())
 	local idle = ACT_IDLE
 	local walk = ACT_WALK
 	local run = ACT_RUN

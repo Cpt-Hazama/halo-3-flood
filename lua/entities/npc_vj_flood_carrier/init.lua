@@ -145,6 +145,9 @@ end
 function ENT:CustomOnThink()
 	self:GravemindSpeak()
 	if GetConVarNumber("ai_disabled") == 1 then return end
+	if self:GetActivity() == ACT_JUMP && !self.LeapAttacking && self:IsOnGround() then
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
+	end
 	-- self.NextMeleeAttackTime = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	-- self.NextAnyAttackTime_Melee = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	if self.VJ_IsBeingControlled then self:FloodControl() return end

@@ -21,86 +21,90 @@ if VJExists == true then
 			table.insert(VJ_FLOOD_NODEPOS,ent:GetPos())
 		end
 	end)
-	
-	hook.Add("PlayerDeath","VJ_Halo3Flood_MuffinRemove",function(ply)
-		for _,v in pairs(ply.tbl_EnemyMuffins) do
-			if IsValid(v) then
-				v:Remove()
-			end
-		end
-	end)
 
-	hook.Add("PlayerSpawn","VJ_Halo3Flood_MuffinValues",function(ply)
-		ply.VJ_IsMuffinInfected = false
-		ply.tbl_EnemyMuffins = {}
-	end)
+	if SERVER then	
+		hook.Add("PlayerDeath","VJ_Halo3Flood_MuffinRemove",function(ply)
+			for _,v in pairs(ply.tbl_EnemyMuffins) do
+				if IsValid(v) then
+					v:Remove()
+				end
+			end
+		end)
+
+		hook.Add("PlayerSpawn","VJ_Halo3Flood_MuffinValues",function(ply)
+			ply.VJ_IsMuffinInfected = false
+			ply.tbl_EnemyMuffins = {}
+		end)
+	end
 	
 	local NPC = FindMetaTable("NPC")
 	local ENT = FindMetaTable("Entity")
 	local Phys = FindMetaTable("PhysObj")
 
-	function ENT:MuffinFollowCode(targetEntity)
-		local index = "VJ_Halo3Flood_Muffins_" .. self:EntIndex()
-		if !IsValid(targetEntity) then
-			hook.Remove("Think",index)
-			return
-		end
-		-- if targetEntity:GetClass() == "prop_ragdoll" then
-			-- targetEntity = targetEntity:GetPhysicsObject()
-		-- end
-		local muffins = targetEntity.tbl_EnemyMuffins
-		if targetEntity == self then
-			muffins = self.tbl_Muffins
-		end
-		if !muffins then
-			hook.Remove("Think",index)
-			return
-		end
-		hook.Add("Think",index,function()
-			if !targetEntity:IsValid() then
+	if SERVER then
+		function ENT:MuffinFollowCode(targetEntity)
+			local index = "VJ_Halo3Flood_Muffins_" .. self:EntIndex()
+			if !IsValid(targetEntity) then
 				hook.Remove("Think",index)
-			else
-				if muffins then
-					for bone,muf in pairs(muffins) do
-						if IsValid(muf) then
-							if muf:GetPos() == targetEntity:GetPos() then SafeRemoveEntity(muf) end
-							local bonepos,boneang = targetEntity:GetBonePosition(bone)
-							muf:SetPos(bonepos)
-							muf:SetAngles(boneang)
+				return
+			end
+			-- if targetEntity:GetClass() == "prop_ragdoll" then
+				-- targetEntity = targetEntity:GetPhysicsObject()
+			-- end
+			local muffins = targetEntity.tbl_EnemyMuffins
+			if targetEntity == self then
+				muffins = self.tbl_Muffins
+			end
+			if !muffins then
+				hook.Remove("Think",index)
+				return
+			end
+			hook.Add("Think",index,function()
+				if !targetEntity:IsValid() then
+					hook.Remove("Think",index)
+				else
+					if muffins then
+						for bone,muf in pairs(muffins) do
+							if IsValid(muf) then
+								if muf:GetPos() == targetEntity:GetPos() then SafeRemoveEntity(muf) end
+								local bonepos,boneang = targetEntity:GetBonePosition(bone)
+								muf:SetPos(bonepos)
+								muf:SetAngles(boneang)
+							end
 						end
 					end
 				end
-			end
-		end)
-	end
+			end)
+		end
 
-	function NPC:FloodFollowBone(targetEntity,boneID) -- Credits to Silverlan as I used some of his bone code
-		local index = "VJ_Halo3Flood_Bone_" .. self:EntIndex()
-		if !targetEntity then
-			hook.Remove("Think",index)
-			return
-		end
-		local bonepos,boneang = targetEntity:GetBonePosition(boneID)
-		if !bonepos then
-			hook.Remove("Think",index)
-			return
-		end
-		local posOffset = (self:GetPos() -bonepos)
-		local angOffset = (self:GetAngles() -targetEntity:GetAngles())
-		hook.Add("Think",index,function()
-			if !targetEntity:IsValid() || !self:IsValid() then
+		function NPC:FloodFollowBone(targetEntity,boneID) -- Credits to Silverlan as I used some of his bone code
+			local index = "VJ_Halo3Flood_Bone_" .. self:EntIndex()
+			if !targetEntity then
 				hook.Remove("Think",index)
-			else
-				local bonepos,boneang = targetEntity:GetBonePosition(boneID)
-				if(bonepos) then
-					boneang = targetEntity:GetAngles()
-					bonepos = bonepos +posOffset
-					boneang = boneang +angOffset
-					self:SetPos(bonepos)
-					self:SetAngles(boneang)
-				end
+				return
 			end
-		end)
+			local bonepos,boneang = targetEntity:GetBonePosition(boneID)
+			if !bonepos then
+				hook.Remove("Think",index)
+				return
+			end
+			local posOffset = (self:GetPos() -bonepos)
+			local angOffset = (self:GetAngles() -targetEntity:GetAngles())
+			hook.Add("Think",index,function()
+				if !targetEntity:IsValid() || !self:IsValid() then
+					hook.Remove("Think",index)
+				else
+					local bonepos,boneang = targetEntity:GetBonePosition(boneID)
+					if(bonepos) then
+						boneang = targetEntity:GetAngles()
+						bonepos = bonepos +posOffset
+						boneang = boneang +angOffset
+						self:SetPos(bonepos)
+						self:SetAngles(boneang)
+					end
+				end
+			end)
+		end
 	end
 	
 	function NPC:PlayVJFloodAnimation(act,face)
@@ -155,20 +159,7 @@ if VJExists == true then
 	VJ.AddNPCWeapon("VJ_H3F_M90-3","weapon_vj_halo_shotgun")
 	VJ.AddNPCWeapon("VJ_H3F_SMG-3","weapon_vj_halo_smg")
 	VJ.AddNPCWeapon("VJ_H3F_Type25-3","weapon_vj_halo_spiker")
-
-	local vUNSCWep = {
-		"weapon_vj_halo_br",
-		"weapon_vj_halo_ma5b",
-		"weapon_vj_halo_shotgun",
-		"weapon_vj_halo_smg"
-	}
-	local vCOVWep = {
-		"weapon_vj_halo_needler",
-		"weapon_vj_halo_plasma",
-		"weapon_vj_halo_plasmapistol",
-		"weapon_vj_halo_plasmarifle",
-		"weapon_vj_halo_spiker"
-	}
+	VJ.AddNPCWeapon("VJ_H3F_M41-SPNKR","weapon_vj_halo_rpg")
 	
 	local vCat = "Halo 3 Flood"
 	VJ.AddNPC("Flood Combat Form","npc_vj_flood_combat",vCat)
@@ -197,6 +188,7 @@ if VJExists == true then
 	game.AddParticles("particles/cpt_flood_effects.pcf")
 	game.AddParticles("particles/cpt_flood_infection.pcf")
 	game.AddParticles("particles/cpt_flood_spores.pcf")
+	game.AddParticles("particles/cpt_flood_shield.pcf") -- Credits to Darken for making, Mayhem for permission to use
 	-- f_car_explosion
 	-- f_hdyn_chest
 	-- f_hydn_chest_chunks

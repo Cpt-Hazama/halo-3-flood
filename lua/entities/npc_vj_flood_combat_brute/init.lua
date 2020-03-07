@@ -499,9 +499,8 @@ ENT.AllowWeaponReloading = false
 ENT.NextWepCheckT = 1
 ENT.WeaponSpread = 1
 function ENT:CustomOnThink_AIEnabled()
-	if self:GetSequenceName(self:GetSequence()) == "overlay" && self:GetVelocity().z < 0 then
-		self:StartEngineTask(GetTaskID("TASK_SET_ACTIVITY"),ACT_JUMP)
-		self:MaintainActivity()
+	if self:GetActivity() == ACT_JUMP && !self.LeapAttacking && self:IsOnGround() then
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
 	end
 	if IsValid(self:GetActiveWeapon()) then
 		self.AnimTbl_IdleStand = {ACT_IDLE_STIMULATED}
