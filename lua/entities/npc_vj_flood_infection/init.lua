@@ -315,8 +315,19 @@ function ENT:CreateCombatForm(form,corpse,animation,infection)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
+	if IsValid(TheHitEntity) && TheHitEntity:IsNPC() && TheHitEntity.HasShield then
+		ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(0,0,0),nil)
+		ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(0,0,0),nil)
+		ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(0,0,0),nil)
+		ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(0,0,0),nil)
+		ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(0,0,0),nil)
+		self:TakeDamage(self:Health(),TheHitEntity,TheHitEntity)
+		return
+	end
 	if GetConVarNumber("vj_halo_infectexplode") == 1 then
-		if (TheHitEntity:IsNPC() or TheHitEntity:IsPlayer()) && TheHitEntity:Health() > 0 then
+		if (TheHitEntity:IsPlayer()) && TheHitEntity:Health() > 0 && TheHitEntity:Armor() > 0 then
+			ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(0,0,0),nil)
+			ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(0,0,0),nil)
 			ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(0,0,0),nil)
 			ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(0,0,0),nil)
 			ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(0,0,0),nil)
@@ -398,8 +409,10 @@ end)
 ---------------------------------------------------------------------------------------------------------------------------------------------
 hook.Add("OnNPCKilled","VJ_Halo3FloodSNPCs_Infection",function(victim,inflictor,attacker)
 	if inflictor.IsHalo3Infection then
-		if inflictor == attacker then
+		if inflictor == attacker && victim != inflictor then
+			print(victim,inflictor,attacker)
 			if !IsValid(victim) then return end
+			if victim.VJ_Halo3_IsAlreadyInfected then return end
 			local pos = victim:GetPos()
 			local ang = victim:GetAngles()
 			local wep = nil
@@ -410,6 +423,7 @@ hook.Add("OnNPCKilled","VJ_Halo3FloodSNPCs_Infection",function(victim,inflictor,
 			local time = 0
 			if victim.MorphAnimation then
 				time = victim:DecideAnimationLength(victim.AnimTbl_Death[1],false)
+				victim.VJ_Halo3_IsAlreadyInfected = true
 			end
 			if victim.InfectionClass then
 				class = victim.InfectionClass
