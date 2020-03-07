@@ -186,6 +186,11 @@ if VJExists == true then
 	VJ.AddNPC("Flood Infection Spawner","sent_vj_flood_randinfection",vCat)
 	VJ.AddNPC("Map Flood Spawner","sent_vj_flood_director",vCat)
 
+		// Groups update
+	VJ.AddNPC("Flood Squad Type A","sent_vj_flood_squad_a",vCat)
+	VJ.AddNPC("Flood Squad Type B","sent_vj_flood_squad_b",vCat)
+	VJ.AddNPC("Flood Squad Type C","sent_vj_flood_squad_c",vCat)
+
 	-- Precache Particles -------------------------------------------------------------------------------------------------------------------------
 	game.AddParticles("particles/flood.pcf")
 	game.AddParticles("particles/cpt_flood_blood_impact.pcf")

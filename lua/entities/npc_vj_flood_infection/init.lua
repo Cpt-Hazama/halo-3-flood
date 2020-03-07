@@ -409,7 +409,7 @@ hook.Add("OnNPCKilled","VJ_Halo3FloodSNPCs_Infection",function(victim,inflictor,
 			end
 			local time = 0
 			if victim.MorphAnimation then
-				time = victim:DecideAnimationLength("Morph_to_flood",false)
+				time = victim:DecideAnimationLength(victim.AnimTbl_Death[1],false)
 			end
 			if victim.InfectionClass then
 				class = victim.InfectionClass
@@ -417,6 +417,7 @@ hook.Add("OnNPCKilled","VJ_Halo3FloodSNPCs_Infection",function(victim,inflictor,
 			if victim.IsVJBaseSNPC == true then
 				victim.HasDeathRagdoll = false
 			end
+			-- print(inflictor,victim,victim.InfectionClass,class)
 			if victim.IsVJBaseSNPC then
 				for i = 1,math.Round(time) do
 					timer.Simple(i *0.4,function()

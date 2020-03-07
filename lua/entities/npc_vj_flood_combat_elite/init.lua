@@ -568,10 +568,13 @@ function ENT:CustomOnThink_AIEnabled()
 		self:MaintainActivity()
 	end
 	self.Bleeds = not self.HasShield
+	local idle = ACT_IDLE
+	local walk = ACT_WALK
+	local run = ACT_RUN
 	if IsValid(self:GetActiveWeapon()) then
-		self.AnimTbl_IdleStand = {ACT_IDLE_STIMULATED}
-		self.AnimTbl_Walk = {ACT_WALK_STIMULATED}
-		self.AnimTbl_Run = {ACT_RUN_STIMULATED}
+		idle = ACT_IDLE_STIMULATED
+		walk = ACT_WALK_STIMULATED
+		run = ACT_RUN_STIMULATED
 		if !self.VJ_IsBeingControlled then
 			self.ConstantlyFaceEnemy = true
 			self.ConstantlyFaceEnemy_IfVisible = true
@@ -579,9 +582,6 @@ function ENT:CustomOnThink_AIEnabled()
 			self.ConstantlyFaceEnemyDistance = 3000
 		end
 	else
-		self.AnimTbl_IdleStand = {ACT_IDLE}
-		self.AnimTbl_Walk = {ACT_WALK}
-		self.AnimTbl_Run = {ACT_RUN}
 		if !self.VJ_IsBeingControlled then
 			self.ConstantlyFaceEnemy = false
 		end
@@ -594,6 +594,13 @@ function ENT:CustomOnThink_AIEnabled()
 	if IsValid(self:GetEnemy()) then
 		local enemy = self:GetEnemy()
 		local dist = self:VJ_GetNearestPointToEntityDistance(enemy)
+		if !self.VJ_IsBeingControlled && IsValid(self:GetActiveWeapon()) && self:Visible(enemy) then
+			if dist <= 1200 && dist > 400 then
+				run = ACT_WALK_STIMULATED
+			else
+				run = ACT_RUN_STIMULATED
+			end
+		end
 		if !self.VJ_IsBeingControlled && self.HasCamo then
 			if self.CamoMeter > 0 then
 				if !self.IsUsingCamo then
@@ -620,6 +627,9 @@ function ENT:CustomOnThink_AIEnabled()
 			-- end
 		end
 	end
+	self.AnimTbl_IdleStand = {idle}
+	self.AnimTbl_Walk = {walk}
+	self.AnimTbl_Run = {run}
 	-- self.NextMeleeAttackTime = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	-- self.NextAnyAttackTime_Melee = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	if GetConVarNumber("vj_halo_useweps") == 1 && !self.RArmDestroyed then

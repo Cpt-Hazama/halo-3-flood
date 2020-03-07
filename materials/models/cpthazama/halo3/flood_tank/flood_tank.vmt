@@ -2,16 +2,15 @@
 {
 	"$basetexture" "models/cpthazama/halo3/flood_tank/flood_tank"
 	"$bumpmap" "models/cpthazama/halo3/flood_tank/flood_tank_n"
-	
-	
+	"$AmbientOcclusion"		"1"
+
 	$nodecal 1
 	"$phongexponenttexture"	"models/cpthazama/halo3/exp_255"
-	"$phongalbedotint" "1"
-	"$phongexponent"	"70"
-	"$phong" "1"
-	"$phongboost"	"0.7"
-	"$phongtint" "[1 0.55 0.22]"
-	"$phongfresnelranges"	"[1 5 10]"
+	"$normalmapalphaenvmapmask"	"1"
+	"$phong"				"1"
+	"$phongexponent"			"15"
+	"$phongboost"			"10"
+	"$phongfresnelranges"		"[0.67 0.83 1]"
 	
 	//"$envmap" "models/cpthazama/halo3/default_cube_h4_a"
 	//"$normalmapalphaenvmapmask"	"1"

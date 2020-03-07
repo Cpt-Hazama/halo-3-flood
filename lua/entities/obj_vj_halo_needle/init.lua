@@ -9,13 +9,16 @@ ENT.Model = {"models/weapons/w_missile_launch.mdl"} -- The models it should spaw
 ENT.DoesDirectDamage = true -- Should it do a direct damage when it hits something?
 ENT.DirectDamage = 6 -- How much damage should it do when it hits something
 ENT.DirectDamageType = DMG_SLASH -- Damage type
+
+ENT.Speed = 800
+ENT.Accuracy = 1
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
 	self:SetMaterial("models/effects/vol_light001.mdl")
 	self:DrawShadow(false)
 	self:SetColor(Color(220,0,255,255))
 	
-	util.SpriteTrail(self,6,Color(220,0,255,255),true,2,2,0.1,1/(6+6)*0.8,"VJ_Base/sprites/vj_trial1.vmt")
+	util.SpriteTrail(self,6,Color(220,0,255,255),true,25,10,0.5,1/(6+6)*5,"VJ_Base/sprites/vj_trial1.vmt")
 	
 	local eyeglow2 = ents.Create("env_sprite")
 	eyeglow2:SetKeyValue("model","vj_base/sprites/vj_glow1.vmt")
@@ -42,30 +45,19 @@ function ENT:CustomOnInitialize()
 	self:DeleteOnRemove(self.StartLight1)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CheckCanSee(ent,cone)
-	if ent == nil then return end
-	if self:Visible(ent) && (self:GetForward():Dot(((ent:GetPos() +ent:OBBCenter()) -self:GetPos()):GetNormalized()) > math.cos(math.rad(cone))) then
-		return true
-	else
-		return false
-	end
-end
----------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnThink()
-	if IsValid(self.ParentsEnemy) && self:GetPos():Distance(self.ParentsEnemy:GetPos()) < 1000 && self:CheckCanSee(self.ParentsEnemy,30) then
-		self:SetAngles(self:GetVelocity():GetNormal():Angle())
-		local phys = self:GetPhysicsObject()
-		if (phys:IsValid()) then
-			local gain = 1
-			if self:GetPos():Distance(self.ParentsEnemy:GetPos()) < 350 && self:GetPos():Distance(self.ParentsEnemy:GetPos()) > 125 then
-				gain = 5
-			elseif self:GetPos():Distance(self.ParentsEnemy:GetPos()) <= 125 then
-				gain = 8
-			else
-				gain = 2
-			end
-			local force = ((self.ParentsEnemy:GetPos() +self.ParentsEnemy:OBBCenter()) -self:GetPos()) *gain
-			phys:ApplyForceCenter(force)
+	local phys = self:GetPhysicsObject()
+	if (phys:IsValid()) then
+		phys:ApplyForceCenter(self:GetForward() *self.Speed)
+	end
+	if IsValid(self.ParentsEnemy) && self:GetPos():Distance(self.ParentsEnemy:GetPos()) < 1000 then
+		local inView = (self:GetForward():Dot(((self.ParentsEnemy:GetPos() +self.ParentsEnemy:OBBCenter()) -self:GetPos()):GetNormalized()) > math.cos(math.rad(40)))
+		if inView then
+			local targetAng = ((self.ParentsEnemy:GetPos() +self.ParentsEnemy:OBBCenter()) -self:GetPos()):Angle()
+			local ang = self:GetAngles()
+			self:SetAngles(LerpAngle(self.Accuracy,ang,targetAng))
+		else
+			self:SetAngles(self:GetAngles())
 		end
 	end
 end
