@@ -410,7 +410,7 @@ end)
 hook.Add("OnNPCKilled","VJ_Halo3FloodSNPCs_Infection",function(victim,inflictor,attacker)
 	if inflictor.IsHalo3Infection then
 		if inflictor == attacker && victim != inflictor then
-			print(victim,inflictor,attacker)
+			-- print(victim,inflictor,attacker)
 			if !IsValid(victim) then return end
 			if victim.VJ_Halo3_IsAlreadyInfected then return end
 			local pos = victim:GetPos()

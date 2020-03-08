@@ -118,9 +118,11 @@ function ENT:SpawnFlood(count)
 		local pos = self:GetPos() +self:OBBCenter()
 		local flood = ents.Create("npc_vj_flood_infection")
 		flood:SetPos(pos +self:GetForward() *math.Rand(-(4 *i),4 *i) +self:GetRight() *math.Rand(-(4 *i),4 *i))
-		flood:SetAngles(self:GetAngles())
+		flood:SetAngles(Angle(self:GetAngles().x,math.Rand(0,360),self:GetAngles().z))
 		flood:Spawn()
-		flood:Activate()
+		flood:SetGroundEntity(NULL)
+		local rand = 350
+		flood:SetVelocity(self:GetForward() *math.random(-rand,rand) +self:GetUp() *math.random(rand -50,rand) +self:GetRight() *math.random(-rand,rand))
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -145,6 +147,11 @@ end
 function ENT:CustomOnThink()
 	self:GravemindSpeak()
 	if GetConVarNumber("ai_disabled") == 1 then return end
+	if self.CanScale then
+		local scale = math.Rand(1,math.Rand(1,2.5))
+		local targetVec = Vector(scale,scale,scale)
+		self:ManipulateBoneScale(9,LerpVector(0.2,self:GetManipulateBoneScale(9),targetVec))
+	end
 	if self:GetActivity() == ACT_JUMP && !self.LeapAttacking && self:IsOnGround() then
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
 	end
@@ -158,6 +165,7 @@ function ENT:CustomOnThink()
 			self.HasLeapAttack = false
 			local anim = "vjseq_suicide" .. math.random(1,2)
 			self:VJ_ACT_PLAYACTIVITY(anim,true,nil,false)
+			self.CanScale = true
 			VJ_EmitSound(self,"vj_halo3flood/carrier/h3/unarmed_melee_suicide" .. math.random(1,3) .. ".mp3",85,100)
 			self.Explode = CurTime() +15
 		end
@@ -178,6 +186,7 @@ function ENT:FloodControl()
 		self.MovementType = VJ_MOVETYPE_STATIONARY
 		local anim = "vjseq_suicide" .. math.random(1,2)
 		self:VJ_ACT_PLAYACTIVITY(anim,true,nil,false)
+		self.CanScale = true
 		VJ_EmitSound(self,"vj_halo3flood/carrier/h3/unarmed_melee_suicide" .. math.random(1,3) .. ".mp3",85,100)
 		self.NextLMB = CurTime() +8
 	end

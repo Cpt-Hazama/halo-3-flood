@@ -38,8 +38,8 @@ function ENT:CustomPhysicsObjectOnInitialize(phys)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:DeathEffects(data,phys)
-	ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(math.random(0,360),math.random(0,360),math.random(0,360)),false)
-	ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(math.random(0,360),math.random(0,360),math.random(0,360)),false)
+	ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(math.random(0,360),math.random(0,360),math.random(0,360)),nil)
+	ParticleEffect("cpt_blood_flood",self:GetPos(),Angle(math.random(0,360),math.random(0,360),math.random(0,360)),nil)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
