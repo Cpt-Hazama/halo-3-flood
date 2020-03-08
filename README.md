@@ -3,6 +3,7 @@
 Halo 3 Flood SNPCs Revamp brings all of the flood enemies from Halo 3 into Garry's Mod + much more!
 
 To install:
+
  Option 1.) Place repositiory (Halo-3-Flood)
  into %STEAMDIR%\steamapps\common\GarrysMod\garrysmod\addons\
  Option 2.) Look up how to set up an existing repository through the GitHub app
