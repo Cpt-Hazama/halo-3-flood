@@ -45,6 +45,7 @@ if VJExists == true then
 		function ENT:VJ_CreateBoneMerge(targEnt,oldModel,oldSkin,bg)
 			if targEnt:IsNPC() then
 				targEnt:SetModel("models/cpthazama/halo3/flood_human_valve.mdl")
+				targEnt:SetCollisionBounds(Vector(15,15,60),Vector(-15,-15,0))
 			end
 			local body = ents.Create("prop_vj_animatable")
 			body:SetModel(oldModel)
@@ -377,7 +378,7 @@ if VJExists == true then
 	AddConvars["vj_halo_unlimitedammo"] = 0
 	AddConvars["vj_halo_keepmodel"] = 0
 	AddConvars["vj_halo_modeladjust"] = 1
-	AddConvars["vj_halo_modeladjustz"] = -1
+	-- AddConvars["vj_halo_modeladjustz"] = 0
 	for k, v in pairs(AddConvars) do
 		if !ConVarExists( k ) then CreateConVar( k, v, {FCVAR_ARCHIVE} ) end
 	end
@@ -400,7 +401,7 @@ if VJExists == true then
 				vj_halo_unlimitedammo = "0",
 				vj_halo_keepmodel = "0",
 				vj_halo_modeladjust = "1",
-				vj_halo_modeladjustz = "-1",
+				vj_halo_modeladjustz = "0",
 			}
 			Panel:AddControl("ComboBox", vj_h3freset)
 			Panel:AddControl("Checkbox", {Label = "Infection Forms explode on attack?", Command = "vj_halo_infectexplode"})
@@ -414,7 +415,7 @@ if VJExists == true then
 			Panel:ControlHelp("Note: Will only work on Valve Biped models (I.E. Rebels, Combine, etc. based models)")
 			Panel:AddControl("Checkbox", {Label = "Attempt to adjust bones of infected NPC/Player?", Command = "vj_halo_modeladjust"})
 			Panel:ControlHelp("Warning: This can cause severe networking lag for servers!")
-			Panel:AddControl("Slider", { Label 	= "Infected NPC/Player Pevis Height", Command = "vj_halo_modeladjustz", Min = "-25", Max = "25"})
+			-- Panel:AddControl("Slider", { Label 	= "Infected NPC/Player Pevis Height", Command = "vj_halo_modeladjustz", Min = "-25", Max = "25"})
 		end
 		local function VJ_HALOFLOOD_ALL(Panel)
 			if !game.SinglePlayer() then

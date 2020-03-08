@@ -31,8 +31,12 @@ ENT.MeleeAttackKnockBack_Up2 = 220 -- How far it will push you up | Second in ma
 ENT.MeleeAttackKnockBack_Right1 = 0 -- How far it will push you right | First in math.random
 ENT.MeleeAttackKnockBack_Right2 = 0 -- How far it will push you right | Second in math.random
 
+local jUp = 1200
+local jDown = 2000
+ENT.MaxJumpLegalDistance = VJ_Set(jUp,jDown)
+
 ENT.HasLeapAttack = true -- Should the SNPC have a leap attack?
-ENT.AnimTbl_LeapAttack = {ACT_JUMP} -- Melee Attack Animations
+ENT.AnimTbl_LeapAttack = {ACT_GLIDE} -- Melee Attack Animations
 ENT.LeapAttackAnimationFaceEnemy = true
 ENT.LeapDistance = 600 -- The distance of the leap, for example if it is set to 500, when the SNPC is 500 Unit away, it will jump
 ENT.LeapToMeleeDistance = 400 -- How close does it have to be until it uses melee?
@@ -142,7 +146,7 @@ ENT.SoundTbl_Assimilation = {
 ENT.Not_Finished = true -- Can it come back to life randomly?
 ENT.ArmDestroyed = false
 ENT.InfectionDestroyed = false
-ENT.CanSpawnWithWeapon = true
+ENT.CanSpawnWithWeapon = tobool(GetConVarNumber("vj_halo_useweps"))
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	local bloodeffect = EffectData()
@@ -499,7 +503,11 @@ ENT.AllowWeaponReloading = false
 ENT.NextWepCheckT = 1
 ENT.WeaponSpread = 1
 function ENT:CustomOnThink_AIEnabled()
-	if self:GetActivity() == ACT_JUMP && !self.LeapAttacking && self:IsOnGround() then
+	if self.LeapAttacking && !self.MeleeAttacking && !self:IsOnGround() && self:GetActivity() != ACT_GLIDE then
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_GLIDE)
+		self:MaintainActivity()
+	end
+	if self:GetActivity() == ACT_GLIDE && !self.LeapAttacking && self:IsOnGround() then
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
 	end
 	if IsValid(self:GetActiveWeapon()) then

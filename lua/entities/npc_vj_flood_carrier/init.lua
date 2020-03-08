@@ -15,6 +15,10 @@ ENT.MeleeAttackAnimationFaceEnemy = false
 ENT.VJ_NPC_Class = {"CLASS_FLOOD","CLASS_PARASITE"}
 ENT.CustomBlood_Particle = {"cpt_blood_flood"} -- Particle that the SNPC spawns when it's damaged
 
+local jUp = 1200
+local jDown = 2000
+ENT.MaxJumpLegalDistance = VJ_Set(jUp,jDown)
+
 ENT.HasMeleeAttack = false -- Should the SNPC have a melee attack?
 ENT.AnimTbl_MeleeAttack = {ACT_MELEE_ATTACK1} -- Melee Attack Animations
 ENT.MeleeAttackDistance = 125 -- How close does it have to be until it attacks?

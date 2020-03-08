@@ -29,7 +29,7 @@ if CLIENT then
 			local shieldT = ent:GetNWFloat("ShieldT")
 			if !ent:GetNWBool("HasShield") then return end
 			if CurTime() < shieldT then
-				cam.Start3D(EyePos(),EyeAngles(),90)
+				cam.Start3D(EyePos(),EyeAngles())
 					if util.IsValidModel(ent:GetModel()) then
 						render.SetBlend(1)
 						render.MaterialOverride(Material("effects/h3_shield"))

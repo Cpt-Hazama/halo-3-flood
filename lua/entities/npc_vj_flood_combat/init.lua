@@ -9,7 +9,7 @@ ENT.Model = "models/cpthazama/halo3/flood_human.mdl" -- Leave empty if using mor
 ENT.StartHealth = 125
 ENT.MoveType = MOVETYPE_STEP
 ENT.HullType = HULL_HUMAN
-ENT.CanSpawnWithWeapon = true
+ENT.CanSpawnWithWeapon = tobool(GetConVarNumber("vj_halo_useweps"))
 ENT.EntitiesToNoCollide = {"npc_vj_flood_infection"}
 ENT.MeleeAttackAnimationFaceEnemy = false
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -31,10 +31,14 @@ ENT.MeleeAttackKnockBack_Up2 = 220 -- How far it will push you up | Second in ma
 ENT.MeleeAttackKnockBack_Right1 = 0 -- How far it will push you right | First in math.random
 ENT.MeleeAttackKnockBack_Right2 = 0 -- How far it will push you right | Second in math.random
 
+local jUp = 1200
+local jDown = 2000
+ENT.MaxJumpLegalDistance = VJ_Set(jUp,jDown)
+
 ENT.HasFootStepSound = false -- Should the SNPC make a footstep sound when it's moving?
 
 ENT.HasLeapAttack = true -- Should the SNPC have a leap attack?
-ENT.AnimTbl_LeapAttack = {ACT_JUMP} -- Melee Attack Animations
+ENT.AnimTbl_LeapAttack = {ACT_GLIDE} -- Melee Attack Animations
 ENT.LeapAttackAnimationFaceEnemy = true
 ENT.LeapDistance = 600 -- The distance of the leap, for example if it is set to 500, when the SNPC is 500 Unit away, it will jump
 ENT.LeapToMeleeDistance = 400 -- How close does it have to be until it uses melee?
@@ -630,7 +634,11 @@ function ENT:CustomOnThink()
 	self:BonemergeEditor()
 
 	if self.Dead then return end
-	if self:GetActivity() == ACT_JUMP && !self.LeapAttacking && self:IsOnGround() then
+	if self.LeapAttacking && !self.MeleeAttacking && !self:IsOnGround() && self:GetActivity() != ACT_GLIDE then
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_GLIDE)
+		self:MaintainActivity()
+	end
+	if self:GetActivity() == ACT_GLIDE && !self.LeapAttacking && !self.MeleeAttacking && self:IsOnGround() then
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
 	end
 	-- self.NextMeleeAttackTime = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)

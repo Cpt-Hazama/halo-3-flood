@@ -110,6 +110,7 @@ function ENT:Latch(ent)
 		tb[i] = i
 	end
 	local bone = tb[math.random(1,#tb)]
+	if !bone then return end
 	self.LatchBone = bone
 	local pos,ang = ent:GetBonePosition(self.LatchBone)
 	-- print(ent:GetBoneName(bone))

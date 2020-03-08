@@ -95,9 +95,12 @@ function ENT:FloodControl()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnThink_AIEnabled()
-	if self:GetSequenceName(self:GetSequence()) == "overlay" && self:GetVelocity().z < 0 then
-		self:StartEngineTask(GetTaskID("TASK_SET_ACTIVITY"),ACT_JUMP)
+	if self.LeapAttacking && !self.MeleeAttacking && !self:IsOnGround() && self:GetActivity() != ACT_GLIDE then
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_GLIDE)
 		self:MaintainActivity()
+	end
+	if self:GetActivity() == ACT_GLIDE && !self.LeapAttacking && self:IsOnGround() then
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
 	end
 	self.Bleeds = not self.HasShield
 	self:SetNWBool("HasShield",self.HasShield)
