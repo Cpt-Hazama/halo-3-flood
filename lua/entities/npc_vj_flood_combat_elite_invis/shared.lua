@@ -15,3 +15,49 @@ killicon.Add(LangName,"HUD/killicons/default",Color(255,80,0,255))
 language.Add("#"..LangName, Name)
 killicon.Add("#"..LangName,"HUD/killicons/default",Color(255,80,0,255))
 end
+
+if CLIENT then
+	function ENT:Initialize()
+		local index = self:EntIndex()
+		hook.Add("RenderScreenspaceEffects", "VJ_H3_EliteShieldFX_" .. index, function()
+			if !IsValid(self) then
+				hook.Remove("RenderScreenspaceEffects", "VJ_H3_EliteShieldFX_" .. index)
+				return
+			end
+			local ent = self
+			if !IsValid(ent) then return end
+			local shieldT = ent:GetNWFloat("ShieldT")
+			if !ent:GetNWBool("HasShield") then return end
+			if CurTime() < shieldT then
+				cam.Start3D(EyePos(),EyeAngles(),90)
+					if util.IsValidModel(ent:GetModel()) then
+						render.SetBlend(1)
+						render.MaterialOverride(Material("effects/h3_shield"))
+						ent:DrawModel()
+						render.MaterialOverride(0)
+						render.SetBlend(1)
+						render.SetBlend(1)
+						render.MaterialOverride(Material("effects/h3_shield2"))
+						ent:DrawModel()
+						render.MaterialOverride(0)
+						render.SetBlend(1)
+					end
+					if IsValid(ent:GetActiveWeapon()) then
+						if util.IsValidModel(ent:GetActiveWeapon():GetModel()) then
+							render.SetBlend(1)
+							render.MaterialOverride(Material("effects/h3_shield"))
+							ent:GetActiveWeapon():DrawModel()
+							render.MaterialOverride(0)
+							render.SetBlend(1)
+							render.SetBlend(1)
+							render.MaterialOverride(Material("effects/h3_shield2"))
+							ent:GetActiveWeapon():DrawModel()
+							render.MaterialOverride(0)
+							render.SetBlend(1)
+						end
+					end
+				cam.End3D()
+			end
+		end)
+	end
+end

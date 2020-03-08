@@ -341,6 +341,7 @@ function ENT:CustomInitialize()
 		-- ["4"] = {Hitgroup = {4}, Health = 50, Bodygroup = 9, Gib = "models/predatorcz/halo/flood/shared.PMD/limb2.mdl", IsDead = false} // Left Arm
 	}
 	self:SetCollisionBounds(Vector(21,21,75),Vector(-21,-21,0))
+	self:SetNWFloat("ShieldT",0)
 	self:CapabilitiesAdd(bit.bor(CAP_MOVE_JUMP)) // No animations for this but these guys jump all over so this will allow them to get out of those positions
 	timer.Simple(GetConVarNumber("vj_halo_developmenttime") +50,function()
 		if self:IsValid() then
@@ -434,15 +435,16 @@ end
 function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
 	if self.HasShield then
 		local dmg = dmginfo:GetDamage()
-		if SERVER then
-			if IsValid(self.esm) then return end
-			self.efm = ents.Create("vj_halo_effect_manager")
-			self.efm:SetEffectTime(1)
-			self.efm:SetEffectedEntity(self)
-			self.efm:SetEffectType("effect_tesla")
-			self.efm:Spawn()
-			self:DeleteOnRemove(self.efm)
-		end
+		-- if SERVER then
+			-- if IsValid(self.esm) then return end
+			-- self.efm = ents.Create("vj_halo_effect_manager")
+			-- self.efm:SetEffectTime(1)
+			-- self.efm:SetEffectedEntity(self)
+			-- self.efm:SetEffectType("effect_tesla")
+			-- self.efm:Spawn()
+			-- self:DeleteOnRemove(self.efm)
+		-- end
+		self:SetNWFloat("ShieldT",CurTime() +1)
 		local sdmg = math.Round(dmg -(dmg *0.4))
 		if sdmg <= 0 then
 			sdmg = 1
@@ -571,6 +573,7 @@ function ENT:CustomOnThink_AIEnabled()
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
 	end
 	self.Bleeds = not self.HasShield
+	self:SetNWBool("HasShield",self.HasShield)
 	self.HasPoseParameterLooking = IsValid(self:GetActiveWeapon())
 	local idle = ACT_IDLE
 	local walk = ACT_WALK

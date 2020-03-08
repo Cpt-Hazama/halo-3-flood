@@ -15,6 +15,7 @@ function ENT:CustomInitialize()
 		-- ["4"] = {Hitgroup = {4}, Health = 50, Bodygroup = 9, Gib = "models/predatorcz/halo/flood/shared.PMD/limb2.mdl", IsDead = false} // Left Arm
 	}
 	self:SetCollisionBounds(Vector(21,21,75),Vector(-21,-21,0))
+	self:SetNWFloat("ShieldT",0)
 	self:CapabilitiesAdd(bit.bor(CAP_MOVE_JUMP)) // No animations for this but these guys jump all over so this will allow them to get out of those positions
 	timer.Simple(GetConVarNumber("vj_halo_developmenttime") +50,function()
 		if self:IsValid() then
@@ -99,6 +100,7 @@ function ENT:CustomOnThink_AIEnabled()
 		self:MaintainActivity()
 	end
 	self.Bleeds = not self.HasShield
+	self:SetNWBool("HasShield",self.HasShield)
 	if IsValid(self:GetActiveWeapon()) then
 		self.AnimTbl_IdleStand = {ACT_IDLE_STIMULATED}
 		self.AnimTbl_Walk = {ACT_WALK_STIMULATED}
