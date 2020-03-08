@@ -258,6 +258,25 @@ function ENT:CustomOnAcceptInput(key,activator,caller,data)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:BonemergeEditor()
+	if IsValid(self.Bonemerge) then
+		self.HasDeathRagdoll = false
+		self.GibOnDeathDamagesTable = {"All"}
+		if tobool(GetConVarNumber("vj_halo_modeladjust")) then
+			local mdl = self.Bonemerge
+			self:ManipulateBoneAngles(15,Angle(0,-50,180)) -- Neck
+			self:ManipulateBoneAngles(32,Angle(0,0,90)) -- Right Hand
+			self:ManipulateBonePosition(0,Vector(0,0,GetConVarNumber("vj_halo_modeladjustz"))) -- Pelvis
+			self:ManipulateBoneAngles(1,Angle(0,0,0)) -- Left Thigh
+			self:ManipulateBoneAngles(2,Angle(0,0,0)) -- Left Calf
+			self:ManipulateBoneAngles(3,Angle(10,50,180)) -- Left Foot
+			self:ManipulateBoneAngles(7,Angle(0,0,0)) -- Right Thigh
+			self:ManipulateBoneAngles(8,Angle(0,0,0)) -- Right Calf
+			self:ManipulateBoneAngles(9,Angle(10,50,180)) -- Right Foot
+		end
+	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CreateMuffins()
 	if GetConVarNumber("vj_halo_muffins") == 0 then return end
 	for i = 1,self:GetBoneCount() -1 do
@@ -524,21 +543,11 @@ function ENT:CustomInitialize()
 	end
 	self.CanChaseWeapon = false
 	self.ChaseWeapon = NULL
-	if self.IsOverlayed then
-		self.Overlay = ents.Create("prop_dynamic")
-		self.Overlay:SetModel(self.OverlayModel)
-		self.Overlay:SetPos(self:GetPos())
-		self.Overlay:SetAngles(self:GetAngles())
-		self.Overlay:SetParent(self)
-		self.Overlay:Spawn()
-		self.Overlay:SetParent(self)
-		self.Overlay:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
-		self:SetModel("models/cpthazama/halo3fl/flood_overlay.mdl")
-		self:DeleteOnRemove(self.Overlay)
-	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo,hitgroup,GetCorpse) GetCorpse.IsFloodModel = true end
+function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo,hitgroup,GetCorpse)
+	GetCorpse.IsFloodModel = true
+end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
 	if math.random(1,5) == 1 then
@@ -609,9 +618,6 @@ function ENT:IsBehindMe(enemy,checkRadius)
     return !(self:GetForward():Dot(((enemy:GetPos() +enemy:OBBCenter()) -self:GetPos()):GetNormalized()) > math.cos(math.rad(checkRadius)))
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-local iWalk = ACT_WALK
-local iRun = ACT_RUN
-ENT.NextRunAwayCheckT = 0
 ENT.Weapon_ShotsSinceLastReload = 0
 ENT.AllowWeaponReloading = false
 ENT.NextWepCheckT = 1
@@ -621,6 +627,8 @@ function ENT:CustomOnThink()
 	self:GravemindSpeak()
 	self:CustomOnThink_Muffins()
 	self:CustomOnThink_Flood()
+	self:BonemergeEditor()
+
 	if self.Dead then return end
 	if self:GetActivity() == ACT_JUMP && !self.LeapAttacking && self:IsOnGround() then
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)

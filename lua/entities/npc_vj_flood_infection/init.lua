@@ -241,6 +241,13 @@ function ENT:CreateCombatForm(form,corpse,animation,infection)
 	elseif form == "Brute" then
 		flood = ents.Create("npc_vj_flood_combat_brute")
 	end
+	local oldModel = corpse:GetModel()
+	local oldSkin = corpse:GetSkin()
+	local bg = {}
+	for i = 0,18 do
+		bg[i] = corpse:GetBodygroup(i)
+	end
+	local foundBone = (corpse:LookupBone("ValveBiped.Bip01_Pelvis") != nil)
 	ParticleEffect("GrubSquashBlood",infection:GetPos(),Angle(0,0,0),nil)
 	ParticleEffect("blood_impact_green_01_chunk",infection:GetPos(),Angle(0,0,0),nil)
 	ParticleEffect("cpt_blood_flood",infection:GetPos(),Angle(0,0,0),nil)
@@ -281,7 +288,8 @@ function ENT:CreateCombatForm(form,corpse,animation,infection)
 	timer.Simple(0.4,function()
 		if IsValid(corpse) then
 			local color = corpse:GetColor()
-			flood:SetPos(corpse:GetPos())
+			flood:VJ_SetClearPos(corpse:GetPos() +Vector(0,0,8))
+			-- flood:SetPos(corpse:GetPos())
 			flood:SetAngles(corpse:GetAngles())
 			flood.CanSpawnWithWeapon = false
 			flood:Spawn()
@@ -297,9 +305,11 @@ function ENT:CreateCombatForm(form,corpse,animation,infection)
 			flood.MovementType = VJ_MOVETYPE_STATIONARY
 			timer.Simple(0.2,function()
 				if IsValid(flood) then
-					if form == "Elite" then
-						flood:SetColor(color)
+					local cvar = tobool(GetConVarNumber("vj_halo_keepmodel"))
+					if form == "Soldier" && cvar && foundBone then
+						flood:VJ_CreateBoneMerge(flood,oldModel,oldSkin,bg)
 					end
+					flood:VJ_SetClearPos(flood:GetPos() +Vector(0,0,8))
 					flood:SetNoDraw(false)
 					flood:CreateMuffins()
 					flood:VJ_ACT_PLAYACTIVITY("vjseq_" .. animation,true,time,false)
@@ -345,20 +355,9 @@ end
 hook.Add("PlayerDeath","VJ_Halo3FloodSNPCs_InfectionPlayer",function(victim,inflictor,attacker)
 	if inflictor.IsHalo3Infection then
 		if inflictor == attacker then
-			-- for _,v in pairs(victim.tbl_EnemyMuffins) do
-				-- if IsValid(v) then
-					-- v:Remove()
-				-- end
-			-- end
-			-- victim.VJ_IsMuffinInfected = false
-			-- victim.tbl_EnemyMuffins = {}
 			if IsValid(victim:GetRagdollEntity()) then
 				victim:GetRagdollEntity():Remove()
 			end
-			-- victim:Respawn()
-			-- victim:SetHealth(100)
-			-- victim:SetPos(inflictor:GetPos())
-
 			local flood = ents.Create("npc_vj_flood_combat")
 			flood:SetPos(victim:GetPos())
 			flood:SetAngles(victim:GetAngles())
@@ -368,6 +367,13 @@ hook.Add("PlayerDeath","VJ_Halo3FloodSNPCs_InfectionPlayer",function(victim,infl
 				flood:Give(victim:GetActiveWeapon():GetClass())
 			end
 			undo.ReplaceEntity(inflictor,flood)
+			local oldModel = victim:GetModel()
+			local oldSkin = victim:GetSkin()
+			local bg = {}
+			for i = 0,18 do
+				bg[i] = victim:GetBodygroup(i)
+			end
+			local foundBone = (victim:LookupBone("ValveBiped.Bip01_Pelvis") != nil)
 			if victim then
 				victim:Remove()
 			end
@@ -382,6 +388,10 @@ hook.Add("PlayerDeath","VJ_Halo3FloodSNPCs_InfectionPlayer",function(victim,infl
 			local time = flood:SequenceDuration(flood:LookupSequence(ACT_GET_UP_STAND))
 			timer.Simple(0.04,function()
 				if IsValid(flood) then
+					local cvar = tobool(GetConVarNumber("vj_halo_keepmodel"))
+					if cvar && foundBone then
+						flood:VJ_CreateBoneMerge(flood,oldModel,oldSkin,bg)
+					end
 					flood:PlayVJFloodAnimation(ACT_GET_UP_STAND,false)
 					VJ_EmitSound(flood,"vj_halo3flood/combatform/reanimation_ground_human.wav",80,100)
 				end
@@ -431,8 +441,21 @@ hook.Add("OnNPCKilled","VJ_Halo3FloodSNPCs_Infection",function(victim,inflictor,
 			if victim.IsVJBaseSNPC == true then
 				victim.HasDeathRagdoll = false
 			end
+			local oldModel = victim:GetModel()
+			local oldSkin = victim:GetSkin()
+			local bg = {}
+			for i = 0,18 do
+				bg[i] = victim:GetBodygroup(i)
+			end
+			local sndTbl = nil
+			local foundBone = (victim:LookupBone("ValveBiped.Bip01_Pelvis") != nil)
 			-- print(inflictor,victim,victim.InfectionClass,class)
 			if victim.IsVJBaseSNPC then
+				if #victim.SoundTbl_FootStep > 0 then
+					sndTbl = victim.SoundTbl_FootStep
+				else
+					sndTbl = victim.DefaultSoundTbl_FootStep
+				end
 				for i = 1,math.Round(time) do
 					timer.Simple(i *0.4,function()
 						if IsValid(victim) then
@@ -476,6 +499,13 @@ hook.Add("OnNPCKilled","VJ_Halo3FloodSNPCs_Infection",function(victim,inflictor,
 				local time = flood:SequenceDuration(flood:LookupSequence(ACT_GET_UP_STAND))
 				timer.Simple(0.04,function()
 					if IsValid(flood) then
+						local cvar = tobool(GetConVarNumber("vj_halo_keepmodel"))
+						if class == "npc_vj_flood_combat" && cvar && foundBone then
+							flood:VJ_CreateBoneMerge(flood,oldModel,oldSkin,bg)
+							if sndTbl then
+								flood.SoundTbl_FootStep = sndTbl
+							end
+						end
 						flood:PlayVJFloodAnimation(ACT_GET_UP_STAND,false)
 						VJ_EmitSound(flood,"vj_halo3flood/combatform/reanimation_ground_human.wav",80,100)
 					end

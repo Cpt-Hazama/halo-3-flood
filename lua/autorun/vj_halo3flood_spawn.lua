@@ -42,6 +42,29 @@ if VJExists == true then
 	local Phys = FindMetaTable("PhysObj")
 
 	if SERVER then
+		function ENT:VJ_CreateBoneMerge(targEnt,oldModel,oldSkin,bg)
+			if targEnt:IsNPC() then
+				targEnt:SetModel("models/cpthazama/halo3/flood_human_valve.mdl")
+			end
+			local body = ents.Create("prop_vj_animatable")
+			body:SetModel(oldModel)
+			body:SetPos(targEnt:GetPos())
+			body:SetAngles(targEnt:GetAngles())
+			body.VJ_Owner = targEnt
+			function body:Initialize()
+				self:AddEffects(EF_BONEMERGE)
+				self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+				self:SetOwner(self.VJ_Owner)
+			end
+			body:Spawn()
+			body:SetParent(targEnt)
+			body:SetSkin(oldSkin)
+			for i = 0,18 do
+				body:SetBodygroup(i,bg[i])
+			end
+			targEnt.Bonemerge = body
+		end
+
 		function ENT:MuffinFollowCode(targetEntity)
 			local index = "VJ_Halo3Flood_Muffins_" .. self:EntIndex()
 			if !IsValid(targetEntity) then
@@ -129,6 +152,113 @@ if VJExists == true then
 			VJ_EmitSound(self.VJ_TheController,lines,0.1,100)
 			self.VJ_Halo_Gravemind = CurTime() +math.Rand(90,150)
 		end
+	end
+
+	function NPC:VJ_SetClearPos(origin)
+		local mins = self:OBBMins()
+		local maxs = self:OBBMaxs()
+		local pos = origin || self:GetPos()
+		local nearents = ents.FindInBox(pos +mins,pos +maxs)
+		maxs.x = maxs.x *2
+		maxs.y = maxs.y *2
+		local zMax = 0
+		local entTgt
+
+		for _,ent in ipairs(nearents) do
+			if(ent != self && ent:GetSolid() != SOLID_NONE && ent:GetSolid() != SOLID_BSP && gamemode.Call("ShouldCollide",self,ent) != false) then
+				local obbMaxs = ent:OBBMaxs()
+				if(obbMaxs.z > zMax) then
+					zMax = obbMaxs.z
+					entTgt = ent
+				end
+			end
+		end
+
+		local tbl_filter = {self,entTgt}
+		local stayaway = zMax > 0
+
+		if(!stayaway) then
+			pos.z = pos.z +10
+		else
+			zMax = zMax +10
+		end
+
+		local left = Vector(0,1,0)
+		local right = left *-1
+		local forward = Vector(1,0,0)
+		local back = forward *-1
+
+		local trace_left = util.TraceLine({
+			start = pos,
+			endpos = pos +left *maxs.y,
+			filter = tbl_filter
+		})
+
+		local trace_right = util.TraceLine({
+			start = pos,
+			endpos = pos +right *maxs.y,
+			filter = tbl_filter
+		})
+
+		if(trace_left.Hit || trace_right.Hit) then
+			if(trace_left.Fraction < trace_right.Fraction) then
+				pos = pos +right *((trace_right.Fraction -trace_left.Fraction) *maxs.y)
+			elseif(trace_right.Fraction < trace_left.Fraction) then
+				pos = pos +left *((trace_left.Fraction -trace_right.Fraction) *maxs.y)
+			end
+		elseif(stayaway) then
+			pos = pos +(math.random(1,2) == 1 && left || right) *maxs.y *1.8
+			stayaway = false
+		end
+
+		local trace_forward = util.TraceLine({
+			start = pos,
+			endpos = pos +forward *maxs.x,
+			filter = tbl_filter
+		})
+
+		local trace_backward = util.TraceLine({
+			start = pos,
+			endpos = pos +back *maxs.x,
+			filter = tbl_filter
+		})
+
+		if(trace_forward.Hit || trace_backward.Hit) then
+			if(trace_forward.Fraction < trace_backward.Fraction) then
+				pos = pos +back *((trace_backward.Fraction -trace_forward.Fraction) *maxs.x)
+			elseif(trace_backward.Fraction < trace_forward.Fraction) then
+				pos = pos +forward *((trace_forward.Fraction -trace_backward.Fraction) *maxs.x)
+			end
+		elseif(stayaway) then
+			pos = pos +(math.random(1,2) == 1 && forward || back) *maxs.x *1.8
+			stayaway = false
+		end
+
+		if(stayaway) then -- We can't avoid whatever it is we're stuck in, let's try to spawn on top of it
+			local start = entTgt:GetPos()
+			start.z = start.z +zMax
+			local endpos = start
+			endpos.z = endpos.z +maxs.z
+
+			local tr = util.TraceLine({
+				start = start,
+				endpos = endpos,
+				filter = tbl_filter
+			})
+		
+			if(!tr.Hit || (!tr.HitWorld && gamemode.Call("ShouldCollide",self,tr.Entity) == false)) then
+				pos.z = start.z
+				stayaway = false
+			else -- Just try to move to whatever direction seems best
+				local trTgt = trace_left
+				if(trace_right.Fraction < trTgt.Fraction) then trTgt = trace_right end
+				if(trace_forward.Fraction < trTgt.Fraction) then trTgt = trace_forward end
+				if(trace_backward.Fraction < trTgt.Fraction) then trTgt = trace_backward end
+				pos = pos +trTgt.Normal *maxs.x
+			end
+		end
+		self:SetPos(pos)
+		self:DropToFloor()
 	end
 
 	function NPC:VJ_SwitchController(newent,ply)
@@ -245,6 +375,9 @@ if VJExists == true then
 	AddConvars["vj_halo_muffins"] = 0
 	AddConvars["vj_halo_transform"] = 1
 	AddConvars["vj_halo_unlimitedammo"] = 0
+	AddConvars["vj_halo_keepmodel"] = 0
+	AddConvars["vj_halo_modeladjust"] = 1
+	AddConvars["vj_halo_modeladjustz"] = -1
 	for k, v in pairs(AddConvars) do
 		if !ConVarExists( k ) then CreateConVar( k, v, {FCVAR_ARCHIVE} ) end
 	end
@@ -260,18 +393,28 @@ if VJExists == true then
 			Panel:AddControl( "Label", {Text = "Notice: Only admins can change this settings."})
 			local vj_h3freset = {Options = {}, CVars = {}, Label = "Reset Everything:", MenuButton = "0"}
 			vj_h3freset.Options["#vjbase.menugeneral.default"] = { 
-			vj_halo_infectexplode = "0",
-			vj_halo_useweps = "1",
-			vj_halo_muffins = "0",
-			vj_halo_transform = "1",
-			vj_halo_unlimitedammo = "0"
+				vj_halo_infectexplode = "0",
+				vj_halo_useweps = "1",
+				vj_halo_muffins = "0",
+				vj_halo_transform = "1",
+				vj_halo_unlimitedammo = "0",
+				vj_halo_keepmodel = "0",
+				vj_halo_modeladjust = "1",
+				vj_halo_modeladjustz = "-1",
 			}
 			Panel:AddControl("ComboBox", vj_h3freset)
 			Panel:AddControl("Checkbox", {Label = "Infection Forms explode on attack?", Command = "vj_halo_infectexplode"})
+			Panel:ControlHelp("Note: They only explode if the player's armor is greater than 0")
 			Panel:AddControl("Checkbox", {Label = "Flood Combat Forms can use weapons?", Command = "vj_halo_useweps"})
 			Panel:AddControl("Checkbox", {Label = "Flood Combat Forms can grow muffins?", Command = "vj_halo_muffins"})
 			Panel:AddControl("Checkbox", {Label = "Flood Pure Forms can transform?", Command = "vj_halo_transform"})
 			Panel:AddControl("Checkbox", {Label = "Flood Combat Forms have unlimited ammo?", Command = "vj_halo_unlimitedammo"})
+			Panel:AddControl("Checkbox", {Label = "Infected NPCs/Players keep model?", Command = "vj_halo_keepmodel"})
+			Panel:ControlHelp("Note: THIS MAY LOOK WEIRD DUE TO SKELETON DIFFERENCES!")
+			Panel:ControlHelp("Note: Will only work on Valve Biped models (I.E. Rebels, Combine, etc. based models)")
+			Panel:AddControl("Checkbox", {Label = "Attempt to adjust bones of infected NPC/Player?", Command = "vj_halo_modeladjust"})
+			Panel:ControlHelp("Warning: This can cause severe networking lag for servers!")
+			Panel:AddControl("Slider", { Label 	= "Infected NPC/Player Pevis Height", Command = "vj_halo_modeladjustz", Min = "-25", Max = "25"})
 		end
 		local function VJ_HALOFLOOD_ALL(Panel)
 			if !game.SinglePlayer() then
