@@ -296,10 +296,10 @@ function ENT:CreateCombatForm(form,corpse,animation,infection)
 			end
 			local animTime = flood:SequenceDuration(flood:SelectWeightedSequence(ACT_ROLL_RIGHT))
 			local animTimeB = flood:SequenceDuration(flood:SelectWeightedSequence(ACT_ROLL_LEFT))
-			flood:VJ_ACT_PLAYACTIVITY(ACT_ROLL_RIGHT,false,animTime,false)
+			flood:VJ_ACT_PLAYACTIVITY(ACT_ROLL_RIGHT,true,animTime,false)
 			timer.Simple(animTime,function()
 				if IsValid(flood) then
-					flood:VJ_ACT_PLAYACTIVITY(ACT_ROLL_LEFT,false,animTimeB,false)
+					flood:VJ_ACT_PLAYACTIVITY(ACT_ROLL_LEFT,true,animTimeB,false)
 				end
 			end)
 			timer.Simple(animTime +animTimeB,function()
@@ -485,16 +485,19 @@ hook.Add("OnNPCKilled","VJ_Halo3FloodSNPCs_Infection",function(victim,inflictor,
 			local class = "npc_vj_flood_combat"
 			local checkForFlood = true
 			local time = 0
+			local sndTbl = nil
 			if victim.InfectionClass then
 				class = victim.InfectionClass
 			end
 			if victim.IsVJBaseSNPC == true then
 				victim.HasDeathRagdoll = false
 			end
-			if #victim.SoundTbl_FootStep > 0 then
+			if victim.SoundTbl_FootStep && #victim.SoundTbl_FootStep > 0 then
 				sndTbl = victim.SoundTbl_FootStep
 			else
-				sndTbl = victim.DefaultSoundTbl_FootStep
+				if victim.DefaultSoundTbl_FootStep then
+					sndTbl = victim.DefaultSoundTbl_FootStep
+				end
 			end
 			local oldModel = victim:GetModel()
 			local oldSkin = victim:GetSkin()
