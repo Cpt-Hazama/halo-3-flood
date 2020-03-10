@@ -262,22 +262,32 @@ function ENT:CustomOnAcceptInput(key,activator,caller,data)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
+ENT.AdjustedValues = false
 function ENT:BonemergeEditor()
-	if IsValid(self.Bonemerge) then
+	if IsValid(self.Bonemerge) && !self.AdjustedValues then
 		self.HasDeathRagdoll = false
 		self.GibOnDeathDamagesTable = {"All"}
-		if tobool(GetConVarNumber("vj_halo_modeladjust")) then
+		-- if tobool(GetConVarNumber("vj_halo_modeladjust")) then
 			local mdl = self.Bonemerge
 			self:ManipulateBoneAngles(15,Angle(0,-50,180)) -- Neck
 			self:ManipulateBoneAngles(32,Angle(0,0,90)) -- Right Hand
-			self:ManipulateBonePosition(0,Vector(0,0,GetConVarNumber("vj_halo_modeladjustz"))) -- Pelvis
+			-- self:ManipulateBonePosition(0,Vector(0,0,GetConVarNumber("vj_halo_modeladjustz"))) -- Pelvis
 			self:ManipulateBoneAngles(1,Angle(0,0,0)) -- Left Thigh
 			self:ManipulateBoneAngles(2,Angle(0,0,0)) -- Left Calf
 			self:ManipulateBoneAngles(3,Angle(10,50,180)) -- Left Foot
 			self:ManipulateBoneAngles(7,Angle(0,0,0)) -- Right Thigh
 			self:ManipulateBoneAngles(8,Angle(0,0,0)) -- Right Calf
 			self:ManipulateBoneAngles(9,Angle(10,50,180)) -- Right Foot
-		end
+
+			local clav = 0
+			self:ManipulateBonePosition(15,Vector(-2,0,0)) -- Neck
+			-- self:ManipulateBonePosition(22,Vector(clav,0,0)) -- LClav
+			-- self:ManipulateBonePosition(34,Vector(clav,0,0)) -- RClav
+			-- self:ManipulateBonePosition(13,Vector(1,-4,0)) -- Spine4
+			-- self:ManipulateBonePosition(14,Vector(5,0,0)) -- Spine
+			self:ManipulateBonePosition(44,Vector(-2,-1,0)) -- Spine2
+			self:ManipulateBonePosition(45,Vector(-4,0,0)) -- Spine1
+		-- end
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -641,6 +651,7 @@ function ENT:CustomOnThink()
 	if self:GetActivity() == ACT_GLIDE && !self.LeapAttacking && !self.MeleeAttacking && self:IsOnGround() then
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
 	end
+	self.HasPoseParameterLooking = IsValid(self:GetActiveWeapon())
 	-- self.NextMeleeAttackTime = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	-- self.NextAnyAttackTime_Melee = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	local idle = ACT_IDLE

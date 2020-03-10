@@ -42,6 +42,13 @@ if VJExists == true then
 	local Phys = FindMetaTable("PhysObj")
 
 	if SERVER then
+		function VJ_TestYouDied(pos,spawner)
+			local struggle = ents.Create("prop_vj_flood_youdied")
+			struggle:SetPos(pos)
+			struggle:Spawn()
+			struggle:VJ_CreateBoneMerge(struggle,spawner:GetModel(),spawner:GetSkin())
+		end
+
 		function ENT:VJ_CreateBoneMerge(targEnt,oldModel,oldSkin,bg)
 			if targEnt:IsNPC() then
 				targEnt:SetModel("models/cpthazama/halo3/flood_human_valve.mdl")
@@ -60,8 +67,10 @@ if VJExists == true then
 			body:Spawn()
 			body:SetParent(targEnt)
 			body:SetSkin(oldSkin)
-			for i = 0,18 do
-				body:SetBodygroup(i,bg[i])
+			if bg then
+				for i = 0,18 do
+					body:SetBodygroup(i,bg[i])
+				end
 			end
 			targEnt.Bonemerge = body
 		end
@@ -115,7 +124,7 @@ if VJExists == true then
 			local posOffset = (self:GetPos() -bonepos)
 			local angOffset = (self:GetAngles() -targetEntity:GetAngles())
 			hook.Add("Think",index,function()
-				if !targetEntity:IsValid() || !self:IsValid() then
+				if !targetEntity:IsValid() || !self:IsValid() || IsValid(targetEntity) && targetEntity:Health() <= 0 then
 					hook.Remove("Think",index)
 				else
 					local bonepos,boneang = targetEntity:GetBonePosition(boneID)
@@ -413,8 +422,8 @@ if VJExists == true then
 			Panel:AddControl("Checkbox", {Label = "Infected NPCs/Players keep model?", Command = "vj_halo_keepmodel"})
 			Panel:ControlHelp("Note: THIS MAY LOOK WEIRD DUE TO SKELETON DIFFERENCES!")
 			Panel:ControlHelp("Note: Will only work on Valve Biped models (I.E. Rebels, Combine, etc. based models)")
-			Panel:AddControl("Checkbox", {Label = "Attempt to adjust bones of infected NPC/Player?", Command = "vj_halo_modeladjust"})
-			Panel:ControlHelp("Warning: This can cause severe networking lag for servers!")
+			-- Panel:AddControl("Checkbox", {Label = "Attempt to adjust bones of infected NPC/Player?", Command = "vj_halo_modeladjust"})
+			-- Panel:ControlHelp("Warning: This can cause severe networking lag for servers!")
 			-- Panel:AddControl("Slider", { Label 	= "Infected NPC/Player Pevis Height", Command = "vj_halo_modeladjustz", Min = "-25", Max = "25"})
 		end
 		local function VJ_HALOFLOOD_ALL(Panel)

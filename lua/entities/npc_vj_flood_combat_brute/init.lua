@@ -510,6 +510,7 @@ function ENT:CustomOnThink_AIEnabled()
 	if self:GetActivity() == ACT_GLIDE && !self.LeapAttacking && self:IsOnGround() then
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
 	end
+	self.HasPoseParameterLooking = IsValid(self:GetActiveWeapon())
 	if IsValid(self:GetActiveWeapon()) then
 		self.AnimTbl_IdleStand = {ACT_IDLE_STIMULATED}
 		self.AnimTbl_Walk = {ACT_WALK_STIMULATED}
