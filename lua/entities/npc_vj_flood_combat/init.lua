@@ -557,6 +557,7 @@ function ENT:CustomInitialize()
 	end
 	self.CanChaseWeapon = false
 	self.ChaseWeapon = NULL
+	self:SetCollisionBounds(Vector(15,15,60),Vector(-15,-15,0))
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo,hitgroup,GetCorpse)
@@ -564,6 +565,13 @@ function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo,hitgroup,GetCorpse)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
+	-- if dmginfo:GetDamageType() == DMG_BLAST then
+		-- self:SetGroundEntity(NULL)
+		-- local dist = dmginfo:GetDamagePosition():Distance((self:GetPos() +self:OBBCenter()))
+		-- local throw = (dmginfo:GetDamagePosition() -(self:GetPos() +self:OBBCenter()))
+		-- local throwAmount = math.Clamp(3,1,5)
+		-- self:SetVelocity(-(throw) *throwAmount)
+	-- end
 	if math.random(1,5) == 1 then
 		local gibs = {"models/predatorcz/halo/flood/shared.PMD/innards1.mdl","models/predatorcz/halo/flood/shared.PMD/innards3.mdl","models/predatorcz/halo/flood/shared.PMD/limb1.mdl","models/predatorcz/halo/flood/shared.PMD/limb2.mdl","models/predatorcz/halo/flood/shared.PMD/limb3.mdl","models/predatorcz/halo/flood/shared.PMD/skin1.mdl","models/predatorcz/halo/flood/shared.PMD/skin2.mdl","models/predatorcz/halo/flood/shared.PMD/skin3.mdl"}
 		if dmginfo:IsBulletDamage() then
@@ -670,6 +678,12 @@ function ENT:CustomOnThink()
 	else
 		if !self.VJ_IsBeingControlled then
 			self.ConstantlyFaceEnemy = false
+			if IsValid(self:GetEnemy()) && !self:IsUnreachable(self:GetEnemy()) then
+				self.ConstantlyFaceEnemy = true
+				self.ConstantlyFaceEnemy_IfVisible = true
+				self.ConstantlyFaceEnemy_Postures = "Both"
+				self.ConstantlyFaceEnemyDistance = 8000
+			end
 		end
 	end
 	if self.CurrentAttackAnimation == ACT_MELEE_ATTACK1 || self.CurrentAttackAnimation == ACT_MELEE_ATTACK2 then

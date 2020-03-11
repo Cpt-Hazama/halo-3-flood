@@ -67,17 +67,22 @@ function ENT:Think()
 	else
 		if IsValid(self.AttachEnt) then
 			local ent = self.AttachEnt
-			local pos,ang = ent:GetBonePosition(self.StartBone)
-			self.StartPos = pos
-			self.StartAng = ang
-			if self.StartPos == nil || self.StartAng == nil then
-				self:DeathEffects(self:GetPos(),0)
-				return
-			end
-			self:SetPos(self.StartPos)
-			self:SetAngles(self.StartAng)
-			if self:GetPos() == ent:GetPos() then
-				self:SetPos(ent:GetPos() +ent:OBBCenter())
+			if ent:IsNPC() or ent:IsPlayer() then
+				local pos,ang = ent:GetBonePosition(self.StartBone)
+				self.StartPos = pos
+				self.StartAng = ang
+				if self.StartPos == nil || self.StartAng == nil then
+					self:DeathEffects(self:GetPos(),0)
+					return
+				end
+				self:SetPos(self.StartPos)
+				self:SetAngles(self.StartAng)
+				if self:GetPos() == ent:GetPos() then
+					self:SetPos(ent:GetPos() +ent:OBBCenter())
+					self:SetAngles(self.StartAng)
+				end
+			else
+				self:SetPos(self.StartPos)
 				self:SetAngles(self.StartAng)
 			end
 		else

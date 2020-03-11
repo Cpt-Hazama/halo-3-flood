@@ -33,6 +33,7 @@ if VJExists == true then
 
 		hook.Add("PlayerSpawn","VJ_Halo3Flood_MuffinValues",function(ply)
 			ply.VJ_IsMuffinInfected = false
+			ply.VJ_NextPushInfectionOffT = CurTime() +1
 			ply.tbl_EnemyMuffins = {}
 		end)
 	end

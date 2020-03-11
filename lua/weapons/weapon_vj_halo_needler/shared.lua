@@ -63,8 +63,9 @@ SWEP.NextIdle_PrimaryAttack		= 0.02 -- How much time until it plays the idle ani
 function SWEP:CustomOnPrimaryAttack_BeforeShoot()
 if (CLIENT) then return end
 	local SpawnBlaserRod = ents.Create("obj_vj_halo_needle")
-	SpawnBlaserRod:SetPos(self:GetAttachment(self:LookupAttachment("muzzle")).Pos)
-	SpawnBlaserRod:SetAngles(self.Owner:GetAngles())
+	local pos = self:GetAttachment(self:LookupAttachment("muzzle")).Pos
+	SpawnBlaserRod:SetPos(pos)
+	SpawnBlaserRod:SetAngles((self.Owner:GetEnemy():GetPos() - self.Owner:GetPos()):Angle())
 	SpawnBlaserRod:SetOwner(self.Owner)
 	SpawnBlaserRod:Activate()
 	SpawnBlaserRod:Spawn()

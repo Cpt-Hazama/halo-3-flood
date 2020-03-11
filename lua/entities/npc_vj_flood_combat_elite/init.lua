@@ -599,6 +599,12 @@ function ENT:CustomOnThink_AIEnabled()
 	else
 		if !self.VJ_IsBeingControlled then
 			self.ConstantlyFaceEnemy = false
+			if IsValid(self:GetEnemy()) && !self:IsUnreachable(self:GetEnemy()) then
+				self.ConstantlyFaceEnemy = true
+				self.ConstantlyFaceEnemy_IfVisible = true
+				self.ConstantlyFaceEnemy_Postures = "Both"
+				self.ConstantlyFaceEnemyDistance = 8000
+			end
 		end
 	end
 	if self.CurrentAttackAnimation == ACT_MELEE_ATTACK1 || self.CurrentAttackAnimation == ACT_MELEE_ATTACK2 then
