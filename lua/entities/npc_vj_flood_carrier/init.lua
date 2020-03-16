@@ -118,7 +118,8 @@ function ENT:CarrierGibs()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:SpawnFlood(count)
-	for i = 1,count do
+	local sCount = self.VJ_EnhancedFlood && count *2 or count
+	for i = 1,sCount do
 		local pos = self:GetPos() +self:OBBCenter()
 		local flood = ents.Create("npc_vj_flood_infection")
 		flood:SetPos(pos +self:GetForward() *math.Rand(-(4 *i),4 *i) +self:GetRight() *math.Rand(-(4 *i),4 *i))
@@ -148,9 +149,25 @@ function ENT:CarrierExplode()
 	self:Remove()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
+	if self.VJ_EnhancedFlood then
+		dmginfo:ScaleDamage(self.VJ_Flood_DamageResistance)
+	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnThink()
 	self:GravemindSpeak()
 	if GetConVarNumber("ai_disabled") == 1 then return end
+	if self.VJ_EnhancedFlood then
+		self:SetSkin(1)
+		if self.MeleeAttacking then
+			self:SetPlaybackRate(self.VJ_Flood_SpeedBoost)
+		else
+			self:SetPlaybackRate(1)
+		end
+	else
+		self:SetSkin(0)
+	end
 	if self.CanScale then
 		local scale = math.Rand(1,math.Rand(1,2.5))
 		local targetVec = Vector(scale,scale,scale)

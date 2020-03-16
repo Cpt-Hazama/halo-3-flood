@@ -213,12 +213,18 @@ function ENT:InfectionAI()
 	if !IsValid(self.corpse) then
 		self.corpse = NULL
 		self.DisableChasingEnemy = false
+		local tbl = {}
 		for _,v in ipairs(ents.FindInSphere(self:GetPos(),500)) do
 			if (v:GetClass() == "prop_ragdoll" && v.IsVJBaseCorpse == true) or (v:GetClass() == "prop_physics" && v.IsVJBaseCorpse == true) || (v:GetClass() == "prop_ragdoll" && table.HasValue(self.InfectableHL2Models,string.GetFileFromFilename(v:GetModel()))) then
 				if v.IsSetToBeInfected then return end
 				if v.VJ_IgnoreFloodInfection then return end
-				self.corpse = v
+				-- self.corpse = v
+				table.insert(tbl,v)
 			end
+		end
+		local attempt = VJ_PICK(tbl)
+		if IsValid(attempt) && !attempt.IsSetToBeInfected then
+			self.corpse = attempt
 		end
 	else
 		self.DisableChasingEnemy = true
@@ -239,8 +245,28 @@ function ENT:InfectionAI()
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
+	if self.VJ_EnhancedFlood then
+		dmginfo:ScaleDamage(self.VJ_Flood_DamageResistance)
+	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
 ENT.InfectableHL2Models = {"alyx.mdl","combine_super_soldier.mdl","poison.mdl","classic.mdl","police.mdl","combine_soldier_prisonguard.mdl","combine_soldier.mdl","barney.mdl","breen.mdl","eli.mdl","gman.mdl","gman_high.mdl","kleiner.mdl","odessa.mdl","monk.mdl","female_01.mdl","female_01_bloody.mdl","female_02.mdl","female_02_bloody.mdl","female_03.mdl","female_03_bloody.mdl","female_04.mdl","female_04_bloody.mdl","female_06.mdl","female_06_bloody.mdl","female_07.mdl","female_07_bloody.mdl","male_01.mdl","male_01_bloody.mdl","male_02.mdl","male_02_bloody.mdl","male_03.mdl","male_03_bloody.mdl","male_04.mdl","male_04_bloody.mdl","male_05.mdl","male_05_bloody.mdl","male_06.mdl","male_06_bloody.mdl","male_07.mdl","male_07_bloody.mdl","male_08.mdl","male_08_bloody.mdl","male_09.mdl","male_09_bloody.mdl","male_cheaple.mdl","mossman.mdl"}
 function ENT:CustomOnThink()
+	if self.VJ_EnhancedFlood then
+		self.LeapDistance = 375
+		self.LeapAttackVelocityForward = 325
+		self.LeapAttackVelocityUp = 275
+		if self.MeleeAttacking or self.LeapAttacking then
+			self:SetPlaybackRate(self.VJ_Flood_SpeedBoost)
+		else
+			self:SetPlaybackRate(1)
+		end
+	else
+		self.LeapDistance = 200
+		self.LeapAttackVelocityForward = 15
+		self.LeapAttackVelocityUp = 300
+	end
 	local ent = self.LatchedEnt
 	if IsValid(ent) then
 		if ent:IsPlayer() then
@@ -387,183 +413,11 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 hook.Add("PlayerDeath","VJ_Halo3FloodSNPCs_InfectionPlayer",function(victim,inflictor,attacker)
-	if inflictor.IsHalo3Infection then
-		if inflictor == attacker && victim != inflictor then
-			if IsValid(victim:GetRagdollEntity()) then
-				victim:GetRagdollEntity():Remove()
-			end
-			local weapon = nil
-			if IsValid(victim:GetActiveWeapon()) && victim:GetActiveWeapon().IsVJBaseWeapon then
-				weapon = victim:GetActiveWeapon():GetClass()
-			end
-			local oldModel = victim:GetModel()
-			local oldSkin = victim:GetSkin()
-			local bg = {}
-			for i = 0,18 do
-				bg[i] = victim:GetBodygroup(i)
-			end
-			local foundBone = (victim:LookupBone("ValveBiped.Bip01_Pelvis") != nil)
-
-			local struggle = ents.Create("prop_vj_flood_youdied")
-			struggle:SetPos(victim:GetPos())
-			struggle:SetAngles(victim:GetAngles())
-			struggle:Spawn()
-			struggle:VJ_CreateBoneMerge(struggle,oldModel,oldSkin,bg)
-			undo.ReplaceEntity(inflictor,struggle)
-			SafeRemoveEntity(inflictor)
-			timer.Simple(struggle.RemoveTime,function()
-				if IsValid(struggle) then
-					local flood = ents.Create("npc_vj_flood_combat")
-					flood:SetPos(struggle:GetPos())
-					flood:SetAngles(struggle:GetAngles())
-					flood:Spawn()
-					flood:SetNoDraw(true)
-					if weapon then flood:Give(weapon) end
-					undo.ReplaceEntity(struggle,flood)
-					SafeRemoveEntity(struggle)
-					local cvar = tobool(GetConVarNumber("vj_halo_keepmodel"))
-					if cvar && foundBone then
-						flood:VJ_CreateBoneMerge(flood,oldModel,oldSkin,bg)
-						flood.Bonemerge:SetNoDraw(true)
-					end
-					timer.Simple(0.1,function()
-						if IsValid(flood) then
-							flood:SetNoDraw(false)
-							if flood.Bonemerge then flood.Bonemerge:SetNoDraw(false) end
-						end
-					end)
-					for i = 0, flood:GetBoneCount() -1 do
-						ParticleEffect("cpt_blood_flood",flood:GetBonePosition(i),Angle(0,0,0),nil)
-					end
-					flood:CreateMuffins()
-					flood:DoChangeMovementType(VJ_MOVETYPE_STATIONARY)
-					flood.DisableFindEnemy = true
-					flood.DisableSelectSchedule = true
-					local animTime = flood:SequenceDuration(flood:SelectWeightedSequence(ACT_GET_UP_STAND))
-					timer.Simple(0.02,function()
-						if IsValid(flood) then
-							flood:VJ_ACT_PLAYACTIVITY(ACT_GET_UP_STAND,true,animTime,false)
-							VJ_EmitSound(flood,"vj_halo3flood/combatform/reanimation_ground_human.wav",80,100)
-						end
-					end)
-					timer.Simple(animTime,function()
-						if IsValid(flood) then
-							flood:DoChangeMovementType(VJ_MOVETYPE_GROUND)
-							flood.DisableFindEnemy = false
-							flood.DisableSelectSchedule = false
-						end
-					end)
-				end
-			end)
-		end
-	end
+	VJ_FloodInfect(victim,inflictor,attacker,true)
 end)
 ---------------------------------------------------------------------------------------------------------------------------------------------
 hook.Add("OnNPCKilled","VJ_Halo3FloodSNPCs_Infection",function(victim,inflictor,attacker)
-	if inflictor.IsHalo3Infection then
-		if inflictor == attacker && victim != inflictor then
-			if victim.VJ_Halo3_IsAlreadyInfected then return end
-			if victim.VJ_IgnoreFloodInfection then return end
-			if victim.GetRagdollEntity && IsValid(victim:GetRagdollEntity()) then
-				victim:GetRagdollEntity():Remove()
-			end
-			local weapon = nil
-			if IsValid(victim:GetActiveWeapon()) && victim:GetActiveWeapon().IsVJBaseWeapon then
-				weapon = victim:GetActiveWeapon():GetClass()
-			end
-			local class = "npc_vj_flood_combat"
-			local checkForFlood = true
-			local time = 0
-			local sndTbl = nil
-			if victim.InfectionClass then
-				class = victim.InfectionClass
-			end
-			if victim.IsVJBaseSNPC == true then
-				victim.HasDeathRagdoll = false
-			end
-			if victim.SoundTbl_FootStep && #victim.SoundTbl_FootStep > 0 then
-				sndTbl = victim.SoundTbl_FootStep
-			else
-				if victim.DefaultSoundTbl_FootStep then
-					sndTbl = victim.DefaultSoundTbl_FootStep
-				end
-			end
-			local oldModel = victim:GetModel()
-			local oldSkin = victim:GetSkin()
-			local bg = {}
-			for i = 0,18 do
-				bg[i] = victim:GetBodygroup(i)
-			end
-			local foundBone = (victim:LookupBone("ValveBiped.Bip01_Pelvis") != nil)
-			local switchEnt = inflictor
-			if foundBone then
-				local struggle = ents.Create("prop_vj_flood_youdied")
-				struggle:SetPos(victim:GetPos())
-				struggle:SetAngles(victim:GetAngles())
-				struggle:Spawn()
-				struggle:VJ_CreateBoneMerge(struggle,oldModel,oldSkin,bg)
-				time = struggle.RemoveTime
-				undo.ReplaceEntity(inflictor,struggle)
-				SafeRemoveEntity(inflictor)
-				switchEnt = struggle
-			end
-			if victim.MorphAnimation then
-				time = victim:DecideAnimationLength(victim.AnimTbl_Death[1],false)
-				victim.VJ_Halo3_IsAlreadyInfected = true
-				if switchEnt == inflictor then
-					switchEnt = victim
-					SafeRemoveEntity(inflictor)
-				end
-			end
-			timer.Simple(time,function()
-				if IsValid(switchEnt) then
-					local flood = ents.Create(class)
-					flood:SetPos(switchEnt:GetPos())
-					flood:SetAngles(switchEnt:GetAngles())
-					flood:Spawn()
-					flood:SetNoDraw(true)
-					if weapon then flood:Give(weapon) end
-					undo.ReplaceEntity(switchEnt,flood)
-					SafeRemoveEntity(switchEnt)
-					local cvar = tobool(GetConVarNumber("vj_halo_keepmodel"))
-					if class == "npc_vj_flood_combat" && cvar && foundBone then
-						flood:VJ_CreateBoneMerge(flood,oldModel,oldSkin,bg)
-						flood.Bonemerge:SetNoDraw(true)
-						if sndTbl then
-							flood.SoundTbl_FootStep = sndTbl
-						end
-					end
-					timer.Simple(0.1,function()
-						if IsValid(flood) then
-							flood:SetNoDraw(false)
-							if flood.Bonemerge then flood.Bonemerge:SetNoDraw(false) end
-						end
-					end)
-					for i = 0, flood:GetBoneCount() -1 do
-						ParticleEffect("cpt_blood_flood",flood:GetBonePosition(i),Angle(0,0,0),nil)
-					end
-					flood:CreateMuffins()
-					flood:DoChangeMovementType(VJ_MOVETYPE_STATIONARY)
-					flood.DisableFindEnemy = true
-					flood.DisableSelectSchedule = true
-					local animTime = flood:SequenceDuration(flood:SelectWeightedSequence(ACT_GET_UP_STAND))
-					-- timer.Simple(0.02,function()
-						-- if IsValid(flood) then
-							flood:VJ_ACT_PLAYACTIVITY(ACT_GET_UP_STAND,true,animTime,false)
-							VJ_EmitSound(flood,"vj_halo3flood/combatform/reanimation_ground_human.wav",80,100)
-						-- end
-					-- end)
-					timer.Simple(animTime,function()
-						if IsValid(flood) then
-							flood:DoChangeMovementType(VJ_MOVETYPE_GROUND)
-							flood.DisableFindEnemy = false
-							flood.DisableSelectSchedule = false
-						end
-					end)
-				end
-			end)
-		end
-	end
+	VJ_FloodInfect(victim,inflictor,attacker,false)
 end)
 /*-----------------------------------------------
 	*** Copyright (c) 2012-2017 by Cpt. Hazama, All rights reserved. ***

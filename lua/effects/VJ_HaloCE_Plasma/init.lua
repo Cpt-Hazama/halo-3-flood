@@ -5,7 +5,7 @@ if (!file.Exists("autorun/vj_base_autorun.lua","LUA")) then return end
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 --------------------------------------------------*/
 -- Based off of the GMod lasertracer
-EFFECT.MainMat = Material("effects/spark")
+EFFECT.MainMat = Material("effects/stunstick")
 
 function EFFECT:Init( data )
 	self.StartPos = data:GetStart()
@@ -54,7 +54,7 @@ function EFFECT:Render()
 	render.DrawBeam(
 		self.EndPos - self.Dir * (fDelta - sinWave * self.Length),
 		self.EndPos - self.Dir * (fDelta + sinWave * self.Length),
-		5 + sinWave * 35, 1, 0, Color(0,150,250,255)
+		5 + sinWave * 20, 8, 0, Color(0,150,250,255)
 	)
 end
 /*--------------------------------------------------

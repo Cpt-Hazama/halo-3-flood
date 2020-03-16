@@ -463,6 +463,9 @@ function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
 			VJ_EmitSound(self,"ambient/energy/weld" .. math.random(1,2) .. ".wav",85,100)
 		end
 	end
+	if self.VJ_EnhancedFlood then
+		dmginfo:ScaleDamage(self.VJ_Flood_DamageResistance)
+	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
@@ -579,6 +582,13 @@ function ENT:CustomOnThink_AIEnabled()
 	end
 	if self:GetActivity() == ACT_GLIDE && !self.LeapAttacking && self:IsOnGround() then
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
+	end
+	if self.VJ_EnhancedFlood then
+		if self.MeleeAttacking then
+			self:SetPlaybackRate(self.VJ_Flood_SpeedBoost)
+		else
+			self:SetPlaybackRate(1)
+		end
 	end
 	self.Bleeds = not self.HasShield
 	self:SetNWBool("HasShield",self.HasShield)

@@ -246,10 +246,23 @@ function ENT:RegenerateHealth()
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
+	if self.VJ_EnhancedFlood then
+		dmginfo:ScaleDamage(self.VJ_Flood_DamageResistance)
+	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnThink()
 	self:RegenerateHealth()
 	self:GravemindSpeak()
 	if GetConVarNumber("ai_disabled") == 1 then return end
+	if self.VJ_EnhancedFlood then
+		if self.MeleeAttacking then
+			self:SetPlaybackRate(self.VJ_Flood_SpeedBoost)
+		else
+			self:SetPlaybackRate(1)
+		end
+	end
 	-- self.NextMeleeAttackTime = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	-- self.NextAnyAttackTime_Melee = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	if self.VJ_IsBeingControlled then self:FloodControl() return end

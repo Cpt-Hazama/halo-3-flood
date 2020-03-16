@@ -235,6 +235,12 @@ function ENT:FloodControl()
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
+	if self.VJ_EnhancedFlood then
+		dmginfo:ScaleDamage(self.VJ_Flood_DamageResistance)
+	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
 ENT.NextRegen = CurTime()
 function ENT:RegenerateHealth()
 	if CurTime() > self.NextRegen then
@@ -250,6 +256,13 @@ function ENT:CustomOnThink()
 	self:RegenerateHealth()
 	self:GravemindSpeak()
 	if GetConVarNumber("ai_disabled") == 1 then return end
+	if self.VJ_EnhancedFlood then
+		if self.MeleeAttacking then
+			self:SetPlaybackRate(self.VJ_Flood_SpeedBoost)
+		else
+			self:SetPlaybackRate(1)
+		end
+	end
 	if self.VJ_IsBeingControlled then self:FloodControl() return end
 	if IsValid(self:GetEnemy()) then
 		local enemy = self:GetEnemy()
@@ -268,9 +281,13 @@ function ENT:CustomOnThink()
 				Vector(-1.18,8.45,76.67),
 				Vector(6.78,-9.44,77.94),
 				Vector(-5.91,8.45,88.18),
-				Vector(0.23,-7.84,88.15)
+				Vector(0.23,-7.84,88.15),
+				Vector(1.6,-10.63,61.68),
+				Vector(-0.32,6.22,62.18),
+				Vector(7.14,8.55,69.49),
+				Vector(5.45,-9.78,71.04),
 			}
-			local chance = math.random(6,8)
+			local chance = self.VJ_EnhancedFlood && math.random(10,12) or math.random(6,8)
 			local mul = 0.08
 			for i = 1,chance do
 				local pos = tb_Pos[i]

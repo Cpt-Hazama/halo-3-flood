@@ -102,6 +102,13 @@ function ENT:CustomOnThink_AIEnabled()
 	if self:GetActivity() == ACT_GLIDE && !self.LeapAttacking && self:IsOnGround() then
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
 	end
+	if self.VJ_EnhancedFlood then
+		if self.MeleeAttacking then
+			self:SetPlaybackRate(self.VJ_Flood_SpeedBoost)
+		else
+			self:SetPlaybackRate(1)
+		end
+	end
 	self.Bleeds = not self.HasShield
 	self:SetNWBool("HasShield",self.HasShield)
 	if IsValid(self:GetActiveWeapon()) then

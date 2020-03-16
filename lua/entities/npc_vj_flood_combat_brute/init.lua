@@ -436,7 +436,11 @@ end
 function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo,hitgroup,GetCorpse) GetCorpse.IsFloodModel = true end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
-	dmginfo:ScaleDamage(0.5)
+	if self.VJ_EnhancedFlood then
+		dmginfo:ScaleDamage(self.VJ_Flood_DamageResistance)
+	else
+		dmginfo:ScaleDamage(0.75)
+	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
@@ -509,6 +513,13 @@ function ENT:CustomOnThink_AIEnabled()
 	end
 	if self:GetActivity() == ACT_GLIDE && !self.LeapAttacking && self:IsOnGround() then
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
+	end
+	if self.VJ_EnhancedFlood then
+		if self.MeleeAttacking then
+			self:SetPlaybackRate(self.VJ_Flood_SpeedBoost)
+		else
+			self:SetPlaybackRate(1)
+		end
 	end
 	self.HasPoseParameterLooking = IsValid(self:GetActiveWeapon())
 	if IsValid(self:GetActiveWeapon()) then

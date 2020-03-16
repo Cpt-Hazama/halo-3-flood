@@ -201,6 +201,65 @@ ENT.tbl_FloodBones = {
 	["ValveBiped.Bip01_L_Hand"] = "ValveBiped.Bip01_L_Hand",
 }
 ---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:CustomInitialize()
+	self.tbl_Muffins = {}
+	-- self:CreateMuffins()
+	self.DidWeaponAttackAimParameter = false
+	self.RArmDestroyed = false
+	self.bodyparts = {
+		["1"] = {Hitgroup = {1}, Health = 1, Bodygroup = 0, Gib = "models/predatorcz/halo/flood/human.PMD/head.mdl", IsDead = false}, // Head
+		["2"] = {Hitgroup = {2}, Health = 30, Bodygroup = 2, Gib = "models/predatorcz/halo/flood/shared.PMD/innards2.mdl", IsDead = false}, // Torso
+		["5"] = {Hitgroup = {5}, Health = 30, Bodygroup = 3, Gib = "models/predatorcz/halo/flood/humanh3.PMD/rarm.mdl", IsDead = false}, // Right Arm
+		["4"] = {Hitgroup = {4}, Health = 30, Bodygroup = 4, Gib = "models/predatorcz/halo/flood/humanh3.PMD/larm.mdl", IsDead = false} // Left Arm
+	}
+	self:CapabilitiesAdd(bit.bor(CAP_MOVE_JUMP)) // No animations for this but these guys jump all over so this will allow them to get out of those positions
+	timer.Simple(GetConVarNumber("vj_halo_developmenttime"),function()
+		if self:IsValid() then
+			local flood = ents.Create("npc_vj_flood_carrier")
+			flood:SetPos(self:GetPos())
+			flood:SetAngles(self:GetAngles())
+			flood:Spawn()
+			flood:Activate()
+			undo.ReplaceEntity(self,flood)
+			for i = 0, self:GetBoneCount() -1 do
+				ParticleEffect("GrubSquashBlood",self:GetBonePosition(i),Angle(0,0,0),nil)
+				sound.Play(VJ_PICKRANDOMTABLE({"vj_gib/gibbing1.wav","vj_gib/gibbing2.wav","vj_gib/gibbing3.wav"}),self:GetBonePosition(i),50,100 *GetConVarNumber("host_timescale"))
+			end
+			for i = 0, flood:GetBoneCount() -1 do
+				ParticleEffect("GrubSquashBlood",flood:GetBonePosition(i),Angle(0,0,0),nil)
+			end
+			self:Remove()
+		end
+	end)
+	if self.CanSpawnWithWeapon then
+		local vUNSCWep = {
+			"weapon_vj_halo_br",
+			"weapon_vj_halo_br",
+			"weapon_vj_halo_br",
+			"weapon_vj_halo_br",
+			"weapon_vj_halo_shotgun",
+			"weapon_vj_halo_shotgun",
+			"weapon_vj_halo_shotgun",
+			"weapon_vj_halo_smg",
+			"weapon_vj_halo_smg",
+			"weapon_vj_halo_rpg"
+		}
+		timer.Simple(0.001,function()
+			if IsValid(self) then
+				if !IsValid(self:GetActiveWeapon()) && math.random(1,3) == 1 then
+					self:Give(VJ_PICKRANDOMTABLE(vUNSCWep))
+				end
+				if IsValid(self:GetActiveWeapon()) && GetConVarNumber("vj_halo_unlimitedammo") == 1 then
+					self:GetActiveWeapon().Primary.TakeAmmo = 0
+				end
+			end
+		end)
+	end
+	self.CanChaseWeapon = false
+	self.ChaseWeapon = NULL
+	self:SetCollisionBounds(Vector(15,15,60),Vector(-15,-15,0))
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	local bloodeffect = EffectData()
 	bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
@@ -501,65 +560,6 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnRemove() VJ_STOPSOUND(self.CurrentAllyKilledSound) end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomInitialize()
-	self.tbl_Muffins = {}
-	-- self:CreateMuffins()
-	self.DidWeaponAttackAimParameter = false
-	self.RArmDestroyed = false
-	self.bodyparts = {
-		["1"] = {Hitgroup = {1}, Health = 1, Bodygroup = 0, Gib = "models/predatorcz/halo/flood/human.PMD/head.mdl", IsDead = false}, // Head
-		["2"] = {Hitgroup = {2}, Health = 30, Bodygroup = 2, Gib = "models/predatorcz/halo/flood/shared.PMD/innards2.mdl", IsDead = false}, // Torso
-		["5"] = {Hitgroup = {5}, Health = 30, Bodygroup = 3, Gib = "models/predatorcz/halo/flood/humanh3.PMD/rarm.mdl", IsDead = false}, // Right Arm
-		["4"] = {Hitgroup = {4}, Health = 30, Bodygroup = 4, Gib = "models/predatorcz/halo/flood/humanh3.PMD/larm.mdl", IsDead = false} // Left Arm
-	}
-	self:CapabilitiesAdd(bit.bor(CAP_MOVE_JUMP)) // No animations for this but these guys jump all over so this will allow them to get out of those positions
-	timer.Simple(GetConVarNumber("vj_halo_developmenttime"),function()
-		if self:IsValid() then
-			local flood = ents.Create("npc_vj_flood_carrier")
-			flood:SetPos(self:GetPos())
-			flood:SetAngles(self:GetAngles())
-			flood:Spawn()
-			flood:Activate()
-			undo.ReplaceEntity(self,flood)
-			for i = 0, self:GetBoneCount() -1 do
-				ParticleEffect("GrubSquashBlood",self:GetBonePosition(i),Angle(0,0,0),nil)
-				sound.Play(VJ_PICKRANDOMTABLE({"vj_gib/gibbing1.wav","vj_gib/gibbing2.wav","vj_gib/gibbing3.wav"}),self:GetBonePosition(i),50,100 *GetConVarNumber("host_timescale"))
-			end
-			for i = 0, flood:GetBoneCount() -1 do
-				ParticleEffect("GrubSquashBlood",flood:GetBonePosition(i),Angle(0,0,0),nil)
-			end
-			self:Remove()
-		end
-	end)
-	if self.CanSpawnWithWeapon then
-		local vUNSCWep = {
-			"weapon_vj_halo_br",
-			"weapon_vj_halo_br",
-			"weapon_vj_halo_br",
-			"weapon_vj_halo_br",
-			"weapon_vj_halo_shotgun",
-			"weapon_vj_halo_shotgun",
-			"weapon_vj_halo_shotgun",
-			"weapon_vj_halo_smg",
-			"weapon_vj_halo_smg",
-			"weapon_vj_halo_rpg"
-		}
-		timer.Simple(0.001,function()
-			if IsValid(self) then
-				if !IsValid(self:GetActiveWeapon()) && math.random(1,3) == 1 then
-					self:Give(VJ_PICKRANDOMTABLE(vUNSCWep))
-				end
-				if IsValid(self:GetActiveWeapon()) && GetConVarNumber("vj_halo_unlimitedammo") == 1 then
-					self:GetActiveWeapon().Primary.TakeAmmo = 0
-				end
-			end
-		end)
-	end
-	self.CanChaseWeapon = false
-	self.ChaseWeapon = NULL
-	self:SetCollisionBounds(Vector(15,15,60),Vector(-15,-15,0))
-end
----------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo,hitgroup,GetCorpse)
 	GetCorpse.IsFloodModel = true
 end
@@ -640,6 +640,12 @@ function ENT:IsBehindMe(enemy,checkRadius)
     return !(self:GetForward():Dot(((enemy:GetPos() +enemy:OBBCenter()) -self:GetPos()):GetNormalized()) > math.cos(math.rad(checkRadius)))
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
+	if self.VJ_EnhancedFlood then
+		dmginfo:ScaleDamage(self.VJ_Flood_DamageResistance)
+	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
 ENT.Weapon_ShotsSinceLastReload = 0
 ENT.AllowWeaponReloading = false
 ENT.NextWepCheckT = 1
@@ -662,6 +668,15 @@ function ENT:CustomOnThink()
 	self.HasPoseParameterLooking = IsValid(self:GetActiveWeapon())
 	-- self.NextMeleeAttackTime = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	-- self.NextAnyAttackTime_Melee = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
+	
+	if self.VJ_EnhancedFlood then
+		if self.MeleeAttacking then
+			self:SetPlaybackRate(self.VJ_Flood_SpeedBoost)
+		else
+			self:SetPlaybackRate(1)
+		end
+	end
+	
 	local idle = ACT_IDLE
 	local walk = ACT_WALK
 	local run = ACT_RUN

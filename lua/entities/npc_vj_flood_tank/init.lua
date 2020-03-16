@@ -249,18 +249,21 @@ function ENT:CustomOnAcceptInput(key,activator,caller,data)
 		local fMin = 300
 		local fMax = 450
 		local fTurn = 250
-		local flood = ents.Create("npc_vj_flood_infection")
-		flood:SetPos(self:GetAttachment(1).Pos)
-		flood:SetAngles(self:GetAngles())
-		flood:Spawn()
-		flood:Activate()
-		constraint.NoCollide(flood,self,0,0)
-		flood:SetGroundEntity(NULL)
-		flood:SetVelocity(((self:GetPos() +self:OBBCenter() +self:GetForward() *300) -(self:GetAttachment(1).Pos)):GetNormal() *math.Rand(fMin,fMax) +self:GetRight() *math.Rand(-fTurn,fTurn))
-		ParticleEffect("GrubBlood",self:GetAttachment(1).Pos,self:GetAttachment(1).Ang,nil)
-		ParticleEffect("GrubBlood",self:GetAttachment(1).Pos,self:GetAttachment(1).Ang,nil)
-		ParticleEffect("cpt_blood_flood",self:GetAttachment(1).Pos,self:GetAttachment(1).Ang,nil)
-		ParticleEffect("cpt_blood_flood",self:GetAttachment(1).Pos,self:GetAttachment(1).Ang,nil)
+		local count = self.VJ_EnhancedFlood && 2 or 1
+		for i = 1,count do
+			local flood = ents.Create("npc_vj_flood_infection")
+			flood:SetPos(self:GetAttachment(1).Pos)
+			flood:SetAngles(self:GetAngles())
+			flood:Spawn()
+			flood:Activate()
+			constraint.NoCollide(flood,self,0,0)
+			flood:SetGroundEntity(NULL)
+			flood:SetVelocity(((self:GetPos() +self:OBBCenter() +self:GetForward() *300) -(self:GetAttachment(1).Pos)):GetNormal() *math.Rand(fMin,fMax) +self:GetRight() *math.Rand(-fTurn,fTurn))
+			ParticleEffect("GrubBlood",self:GetAttachment(1).Pos,self:GetAttachment(1).Ang,nil)
+			ParticleEffect("GrubBlood",self:GetAttachment(1).Pos,self:GetAttachment(1).Ang,nil)
+			ParticleEffect("cpt_blood_flood",self:GetAttachment(1).Pos,self:GetAttachment(1).Ang,nil)
+			ParticleEffect("cpt_blood_flood",self:GetAttachment(1).Pos,self:GetAttachment(1).Ang,nil)
+		end
 	end
 	if key == "event_impact" then
 		VJ_EmitSound(self,self.SoundTbl_Thud,85,100)
@@ -276,7 +279,7 @@ function ENT:OnTransformed(from,to)
 	local anim = from .. "_to_" .. to
 	self.MovementType = VJ_MOVETYPE_STATIONARY
 	local act,dur = self:LookupSequence(anim)
-	self:VJ_ACT_PLAYACTIVITY("vjseq_" .. anim,true,nil,false)
+	self:VJ_ACT_PLAYACTIVITY("vjseq_" .. anim,true,false,false)
 	self:EmitSound("physics/flesh/flesh_bloody_break.wav",math.random(80,95),math.random(85,100))
 	VJ_EmitSound(self,"vj_halo3flood/transformation/" .. to .. "_from_" .. from .. math.random(1,3) .. ".wav",90,100)
 	for i = 1,self:GetBoneCount() -1 do
@@ -298,7 +301,7 @@ function ENT:Transform(to,ent)
 	local anim = self.PureType .. "_to_" .. to
 	self.MovementType = VJ_MOVETYPE_STATIONARY
 	local act,dur = self:LookupSequence(anim)
-	self:VJ_ACT_PLAYACTIVITY("vjseq_" .. anim,true,nil,false)
+	self:VJ_ACT_PLAYACTIVITY("vjseq_" .. anim,true,false,false)
 	VJ_EmitSound(self,"vj_halo3flood/transformation/" .. anim .. math.random(1,3) .. ".wav",90,100)
 	timer.Simple(dur,function()
 		if IsValid(self) then
@@ -340,7 +343,7 @@ function ENT:FloodControl()
 		self.NextTransformT = CurTime() +15
 	end
 	if alt && !self.Transforming && CurTime() > self.NextSpitT then
-		self:VJ_ACT_PLAYACTIVITY("vjseq_infection_spew",true,nil,false)
+		self:VJ_ACT_PLAYACTIVITY("vjseq_infection_spew",true,false,false)
 		self.NextSpitT = CurTime() +30
 	end
 end
@@ -399,6 +402,13 @@ function ENT:CustomOnThink()
 	self:RegenerateHealth()
 	self:GravemindSpeak()
 	if GetConVarNumber("ai_disabled") == 1 then return end
+	if self.VJ_EnhancedFlood then
+		if self.MeleeAttacking then
+			self:SetPlaybackRate(self.VJ_Flood_SpeedBoost)
+		else
+			self:SetPlaybackRate(1)
+		end
+	end
 	if self.IsBlocking then
 		self.AnimTbl_IdleStand = {ACT_IDLE_STIMULATED}
 		self.AnimTbl_Walk = {ACT_RUN_STIMULATED}
@@ -435,13 +445,13 @@ function ENT:CustomOnThink()
 			self.AnimTbl_Run = {ACT_WALK}
 		end
 		if dist > 600 && CurTime() > self.NextSpitT && self.Transforming == false then
-			self:VJ_ACT_PLAYACTIVITY("vjseq_infection_spew",true,nil,false)
+			self:VJ_ACT_PLAYACTIVITY("vjseq_infection_spew",true,false,false)
 			self.NextSpitT = CurTime() +math.random(20,30)
 		end
 	else
 		local chance = math.random(1,self.RandomSpitChance)
 		if chance == 1 && CurTime() > self.NextSpitT && self.Transforming == false then
-			self:VJ_ACT_PLAYACTIVITY("vjseq_infection_spew",true,nil,false)
+			self:VJ_ACT_PLAYACTIVITY("vjseq_infection_spew",true,false,false)
 			self.NextSpitT = CurTime() +math.random(20,30)
 		end
 	end
@@ -460,16 +470,32 @@ function ENT:CustomOnThink()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
-	if dmginfo:IsBulletDamage() then
-		if self.IsBlocking then
-			dmginfo:ScaleDamage(0.5)
-		elseif !self.IsBlocking && math.random(1,40) == 1 then
-			self.IsBlocking = true
-			timer.Simple(10,function()
-				if IsValid(self) then
-					self.IsBlocking = false
-				end
-			end)
+	if self.VJ_EnhancedFlood then
+		dmginfo:ScaleDamage(self.VJ_Flood_DamageResistance)
+		if dmginfo:IsBulletDamage() then
+			if self.IsBlocking then
+				dmginfo:ScaleDamage(self.VJ_Flood_DamageResistance -0.2)
+			elseif !self.IsBlocking && math.random(1,30) == 1 then
+				self.IsBlocking = true
+				timer.Simple(7,function()
+					if IsValid(self) then
+						self.IsBlocking = false
+					end
+				end)
+			end
+		end
+	else
+		if dmginfo:IsBulletDamage() then
+			if self.IsBlocking then
+				dmginfo:ScaleDamage(0.5)
+			elseif !self.IsBlocking && math.random(1,40) == 1 then
+				self.IsBlocking = true
+				timer.Simple(10,function()
+					if IsValid(self) then
+						self.IsBlocking = false
+					end
+				end)
+			end
 		end
 	end
 end
