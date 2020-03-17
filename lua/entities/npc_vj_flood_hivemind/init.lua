@@ -64,13 +64,13 @@ ENT.IdleSoundLevel = 110
 ENT.BioMass = 50
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomDeathAnimationCode(dmginfo,hitgroup)
+	self:SetModelScale(0.1,5)
 	for i = 1,15 do
 		timer.Simple(0.15 *i,function()
 			if IsValid(self) then
 				for i = 1,self:GetBoneCount() -1 do
 					if math.random(1,15) == 1 then util.ScreenShake(self:GetPos(),12,100,5,3000); sound.Play("vj_halo3flood/carrier/h3/pop" .. math.random(1,6) .. ".mp3",self:GetBonePosition(i),100,100) end
-					ParticleEffect("flood_mortar_explode",self:GetBonePosition(i),Angle(math.Rand(0,360),math.Rand(0,360),math.Rand(0,360)),nil)
-					ParticleEffect("flood_mortar_explode",self:GetBonePosition(i) +VectorRand() *15,Angle(math.Rand(0,360),math.Rand(0,360),math.Rand(0,360)),nil)
+					ParticleEffect("flood_hive_explode",self:GetBonePosition(i),Angle(math.Rand(0,360),math.Rand(0,360),math.Rand(0,360)),nil)
 				end
 			end
 		end)
@@ -102,96 +102,6 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	util.Effect("bloodspray",bloodspray)
 	util.Effect("bloodspray",bloodspray)
 	util.Effect("bloodspray",bloodspray)
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
-	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
@@ -210,6 +120,14 @@ function ENT:CustomOnInitialize()
 	end
 	-- ParticleEffectAttach("cpt_flood_spore",PATTACH_ABSORIGIN_FOLLOW,self,0) -- Weird particle error
 	self.SpawnedFlood = {}
+	self.SpawnableFlood = {
+		"npc_vj_flood_mortar",
+		"npc_vj_flood_tank",
+		"npc_vj_flood_ranged",
+		"npc_vj_flood_stalker",
+		"npc_vj_flood_carrier",
+		"npc_vj_flood_infection"
+	}
 	self.SpawnPosition = self:GetPos() +self:GetUp() *25 +self:GetForward() *1500
 	self.MortarPositions = {}
 	self.MortarPositions[1] = {ent=NULL,pos=self:GetPos() +self:GetForward() *2300}
@@ -234,17 +152,20 @@ function ENT:FindMortarSpot()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:AttemptSpawn()
-	-- Entity(1):ChatPrint("Attempting...")
-	for class,cost in pairs(VJ_FLOOD_BIOCOST) do
-		-- Entity(1):ChatPrint("Comparing " .. tostring(self.BioMass) .. " - " .. tostring(cost) .. " for " .. class)
-		if self.BioMass >= cost then
-			-- Entity(1):ChatPrint("Spawning " .. class)
-			if class == "npc_vj_flood_mortar" then
-				self:SpawnFlood(class,self:FindMortarSpot())
+	for _,v in pairs(self.SpawnableFlood) do
+		if VJ_FLOOD_BIOCOST[v] then
+			local cost = VJ_FLOOD_BIOCOST[v]
+			if self.BioMass >= cost then
+				if v == "npc_vj_flood_mortar" then
+					local spot = self:FindMortarSpot()
+					if spot then
+						self:SpawnFlood(v,spot)
+						break
+					end
+				end
+				self:SpawnFlood(v)
 				break
 			end
-			self:SpawnFlood(class)
-			break
 		end
 	end
 end

@@ -93,7 +93,7 @@ if VJExists == true then
 					tendrilGlow:SetKeyValue("model","vj_base/sprites/vj_glow1.vmt")
 					tendrilGlow:SetKeyValue("scale","0.125")
 					tendrilGlow:SetKeyValue("rendermode","5")
-					tendrilGlow:SetKeyValue("rendercolor","255 0 0")
+					tendrilGlow:SetKeyValue("rendercolor","255 70 0")
 					tendrilGlow:SetKeyValue("spawnflags","1")
 					tendrilGlow:SetParent(ent)
 					tendrilGlow:Fire("SetParentAttachment","tendril" .. tostring(i),0)
