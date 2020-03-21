@@ -24,6 +24,14 @@ ENT.MeleeAttackDamageType = DMG_SLASH -- Type of Damage
 ENT.HasFootStepSound = false -- Should the SNPC make a footstep sound when it's moving?
 -- ====== Sound File Paths ====== --
 -- Leave blank if you don't want any sounds to play
+ENT.SoundTbl_MeleeAttackMiss = {
+	"vj_halo3flood/shared/melee_swish1.wav",
+	"vj_halo3flood/shared/melee_swish3.wav",
+	"vj_halo3flood/shared/melee_swish5.wav",
+	"vj_halo3flood/shared/melee_swish6.wav",
+	"vj_halo3flood/shared/melee_swish7.wav",
+	"vj_halo3flood/shared/melee_swish8.wav",
+}
 ENT.SoundTbl_Idle = {
 	"vj_halo3flood/stalker/stayback1.mp3",
 	"vj_halo3flood/stalker/stayback2.mp3",

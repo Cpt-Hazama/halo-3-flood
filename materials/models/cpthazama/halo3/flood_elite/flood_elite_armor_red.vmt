@@ -3,7 +3,7 @@
 	"$basetexture" "models/cpthazama/halo3/flood_elite/flood_elite"
 	"$bumpmap" "models/cpthazama/halo3/flood_elite/flood_elite_n"
 	
-	"$color2"				"[1 0 0]"
+	"$color2"				"[0.5 0 0]"
 	"$AmbientOcclusion"		"1"
 	
 	"$nodecal"			"1"

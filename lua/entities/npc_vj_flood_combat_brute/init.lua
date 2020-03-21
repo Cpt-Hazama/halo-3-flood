@@ -50,6 +50,14 @@ ENT.LeapAttackDamage = 65
 ENT.LeapAttackDamageDistance = 50 -- How far does the damage go?
 -- ====== Sound File Paths ====== --
 -- Leave blank if you don't want any sounds to play
+ENT.SoundTbl_MeleeAttackMiss = {
+	"vj_halo3flood/shared/melee_swish1.wav",
+	"vj_halo3flood/shared/melee_swish3.wav",
+	"vj_halo3flood/shared/melee_swish5.wav",
+	"vj_halo3flood/shared/melee_swish6.wav",
+	"vj_halo3flood/shared/melee_swish7.wav",
+	"vj_halo3flood/shared/melee_swish8.wav",
+}
 ENT.SoundTbl_FootStep = {
 	"vj_halo3flood/brute/brutecombatform_longmove1.wav",
 	"vj_halo3flood/brute/brutecombatform_longmove2.wav",
@@ -90,41 +98,49 @@ ENT.SoundTbl_Idle = {
 }
 
 ENT.SoundTbl_CombatIdle = {
-	"vj_halo3flood/brute/bruteform_idle1.wav",
-	"vj_halo3flood/brute/bruteform_idle2.wav",
-	"vj_halo3flood/brute/bruteform_idle3.wav",
-	"vj_halo3flood/brute/bruteform_idle4.wav",
-	"vj_halo3flood/brute/bruteform_idle5.wav",
-	"vj_halo3flood/brute/bruteform_idle6.wav",
-	"vj_halo3flood/brute/bruteform_idle7.wav",
-	"vj_halo3flood/brute/bruteform_idle8.wav",
-	"vj_halo3flood/brute/bruteform_idle9.wav",
-	"vj_halo3flood/brute/bruteform_idle10.wav",
-	"vj_halo3flood/brute/bruteform_idle11.wav",
-	"vj_halo3flood/brute/bruteform_idle12.wav",
-	"vj_halo3flood/brute/bruteform_idle13.wav",
-	"vj_halo3flood/brute/bruteform_idle14.wav",
-	"vj_halo3flood/brute/bruteform_idle15.wav",
-	"vj_halo3flood/brute/bruteform_idle16.wav",
-	"vj_halo3flood/brute/bruteform_idle17.wav",
+	"vj_halo3flood/brute/combat/125.wav",
+	"vj_halo3flood/brute/combat/126.wav",
+	"vj_halo3flood/brute/combat/127.wav",
+	"vj_halo3flood/brute/combat/130.wav",
+	"vj_halo3flood/brute/combat/131.wav",
+	"vj_halo3flood/brute/combat/132.wav",
+	"vj_halo3flood/brute/combat/135.wav",
+	"vj_halo3flood/brute/combat/145.wav",
+	"vj_halo3flood/brute/combat/146.wav",
+	"vj_halo3flood/brute/combat/147.wav",
+	"vj_halo3flood/brute/combat/148.wav",
+	"vj_halo3flood/brute/combat/15.wav",
+	"vj_halo3flood/brute/combat/19.wav",
+	"vj_halo3flood/brute/combat/21.wav",
+	"vj_halo3flood/brute/combat/30.wav",
+	"vj_halo3flood/brute/combat/38.wav",
+	"vj_halo3flood/brute/combat/59.wav",
+	"vj_halo3flood/brute/combat/60.wav",
+	"vj_halo3flood/brute/combat/93.wav",
 }
 ENT.SoundTbl_BeforeMeleeAttack = {
-	"vj_halo3flood/elite/melee1.wav",
-	"vj_halo3flood/elite/melee2.wav",
-	"vj_halo3flood/elite/melee3.wav",
-	"vj_halo3flood/elite/melee4.wav",
+	"vj_halo3flood/brute/melee/137.wav",
+	"vj_halo3flood/brute/melee/138.wav",
+	"vj_halo3flood/brute/melee/139.wav",
+	"vj_halo3flood/brute/melee/26.wav",
+	"vj_halo3flood/brute/melee/27.wav",
+	"vj_halo3flood/brute/melee/41.wav",
+	"vj_halo3flood/brute/melee/42.wav",
+	"vj_halo3flood/brute/melee/43.wav",
 }
 ENT.SoundTbl_Pain = {
-	"vj_halo3flood/brute/bruteform_body_destroyed1.wav",
-	"vj_halo3flood/brute/bruteform_body_destroyed2.wav",
-	"vj_halo3flood/brute/bruteform_body_destroyed3.wav",
-	"vj_halo3flood/brute/bruteform_body_destroyed4.wav",
-	"vj_halo3flood/brute/bruteform_body_destroyed5.wav",
-	"vj_halo3flood/brute/bruteform_body_destroyed6.wav",
-	"vj_halo3flood/brute/bruteform_body_destroyed7.wav",
-	"vj_halo3flood/brute/bruteform_body_destroyed8.wav",
-	"vj_halo3flood/brute/bruteform_body_destroyed9.wav",
-	"vj_halo3flood/brute/bruteform_body_destroyed10.wav",
+	"vj_halo3flood/brute/pain/111.wav",
+	"vj_halo3flood/brute/pain/113.wav",
+	"vj_halo3flood/brute/pain/115.wav",
+	"vj_halo3flood/brute/pain/140.wav",
+	"vj_halo3flood/brute/pain/141.wav",
+	"vj_halo3flood/brute/pain/142.wav",
+	"vj_halo3flood/brute/pain/188.wav",
+	"vj_halo3flood/brute/pain/189.wav",
+	"vj_halo3flood/brute/pain/194.wav",
+	"vj_halo3flood/brute/pain/195.wav",
+	"vj_halo3flood/brute/pain/196.wav",
+	"vj_halo3flood/brute/pain/197.wav",
 }
 ENT.SoundTbl_Death = {
 	"vj_halo3flood/brute/bruteform_body_destroyed1.wav",
@@ -137,6 +153,32 @@ ENT.SoundTbl_Death = {
 	"vj_halo3flood/brute/bruteform_body_destroyed8.wav",
 	"vj_halo3flood/brute/bruteform_body_destroyed9.wav",
 	"vj_halo3flood/brute/bruteform_body_destroyed10.wav",
+}
+ENT.SoundTbl_CallForHelp = {
+	"vj_halo3flood/vo/newordr_charge1.mp3",
+	"vj_halo3flood/vo/newordr_charge2.mp3",
+	"vj_halo3flood/vo/newordr_charge3.mp3",
+	"vj_halo3flood/vo/newordr_charge4.mp3",
+}
+ENT.SoundTbl_OnKilledEnemy = {
+	"vj_halo3flood/vo/chr_deadmc1.mp3",
+	"vj_halo3flood/vo/chr_deadmc2.mp3",
+	"vj_halo3flood/vo/chr_deadmc3.mp3",
+	"vj_halo3flood/vo/chr_deadmc4.mp3",
+	"vj_halo3flood/vo/chr_deadmc5.mp3",
+	"vj_halo3flood/vo/chr_deadmc6.mp3",
+	"vj_halo3flood/vo/chr_deadmc7.mp3",
+	"vj_halo3flood/vo/chr_deadmc8.mp3",
+	"vj_halo3flood/vo/chr_deadmc9.mp3",
+	"vj_halo3flood/vo/chr_deadmc10.mp3",
+}
+ENT.SoundTbl_OnAllyDeath = {
+	"vj_halo3flood/vo/lmnt_deadally1.mp3",
+	"vj_halo3flood/vo/lmnt_deadally3.mp3",
+	"vj_halo3flood/vo/lmnt_deadally4.mp3",
+	"vj_halo3flood/vo/lmnt_deadally5.mp3",
+	"vj_halo3flood/vo/lmnt_deadally6.mp3",
+	"vj_halo3flood/vo/lmnt_deadally7.mp3",
 }
 ENT.SoundTbl_Assimilation = {
 	"vj_halo3flood/brute/brutefloodmorph_arrival1.wav",
@@ -215,7 +257,7 @@ function ENT:CreateMuffins()
 		if math.random(1,8) == 1 then
 			if SERVER then
 				local mmdl = VJ_PICKRANDOMTABLE(tbl)
-				local muf = ents.Create("prop_dynamic")
+				local muf = ents.Create("prop_vj_animatable")
 				local bonepos,boneang = self:GetBonePosition(i)
 				muf:SetModel(mmdl)
 				muf:SetPos(bonepos)
@@ -243,7 +285,7 @@ local function CreateEnemyMuffins(ent,npc,ragdoll)
 			if SERVER then
 				if !ragdoll then
 					local mmdl = VJ_PICKRANDOMTABLE(tbl)
-					local muf = ents.Create("prop_dynamic")
+					local muf = ents.Create("prop_vj_animatable")
 					local bonepos,boneang = ent:GetBonePosition(i)
 					muf:SetModel(mmdl)
 					muf:SetPos(bonepos)
@@ -268,59 +310,30 @@ local function CreateEnemyMuffins(ent,npc,ragdoll)
 	if ent:IsPlayer() then
 		deaths = ent:Deaths()
 	end
-	timer.Simple(math.Rand(40,60),function()
+	timer.Simple(math.random(30,60),function()
 		if IsValid(ent) then
 			if ent:IsPlayer() then
 				if ent:Deaths() > deaths then
 					return
 				end
 			end
-			local flood = ents.Create("npc_vj_flood_combat")
-			flood:SetPos(ent:GetPos())
-			flood:SetAngles(ent:GetAngles())
-			flood.CanSpawnWithWeapon = false
-			flood:Spawn()
-			flood:Activate()
-			flood.CanSpawnWithWeapon = false
-			if flood.SoundTbl_BeforeMeleeAttack && type(flood.SoundTbl_BeforeMeleeAttack) == "table" then
-				if type(VJ_PICKRANDOMTABLE(flood.SoundTbl_BeforeMeleeAttack)) != "boolean" then
-					sound.Play(VJ_PICKRANDOMTABLE(flood.SoundTbl_BeforeMeleeAttack),flood:GetPos(),90,100 *GetConVarNumber("host_timescale"))
+			if ent:GetClass() == "prop_ragdoll" then
+				local form = "Soldier"
+				if ent:GetModel() == "models/cpthazama/halo3/flood_brute.mdl" then
+					form = "Brute"
+				elseif ent:GetModel() == "models/cpthazama/halo3/flood_elite.mdl" then
+					form = "Elite"
 				end
+				VJ_FloodInfectCorpse(form,ent,nil,ent)
+				return
 			end
-			undo.ReplaceEntity(ent,flood)
-			for i = 0, ent:GetBoneCount() -1 do
-				ParticleEffect("cpt_blood_flood",ent:GetBonePosition(i),Angle(0,0,0),nil)
+			if ent:IsPlayer() then
+				ent:Kill()
+			else
+				ent:SetHealth(0)
+				ent:TakeDamage(999999999,ent,ent)
 			end
-			if ent.IsVJBaseSNPC == true then
-				ent.HasDeathRagdoll = false
-			end
-			if ent.IsVJBaseSNPC_Human then
-				if IsValid(ent:GetActiveWeapon()) then
-					flood:Give(ent:GetActiveWeapon():GetClass())
-					ent:GetActiveWeapon():Remove()
-				end
-			end
-			if ent && !ent:IsPlayer() then
-				ent:Remove()
-			elseif ent && ent:IsPlayer() then
-				for _,v in pairs(ent.tbl_EnemyMuffins) do
-					if IsValid(v) then
-						v:Remove()
-					end
-				end
-				ent.VJ_IsMuffinInfected = false
-				ent.tbl_EnemyMuffins = {}
-				npc:VJ_PlayerInfection(flood,ent)
-			end
-			flood:SetNoDraw(true)
-			local time = flood:SequenceDuration(flood:LookupSequence(ACT_GET_UP_STAND))
-			timer.Simple(0.02,function()
-				if IsValid(flood) then
-					flood:SetNoDraw(false)
-					flood:CreateMuffins()
-					flood:PlayVJFloodAnimation(ACT_GET_UP_STAND,false)
-				end
-			end)
+			VJ_CreateFloodForm(ent,ent)
 		end
 	end)
 end
@@ -555,7 +568,11 @@ function ENT:CustomOnThink_AIEnabled()
 		local enemy = self:GetEnemy()
 		local dist = self:VJ_GetNearestPointToEntityDistance(enemy)
 		if !self:IsBehindMe(enemy,self.MeleeAttackAngleRadius) then
-			self.AnimTbl_MeleeAttack = {ACT_MELEE_ATTACK1,ACT_MELEE_ATTACK2}
+			if !self:IsMoving() then
+				self.AnimTbl_MeleeAttack = {ACT_MELEE_ATTACK1}
+			else
+				self.AnimTbl_MeleeAttack = {ACT_MELEE_ATTACK2}
+			end
 		elseif self:IsBehindMe(enemy,self.MeleeAttackAngleRadius) && dist <= self.MeleeAttackDamageDistance then
 			self.AnimTbl_MeleeAttack = {ACT_GESTURE_MELEE_ATTACK1}
 			-- if !self.VJ_IsBeingControlled then

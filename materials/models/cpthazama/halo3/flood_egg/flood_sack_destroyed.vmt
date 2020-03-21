@@ -1,0 +1,14 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/cpthazama/halo3/flood_egg/flood_sack_destroyed"
+	"$bumpmap" "models/cpthazama/halo3/flood_egg/flood_sack_destroyed_n"
+	"$AmbientOcclusion"		"1"
+	
+	$nodecal 1
+	"$phongexponenttexture"	"models/cpthazama/halo3/exp_255"
+	"$normalmapalphaenvmapmask"	"1"
+	"$phong"				"1"
+	"$phongexponent"			"15"
+	"$phongboost"			"10"
+	"$phongfresnelranges"		"[0.67 0.83 1]"
+}

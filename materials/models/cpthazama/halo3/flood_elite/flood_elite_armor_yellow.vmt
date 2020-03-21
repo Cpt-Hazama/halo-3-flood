@@ -1,10 +1,10 @@
 "VertexlitGeneric"
 {
-	// Yellow turned out really ugly, let's use some sort of Orange instead
+	// Yellow turned out really ugly
 	"$basetexture" "models/cpthazama/halo3/flood_elite/flood_elite"
 	"$bumpmap" "models/cpthazama/halo3/flood_elite/flood_elite_n"
 	
-	"$color2"				"[1 0.6 0]"
+	"$color2"				"{255 223 127}"
 	"$AmbientOcclusion"		"1"
 	
 	"$nodecal"			"1"

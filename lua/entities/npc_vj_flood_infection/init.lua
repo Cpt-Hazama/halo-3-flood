@@ -33,12 +33,25 @@ ENT.HasFootStepSound = true -- Should the SNPC make a footstep sound when it's m
 ENT.FootStepTimeRun = 0.2 -- Next foot step sound when it is running
 ENT.FootStepTimeWalk = 0.2 -- Next foot step sound when it is walking
 ENT.HasDeathRagdoll = false -- If set to false, it will not spawn the regular ragdoll of the SNPC
+ENT.HasExtraMeleeAttackSounds = true
 	-- ====== Sound File Paths ====== --
 -- Leave blank if you don't want any sounds to play
 ENT.SoundTbl_FootStep = {"vj_halo3flood/infection/move1.mp3","vj_halo3flood/infection/move2.mp3","vj_halo3flood/infection/move3.mp3","vj_halo3flood/infection/move4.mp3","vj_halo3flood/infection/move5.mp3","vj_halo3flood/infection/move6.mp3","vj_halo3flood/infection/move7.mp3","vj_halo3flood/infection/move8.mp3","vj_halo3flood/infection/move9.mp3"}
 ENT.SoundTbl_Idle = {"vj_halo3flood/infection/infector_idle_1.mp3","vj_halo3flood/infection/infector_idle_2.mp3","vj_halo3flood/infection/infector_idle_3.mp3","vj_halo3flood/infection/infector_idle_4.mp3","vj_halo3flood/infection/infector_idle_5.mp3","vj_halo3flood/infection/infector_idle_6.mp3","vj_halo3flood/infection/infector_idle_7.mp3","vj_halo3flood/infection/infector_idle_8.mp3","vj_halo3flood/infection/infector_idle_9.mp3","vj_halo3flood/infection/infector_idle_10.mp3","vj_halo3flood/infection/infector_idle_11.mp3","vj_halo3flood/infection/infector_idle_12.mp3","vj_halo3flood/infection/infector_idle_13.mp3","vj_halo3flood/infection/infector_idle_14.mp3","vj_halo3flood/infection/infector_idle_15.mp3","vj_halo3flood/infection/infector_idle_16.mp3","vj_halo3flood/infection/infector_idle_17.mp3","vj_halo3flood/infection/infector_idle_18.mp3","vj_halo3flood/infection/infector_idle_19.mp3","vj_halo3flood/infection/infector_idle_20.mp3","vj_halo3flood/infection/infector_idle_21.mp3","vj_halo3flood/infection/infector_idle_22.mp3","vj_halo3flood/infection/infector_idle_23.mp3","vj_halo3flood/infection/infector_idle_24.mp3","vj_halo3flood/infection/infector_idle_25.mp3","vj_halo3flood/infection/infector_idle_26.mp3","vj_halo3flood/infection/infector_idle_27.mp3","vj_halo3flood/infection/infector_idle_28.mp3","vj_halo3flood/infection/infector_idle_29.mp3","vj_halo3flood/infection/infector_idle_30.mp3",}
 ENT.SoundTbl_Alert = {"vj_halo3flood/infection/infector_idle_1.mp3"}
-ENT.SoundTbl_BeforeMeleeAttack = {"vj_halo3flood/infection/infector_bite1.mp3","vj_halo3flood/infection/infector_bite2.mp3","vj_halo3flood/infection/infector_bite3.mp3","vj_halo3flood/infection/infector_bite4.mp3","vj_halo3flood/infection/infector_bite5.mp3","vj_halo3flood/infection/infector_bite6.mp3","vj_halo3flood/infection/infector_bite7.mp3","vj_halo3flood/infection/infector_bite8.mp3","vj_halo3flood/infection/infector_bite9.mp3","vj_halo3flood/infection/infector_bite10.mp3","vj_halo3flood/infection/infector_bite11.mp3"}
+ENT.SoundTbl_LeapAttackDamage = {
+	"vj_halo3flood/infection/infector_bite1.mp3",
+	"vj_halo3flood/infection/infector_bite10.mp3",
+	"vj_halo3flood/infection/infector_bite11.mp3",
+	"vj_halo3flood/infection/infector_bite2.mp3",
+	"vj_halo3flood/infection/infector_bite3.mp3",
+	"vj_halo3flood/infection/infector_bite4.mp3",
+	"vj_halo3flood/infection/infector_bite5.mp3",
+	"vj_halo3flood/infection/infector_bite6.mp3",
+	"vj_halo3flood/infection/infector_bite7.mp3",
+	"vj_halo3flood/infection/infector_bite8.mp3",
+	"vj_halo3flood/infection/infector_bite9.mp3",
+}
 ENT.SoundTbl_LeapAttack = {"vj_halo3flood/infection/infector_bite1.mp3","vj_halo3flood/infection/infector_bite2.mp3","vj_halo3flood/infection/infector_bite3.mp3","vj_halo3flood/infection/infector_bite4.mp3","vj_halo3flood/infection/infector_bite5.mp3","vj_halo3flood/infection/infector_bite6.mp3","vj_halo3flood/infection/infector_bite7.mp3","vj_halo3flood/infection/infector_bite8.mp3","vj_halo3flood/infection/infector_bite9.mp3","vj_halo3flood/infection/infector_bite10.mp3","vj_halo3flood/infection/infector_bite11.mp3"}
 ENT.SoundTbl_Death = {"vj_halo3flood/infection/pop1.mp3","vj_halo3flood/infection/pop2.mp3","vj_halo3flood/infection/pop3.mp3","vj_halo3flood/infection/pop4.mp3","vj_halo3flood/infection/pop5.mp3"}
 
@@ -292,89 +305,7 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CreateCombatForm(form,corpse,animation,infection)
 	if !IsValid(corpse) then return end
-	local flood
-	if form == "Soldier" then
-		flood = ents.Create("npc_vj_flood_combat")
-	elseif form == "Elite" then
-		flood = ents.Create("npc_vj_flood_combat_elite")
-	elseif form == "Brute" then
-		flood = ents.Create("npc_vj_flood_combat_brute")
-	end
-	local oldModel = corpse:GetModel()
-	local oldSkin = corpse:GetSkin()
-	local bg = {}
-	for i = 0,18 do
-		bg[i] = corpse:GetBodygroup(i)
-	end
-	local shouldKeepSkin = true
-	local foundBone = (corpse:LookupBone("ValveBiped.Bip01_Pelvis") != nil)
-	ParticleEffect("GrubSquashBlood",infection:GetPos(),Angle(0,0,0),nil)
-	ParticleEffect("blood_impact_green_01_chunk",infection:GetPos(),Angle(0,0,0),nil)
-	ParticleEffect("cpt_blood_flood",infection:GetPos(),Angle(0,0,0),nil)
-	sound.Play("vj_gib/default_gib_splat.wav",infection:GetPos(),70,100 *GetConVarNumber("host_timescale"))
-	corpse:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
-	infection:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
-
-		-- New Infection Code --
-	local color = corpse:GetColor()
-	flood:VJ_SetClearPos(corpse:GetPos() +Vector(0,0,8))
-	flood:SetAngles(corpse:GetAngles())
-	flood.CanSpawnWithWeapon = false
-	flood:Spawn()
-	undo.ReplaceEntity(infection,flood)
-	infection:Remove()
-	flood.CanSpawnWithWeapon = false
-	flood:CreateMuffins()
-	flood:DoChangeMovementType(VJ_MOVETYPE_STATIONARY)
-	flood.DisableFindEnemy = true
-	flood.DisableSelectSchedule = true
-	local cvar = tobool(GetConVarNumber("vj_halo_keepmodel"))
-	if form == "Soldier" && cvar && foundBone then
-		flood:VJ_CreateBoneMerge(flood,oldModel,oldSkin,bg)
-		shouldKeepSkin = false
-	end
-	sound.Play(VJ_PICKRANDOMTABLE(flood.SoundTbl_Assimilation),flood:GetPos(),90,100 *GetConVarNumber("host_timescale"))
-	for i = 0, corpse:GetBoneCount() -1 do
-		ParticleEffect("cpt_blood_flood",corpse:GetBonePosition(i),Angle(0,0,0),nil)
-	end
-	for i = 0, flood:GetBoneCount() -1 do
-		ParticleEffect("cpt_blood_flood",flood:GetBonePosition(i),Angle(0,0,0),nil)
-	end
-	corpse:Remove()
-	if shouldKeepSkin then
-		flood:SetSkin(oldSkin)
-	end
-	timer.Simple(0.02,function()
-		if IsValid(flood) then
-			for i = 1,8 do
-				timer.Simple(i *0.2,function()
-					if IsValid(flood) then
-						for i = 1, flood:GetBoneCount() -1 do
-							if math.random(1,7) == 1 then
-								ParticleEffect("cpt_blood_flood",flood:GetBonePosition(i),Angle(0,0,0),nil)
-								sound.Play(VJ_PICKRANDOMTABLE({"vj_gib/gibbing1.wav","vj_gib/gibbing2.wav","vj_gib/gibbing3.wav"}),flood:GetPos(),50,100 *GetConVarNumber("host_timescale"))
-							end
-						end
-					end
-				end)
-			end
-			local animTime = flood:SequenceDuration(flood:SelectWeightedSequence(ACT_ROLL_RIGHT))
-			local animTimeB = flood:SequenceDuration(flood:SelectWeightedSequence(ACT_ROLL_LEFT))
-			flood:VJ_ACT_PLAYACTIVITY(ACT_ROLL_RIGHT,true,animTime,false)
-			timer.Simple(animTime,function()
-				if IsValid(flood) then
-					flood:VJ_ACT_PLAYACTIVITY(ACT_ROLL_LEFT,true,animTimeB,false)
-				end
-			end)
-			timer.Simple(animTime +animTimeB,function()
-				if IsValid(flood) then
-					flood:DoChangeMovementType(VJ_MOVETYPE_GROUND)
-					flood.DisableFindEnemy = false
-					flood.DisableSelectSchedule = false
-				end
-			end)
-		end
-	end)
+	VJ_FloodInfectCorpse(form,corpse,animation,infection)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)

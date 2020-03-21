@@ -58,6 +58,14 @@ ENT.AnimTbl_Death = {ACT_DIESIMPLE,ACT_DIE_LEFTSIDE,ACT_DIE_RIGHTSIDE} -- Death 
 ENT.DeathAnimationChance = 5 -- Put 1 if you want it to play the animation all the time
 -- ====== Sound File Paths ====== --
 -- Leave blank if you don't want any sounds to play
+ENT.SoundTbl_MeleeAttackMiss = {
+	"vj_halo3flood/shared/melee_swish1.wav",
+	"vj_halo3flood/shared/melee_swish3.wav",
+	"vj_halo3flood/shared/melee_swish5.wav",
+	"vj_halo3flood/shared/melee_swish6.wav",
+	"vj_halo3flood/shared/melee_swish7.wav",
+	"vj_halo3flood/shared/melee_swish8.wav",
+}
 ENT.SoundTbl_Idle = {"vj_halo3flood/vo/invsgt10.mp3","vj_halo3flood/vo/invsgt1.mp3","vj_halo3flood/vo/invsgt2.mp3","vj_halo3flood/vo/invsgt5.mp3","vj_halo3flood/vo/invsgt6.mp3","vj_halo3flood/vo/invsgt8.mp3","vj_halo3flood/vo/invsgt9.mp3","vj_halo3flood/vo/invsgt_fail1.mp3","vj_halo3flood/vo/invsgt_fail10.mp3","vj_halo3flood/vo/invsgt_fail2.mp3","vj_halo3flood/vo/invsgt_fail3.mp3","vj_halo3flood/vo/invsgt_fail5.mp3","vj_halo3flood/vo/invsgt_fail7.mp3","vj_halo3flood/vo/invsgt_fail8.mp3","vj_halo3flood/vo/invsgt_fail9.mp3","vj_halo3flood/combatform/pain1.wav","vj_halo3flood/combatform/pain2.wav","vj_halo3flood/combatform/pain3.wav","vj_halo3flood/combatform/pain4.wav","vj_halo3flood/combatform/pain5.wav","vj_halo3flood/combatform/pain6.wav","vj_halo3flood/combatform/pain7.wav","vj_halo3flood/combatform/pain8.wav","vj_halo3flood/combatform/pain9.wav","vj_halo3flood/combatform/pain10.wav","vj_halo3flood/combatform/pain11.wav","vj_halo3flood/combatform/pain12.wav","vj_halo3flood/combatform/pain13.wav","vj_halo3flood/combatform/pain14.wav","vj_halo3flood/combatform/pain15.wav","vj_halo3flood/combatform/pain16.wav","vj_halo3flood/combatform/pain17.wav"}
 ENT.SoundTbl_FootStep = {
 	"vj_halo3flood/combatform/humanform_longmove1.wav",
@@ -361,7 +369,7 @@ function ENT:CreateMuffins()
 		if math.random(1,8) == 1 then
 			if SERVER then
 				local mmdl = VJ_PICKRANDOMTABLE(tbl)
-				local muf = ents.Create("prop_dynamic")
+				local muf = ents.Create("prop_vj_animatable")
 				local bonepos,boneang = self:GetBonePosition(i)
 				muf:SetModel(mmdl)
 				muf:SetPos(bonepos)
@@ -390,7 +398,7 @@ local function CreateEnemyMuffins(ent,npc,ragdoll)
 			if SERVER then
 				if !ragdoll then
 					local mmdl = VJ_PICKRANDOMTABLE(tbl)
-					local muf = ents.Create("prop_dynamic")
+					local muf = ents.Create("prop_vj_animatable")
 					local bonepos,boneang = ent:GetBonePosition(i)
 					muf:SetModel(mmdl)
 					muf:SetPos(bonepos)
@@ -415,63 +423,30 @@ local function CreateEnemyMuffins(ent,npc,ragdoll)
 	if ent:IsPlayer() then
 		deaths = ent:Deaths()
 	end
-	timer.Simple(math.random(40,60),function()
+	timer.Simple(math.random(30,60),function()
 		if IsValid(ent) then
 			if ent:IsPlayer() then
 				if ent:Deaths() > deaths then
 					return
 				end
 			end
-			local flood = ents.Create("npc_vj_flood_combat")
-			flood:SetPos(ent:GetPos())
-			flood:SetAngles(ent:GetAngles())
-			flood.CanSpawnWithWeapon = false
-			flood:Spawn()
-			flood:Activate()
-			flood.CanSpawnWithWeapon = false
-			if flood.SoundTbl_BeforeMeleeAttack && type(flood.SoundTbl_BeforeMeleeAttack) == "table" then
-				if type(VJ_PICKRANDOMTABLE(flood.SoundTbl_BeforeMeleeAttack)) != "boolean" then
-					sound.Play(VJ_PICKRANDOMTABLE(flood.SoundTbl_BeforeMeleeAttack),flood:GetPos(),90,100 *GetConVarNumber("host_timescale"))
+			if ent:GetClass() == "prop_ragdoll" then
+				local form = "Soldier"
+				if ent:GetModel() == "models/cpthazama/halo3/flood_brute.mdl" then
+					form = "Brute"
+				elseif ent:GetModel() == "models/cpthazama/halo3/flood_elite.mdl" then
+					form = "Elite"
 				end
+				VJ_FloodInfectCorpse(form,ent,nil,ent)
+				return
 			end
-			undo.ReplaceEntity(ent,flood)
-			for i = 0, ent:GetBoneCount() -1 do
-				ParticleEffect("cpt_blood_flood",ent:GetBonePosition(i),Angle(0,0,0),nil)
+			if ent:IsPlayer() then
+				ent:Kill()
+			else
+				ent:SetHealth(0)
+				ent:TakeDamage(999999999,ent,ent)
 			end
-			if ent.IsVJBaseSNPC == true then
-				ent.HasDeathRagdoll = false
-			end
-			if ent.IsVJBaseSNPC_Human then
-				if IsValid(ent:GetActiveWeapon()) then
-					flood:Give(ent:GetActiveWeapon():GetClass())
-					ent:GetActiveWeapon():Remove()
-				end
-			end
-			if ent && !ent:IsPlayer() then
-				ent:Remove()
-			elseif ent && ent:IsPlayer() then
-				-- ent:Kill()
-				-- if IsValid(ent:GetRagdollEntity()) then
-					-- ent:GetRagdollEntity():Remove()
-				-- end
-				for _,v in pairs(ent.tbl_EnemyMuffins) do
-					if IsValid(v) then
-						v:Remove()
-					end
-				end
-				ent.VJ_IsMuffinInfected = false
-				ent.tbl_EnemyMuffins = {}
-				npc:VJ_PlayerInfection(flood,ent)
-			end
-			flood:SetNoDraw(true)
-			local time = flood:SequenceDuration(flood:LookupSequence(ACT_GET_UP_STAND))
-			timer.Simple(0.02,function()
-				if IsValid(flood) then
-					flood:SetNoDraw(false)
-					flood:CreateMuffins()
-					flood:PlayVJFloodAnimation(ACT_GET_UP_STAND,false)
-				end
-			end)
+			VJ_CreateFloodForm(ent,ent)
 		end
 	end)
 end
