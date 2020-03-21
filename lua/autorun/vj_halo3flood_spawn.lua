@@ -13,19 +13,8 @@ local AutorunFile = "autorun/vj_halo3flood_spawn.lua"
 local VJExists = file.Exists("lua/autorun/vj_base_autorun.lua","GAME")
 if VJExists == true then
 	include('autorun/vj_controls.lua')
-	
+
 	VJ_FLOOD_NODEPOS = {}
-	VJ_FLOOD_MAXPROTOFLOOD = 70
-	VJ_FLOOD_BIOADD_MIN = 8
-	VJ_FLOOD_BIOADD_MAX = 18
-	VJ_FLOOD_BIOCOST = {
-		["npc_vj_flood_infection"] = 15,
-		["npc_vj_flood_carrier"] = 150,
-		["npc_vj_flood_stalker"] = 200,
-		["npc_vj_flood_ranged"] = 250,
-		["npc_vj_flood_tank"] = 800,
-		["npc_vj_flood_mortar"] = 1000
-	}
 	
 	hook.Add("EntityRemoved","VJ_AddNodes_FLOOD",function(ent)
 		if ent:GetClass() == "info_node" then
@@ -58,7 +47,7 @@ if VJExists == true then
 			if VJ_HasValue(attacker.VJ_NPC_Class,"CLASS_FLOOD") then
 				if victim != attacker then
 					for _,v in pairs(ents.FindByClass("npc_vj_flood_hivemind")) do
-						local amount = math.random(VJ_FLOOD_BIOADD_MIN,VJ_FLOOD_BIOADD_MAX)
+						local amount = math.random(GetConVarNumber("vj_flood_biocost_add_min"),GetConVarNumber("vj_flood_biocost_add_max"))
 						v.BioMass = v.BioMass +amount
 						-- Entity(1):ChatPrint("Gained " .. tostring(amount))
 					end
@@ -70,7 +59,7 @@ if VJExists == true then
 			if VJ_HasValue(attacker.VJ_NPC_Class,"CLASS_FLOOD") then
 				if victim != attacker then
 					for _,v in pairs(ents.FindByClass("npc_vj_flood_hivemind")) do
-						local amount = math.random(VJ_FLOOD_BIOADD_MIN +2,VJ_FLOOD_BIOADD_MAX +2)
+						local amount = math.random(GetConVarNumber("vj_flood_biocost_add_min") +2,GetConVarNumber("vj_flood_biocost_add_max") +2)
 						v.BioMass = v.BioMass +amount
 						-- Entity(1):ChatPrint("Gained " .. tostring(amount))
 					end
@@ -91,9 +80,9 @@ if VJExists == true then
 				for i = 1,3 do
 					local tendrilGlow = ents.Create("env_sprite")
 					tendrilGlow:SetKeyValue("model","vj_base/sprites/vj_glow1.vmt")
-					tendrilGlow:SetKeyValue("scale","0.125")
+					tendrilGlow:SetKeyValue("scale","0.135")
 					tendrilGlow:SetKeyValue("rendermode","5")
-					tendrilGlow:SetKeyValue("rendercolor","255 70 0")
+					tendrilGlow:SetKeyValue("rendercolor","255 89.25 76.5")
 					tendrilGlow:SetKeyValue("spawnflags","1")
 					tendrilGlow:SetParent(ent)
 					tendrilGlow:Fire("SetParentAttachment","tendril" .. tostring(i),0)
@@ -666,6 +655,16 @@ if VJExists == true then
 	for k, v in pairs(AddConvars) do
 		if !ConVarExists( k ) then CreateConVar( k, v, {FCVAR_ARCHIVE} ) end
 	end
+	
+	VJ.AddConVar("vj_flood_biocost_infection",15)
+	VJ.AddConVar("vj_flood_biocost_carrier",150)
+	VJ.AddConVar("vj_flood_biocost_stalker",200)
+	VJ.AddConVar("vj_flood_biocost_ranged",250)
+	VJ.AddConVar("vj_flood_biocost_tank",800)
+	VJ.AddConVar("vj_flood_biocost_mortar",1000)
+	VJ.AddConVar("vj_flood_biocost_add_min",8)
+	VJ.AddConVar("vj_flood_biocost_add_max",18)
+	VJ.AddConVar("vj_flood_biocost_start",50)
 	if (CLIENT) then
 		local function VJ_HALOFLOOD_MAIN(Panel)
 			if !game.SinglePlayer() then
@@ -686,6 +685,15 @@ if VJExists == true then
 				vj_halo_keepmodel = "0",
 				vj_halo_modeladjust = "1",
 				vj_halo_modeladjustz = "0",
+				vj_flood_biocost_infection = "15",
+				vj_flood_biocost_carrier = "150",
+				vj_flood_biocost_stalker = "200",
+				vj_flood_biocost_ranged = "250",
+				vj_flood_biocost_tank = "800",
+				vj_flood_biocost_mortar = "1000",
+				vj_flood_biocost_add_min = "8",
+				vj_flood_biocost_add_max = "18",
+				vj_flood_biocost_start = "50",
 			}
 			Panel:AddControl("ComboBox", vj_h3freset)
 			Panel:AddControl("Checkbox", {Label = "Infection Forms explode on attack?", Command = "vj_halo_infectexplode"})
@@ -697,9 +705,18 @@ if VJExists == true then
 			Panel:AddControl("Checkbox", {Label = "Infected NPCs/Players keep model?", Command = "vj_halo_keepmodel"})
 			Panel:ControlHelp("Note: THIS MAY LOOK WEIRD DUE TO SKELETON DIFFERENCES!")
 			Panel:ControlHelp("Note: Will only work on Valve Biped models (I.E. Rebels, Combine, etc. based models)")
-			-- Panel:AddControl("Checkbox", {Label = "Attempt to adjust bones of infected NPC/Player?", Command = "vj_halo_modeladjust"})
-			-- Panel:ControlHelp("Warning: This can cause severe networking lag for servers!")
-			-- Panel:AddControl("Slider", { Label 	= "Infected NPC/Player Pevis Height", Command = "vj_halo_modeladjustz", Min = "-25", Max = "25"})
+			Panel:AddControl("Label",{Text = " "})
+			Panel:AddControl("Label",{Text = "Hive Mind Settings:"})
+			Panel:AddControl("Slider",{Label="Starting Bio-Mass",Command = "vj_flood_biocost_start",Min = "15",Max = "10000"})
+			Panel:AddControl("Slider",{Label="Min. Gain Bio-Mass",Command = "vj_flood_biocost_add_min",Min = "1",Max = "75"})
+			Panel:AddControl("Slider",{Label="Max. Gain Bio-Mass",Command = "vj_flood_biocost_add_max",Min = "1",Max = "100"})
+			Panel:AddControl("Label",{Text = "Hive Mind Bio-Mass Requirement Settings:"})
+			Panel:AddControl("Slider",{Label="Infection Form",Command = "vj_flood_biocost_infection",Min = "0",Max = "5000"})
+			Panel:AddControl("Slider",{Label="Carrier Form",Command = "vj_flood_biocost_carrier",Min = "0",Max = "5000"})
+			Panel:AddControl("Slider",{Label="Stalker Form",Command = "vj_flood_biocost_stalker",Min = "0",Max = "5000"})
+			Panel:AddControl("Slider",{Label="Ranged Form",Command = "vj_flood_biocost_ranged",Min = "0",Max = "5000"})
+			Panel:AddControl("Slider",{Label="Tank Form",Command = "vj_flood_biocost_tank",Min = "0",Max = "5000"})
+			Panel:AddControl("Slider",{Label="Mortar Form",Command = "vj_flood_biocost_mortar",Min = "0",Max = "5000"})
 		end
 		local function VJ_HALOFLOOD_ALL(Panel)
 			if !game.SinglePlayer() then

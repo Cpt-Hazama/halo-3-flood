@@ -19,6 +19,8 @@ PROTO_BOOST_RES = 0.5
 PROTO_BOOST_COM = 2.5
 PROTO_BOOST_DMG = 2
 PROTO_BOOST_SPEED = 1.5
+
+VJ_FLOOD_MAXPROTOFLOOD = 70
 ---------------------------------------------------------------------------------------------------------------------------------------------
 ENT.VJ_NPC_Class = {"CLASS_FLOOD","CLASS_PARASITE"}
 ENT.BloodColor = "Yellow"
@@ -60,8 +62,6 @@ ENT.SoundTbl_Idle = {
 	"vj_halo3flood/proto/scary_whail4.wav",
 }
 ENT.IdleSoundLevel = 110
-
-ENT.BioMass = 50
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomDeathAnimationCode(dmginfo,hitgroup)
 	self:SetModelScale(0.1,5)
@@ -105,6 +105,15 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
+	self.BioMass = GetConVarNumber("vj_flood_biocost_start")
+	self.VJ_FLOOD_BIOCOST = {
+		["npc_vj_flood_infection"] = GetConVarNumber("vj_flood_biocost_infection"), -- 15
+		["npc_vj_flood_carrier"] = GetConVarNumber("vj_flood_biocost_carrier"), -- 150
+		["npc_vj_flood_stalker"] = GetConVarNumber("vj_flood_biocost_stalker"), -- 200
+		["npc_vj_flood_ranged"] = GetConVarNumber("vj_flood_biocost_ranged"), -- 250
+		["npc_vj_flood_tank"] = GetConVarNumber("vj_flood_biocost_tank"), -- 800
+		["npc_vj_flood_mortar"] = GetConVarNumber("vj_flood_biocost_mortar") -- 1000
+	}
 	self:SetCollisionBounds(Vector(950,950,1000),Vector(-950,-950,0))
 	self.Enhanced = {}
 	self.NextSlitherT = CurTime()
@@ -128,6 +137,7 @@ function ENT:CustomOnInitialize()
 		"npc_vj_flood_carrier",
 		"npc_vj_flood_infection"
 	}
+	self.CanDoFloodCheck = false
 	self.SpawnPosition = self:GetPos() +self:GetUp() *25 +self:GetForward() *1500
 	self.MortarPositions = {}
 	self.MortarPositions[1] = {ent=NULL,pos=self:GetPos() +self:GetForward() *2300}
@@ -153,8 +163,8 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:AttemptSpawn()
 	for _,v in pairs(self.SpawnableFlood) do
-		if VJ_FLOOD_BIOCOST[v] then
-			local cost = VJ_FLOOD_BIOCOST[v]
+		if self.VJ_FLOOD_BIOCOST[v] then
+			local cost = self.VJ_FLOOD_BIOCOST[v]
 			if self.BioMass >= cost then
 				if v == "npc_vj_flood_mortar" then
 					local spot = self:FindMortarSpot()
@@ -170,6 +180,10 @@ function ENT:AttemptSpawn()
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:NoFloodDetected()
+	self.BioMass = 15
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:AmountCheck()
 	local tbl = {}
 	for _,v in pairs(self.SpawnedFlood) do
@@ -177,14 +191,21 @@ function ENT:AmountCheck()
 			table.insert(tbl,v)
 		end
 	end
+	if #tbl <= 0 then
+		self:NoFloodDetected()
+	end
 	return #tbl >= VJ_FLOOD_MAXPROTOFLOOD
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:SpawnFlood(ent,pos)
 	if pos == false then return end
-	if self:AmountCheck() then return end
-	if VJ_FLOOD_BIOCOST[ent] then
-		if self.BioMass >= VJ_FLOOD_BIOCOST[ent] then
+	if self.CanDoFloodCheck then
+		if self:AmountCheck() then return end
+	else
+		self.CanDoFloodCheck = true
+	end
+	if self.VJ_FLOOD_BIOCOST[ent] then
+		if self.BioMass >= self.VJ_FLOOD_BIOCOST[ent] then
 			local flood = ents.Create(ent)
 			flood:VJ_SetClearPos(pos or self.SpawnPosition)
 			flood:SetAngles(pos && Angle(0,(flood:GetPos() -self:GetPos()):Angle().y,0) or self:GetAngles())
@@ -202,7 +223,7 @@ function ENT:SpawnFlood(ent,pos)
 				sound.Play(VJ_PICKRANDOMTABLE({"vj_gib/gibbing1.wav","vj_gib/gibbing2.wav","vj_gib/gibbing3.wav"}),flood:GetPos(),50,100 *GetConVarNumber("host_timescale"))
 			end
 			table.insert(self.SpawnedFlood,flood)
-			self.BioMass = self.BioMass -VJ_FLOOD_BIOCOST[ent]
+			self.BioMass = self.BioMass -self.VJ_FLOOD_BIOCOST[ent]
 		end
 	end
 end
