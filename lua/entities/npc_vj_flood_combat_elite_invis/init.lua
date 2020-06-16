@@ -185,7 +185,7 @@ function ENT:CustomOnThink_AIEnabled()
 	if GetConVarNumber("vj_halo_useweps") == 1 && !self.RArmDestroyed then
 		if IsValid(self:GetActiveWeapon()) then
 			local wep = self:GetActiveWeapon()
-			if GetConVarNumber("vj_halo_unlimitedammo") == 0 && self.Weapon_ShotsSinceLastReload >= self.Weapon_StartingAmmoAmount then
+			if GetConVarNumber("vj_halo_unlimitedammo") == 0 && wep:Clip1() <= 0 then
 				if SERVER then
 					local fakewep = ents.Create("prop_physics")
 					fakewep:SetModel(wep:GetModel())

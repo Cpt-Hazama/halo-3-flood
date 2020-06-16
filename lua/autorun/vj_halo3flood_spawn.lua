@@ -31,6 +31,7 @@ if VJExists == true then
 	VJ.AddNPCWeapon("VJ_H3F_M41-SPNKR","weapon_vj_halo_rpg")
 	
 	local vCat = "Halo 3 Flood"
+	VJ.AddCategoryInfo(vCat,{Icon = "vj_icons/halo3_flood.png"})
 	VJ.AddNPC("Flood Combat Form","npc_vj_flood_combat",vCat)
 	VJ.AddNPC("Flood Carrier Form","npc_vj_flood_carrier",vCat)
 	VJ.AddNPC("Flood Infection Form","npc_vj_flood_infection",vCat)

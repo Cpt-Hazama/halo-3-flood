@@ -375,7 +375,7 @@ function ENT:ForceMeleeAttack()
 	self.IsAbleToMeleeAttack = false
 	self.AlreadyDoneFirstMeleeAttack = false
 	self:CustomOnMeleeAttack_BeforeStartTimer()
-	timer.Simple(self.BeforeMeleeAttackSounds_WaitTime,function() if IsValid(self) then self:BeforeMeleeAttackSoundCode() end end)
+	timer.Simple(self.BeforeMeleeAttackSounds_WaitTime,function() if IsValid(self) then self:PlaySoundSystem("BeforeMeleeAttack") end end)
 	self.NextAlertSoundT = CurTime() + 0.4
 	if self.DisableMeleeAttackAnimation == false then
 		self.CurrentAttackAnimation = VJ_PICKRANDOMTABLE(self.AnimTbl_MeleeAttack)

@@ -377,7 +377,7 @@ function ENT:CreateMuffins()
 				muf:Spawn()
 				muf:SetOwner(self)
 				muf:SetModelScale(0,0)
-				muf:SetModelScale(math.Rand(0.9,1.2),math.random(3,6))
+				muf:SetModelScale(math.Rand(0.7,1),math.random(1,3))
 				self:DeleteOnRemove(muf)
 				ParticleEffect("cpt_blood_flood",self:GetBonePosition(i),Angle(0,0,0),nil)
 				self.tbl_Muffins[i] = muf
@@ -535,10 +535,6 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnRemove() VJ_STOPSOUND(self.CurrentAllyKilledSound) end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo,hitgroup,GetCorpse)
-	GetCorpse.IsFloodModel = true
-end
----------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
 	-- if dmginfo:GetDamageType() == DMG_BLAST then
 		-- self:SetGroundEntity(NULL)
@@ -584,7 +580,7 @@ function ENT:ForceMeleeAttack()
 	self.IsAbleToMeleeAttack = false
 	self.AlreadyDoneFirstMeleeAttack = false
 	self:CustomOnMeleeAttack_BeforeStartTimer()
-	timer.Simple(self.BeforeMeleeAttackSounds_WaitTime,function() if IsValid(self) then self:BeforeMeleeAttackSoundCode() end end)
+	timer.Simple(self.BeforeMeleeAttackSounds_WaitTime,function() if IsValid(self) then self:PlaySoundSystem("BeforeMeleeAttack") end end)
 	self.NextAlertSoundT = CurTime() + 0.4
 	if self.DisableMeleeAttackAnimation == false then
 		self.CurrentAttackAnimation = VJ_PICKRANDOMTABLE(self.AnimTbl_MeleeAttack)
@@ -707,7 +703,7 @@ function ENT:CustomOnThink()
 		if IsValid(self:GetActiveWeapon()) then
 			self.CanChaseWeapon = false
 			local wep = self:GetActiveWeapon()
-			if GetConVarNumber("vj_halo_unlimitedammo") == 0 && self.Weapon_ShotsSinceLastReload >= self.Weapon_StartingAmmoAmount then
+			if GetConVarNumber("vj_halo_unlimitedammo") == 0 && wep:Clip1() <= 0 then
 				if SERVER then
 					local fakewep = ents.Create("prop_physics")
 					fakewep:SetModel(wep:GetModel())
@@ -787,7 +783,7 @@ end
 --------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CanDoWeaponAttack()
 	if self:VJ_HasActiveWeapon() == false then return false end
-	if self.AllowWeaponReloading == true && self.Weapon_ShotsSinceLastReload >= self.Weapon_StartingAmmoAmount then
+	if self.AllowWeaponReloading == true && wep:Clip1() <= 0 then
 		return false,"NoAmmo"
 	end
 	return true
@@ -851,6 +847,10 @@ end
 -- end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo,hitgroup,GetCorpse)
+	-- if IsValid(self.Bonemerge) then
+		-- GetCorpse:VJ_CreateBoneMerge(GetCorpse,self.Bonemerge:GetModel(),self.Bonemerge:GetSkin())
+	-- end
+	GetCorpse.IsFloodModel = true
 	if IsValid(self:GetActiveWeapon()) then
 		local wep = ents.Create(self:GetActiveWeapon():GetClass())
 		wep:SetPos(self:GetActiveWeapon():GetPos())
@@ -885,6 +885,22 @@ function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo,hitgroup,GetCorpse)
 			end
 		end)
 	end
+	GetCorpse.BloodEffect = self.CustomBlood_Particle
+	local hookName = "VJ_Halo3Flood_CorpseBlood_" .. GetCorpse:EntIndex()
+	hook.Add("EntityTakeDamage",hookName,function(ent,dmginfo)
+		if !IsValid(GetCorpse) then
+			hook.Remove("EntityTakeDamage",hookName)
+		end
+		if ent == GetCorpse then
+			local attacker = dmginfo:GetAttacker()
+			if GetCorpse.BloodEffect then
+				for _,i in ipairs(GetCorpse.BloodEffect) do
+					sound.Play("physics/flesh/flesh_impact_bullet"..math.random(1,3)..".wav",dmginfo:GetDamagePosition(),60,100)
+					ParticleEffect(i,dmginfo:GetDamagePosition(),Angle(math.random(0,360),math.random(0,360),math.random(0,360)),nil)
+				end
+			end
+		end
+	end)
 end
 /*-----------------------------------------------
 	*** Copyright (c) 2012-2017 by Cpt. Hazama, All rights reserved. ***

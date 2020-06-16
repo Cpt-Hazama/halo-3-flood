@@ -13,6 +13,15 @@
 	$nodecal 1
 	$nocull 1
 
+	"Proxies"
+	{
+		"IsNPC"
+		{
+			"scale" "1"
+			"resultvar" "$emissiveBlendEnabled"
+		}
+	}
+
 	//"Proxies"
 	//{
 	//	"TextureScroll"
