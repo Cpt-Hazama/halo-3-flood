@@ -207,18 +207,19 @@ if VJExists == true then
 			end
 			timer.Simple(0.02,function()
 				if IsValid(flood) then
-					for i = 1,8 do
-						timer.Simple(i *0.2,function()
-							if IsValid(flood) then
-								for i = 1, flood:GetBoneCount() -1 do
-									if math.random(1,7) == 1 then
-										ParticleEffect("cpt_blood_flood",flood:GetBonePosition(i),Angle(0,0,0),nil)
-										sound.Play(VJ_PICKRANDOMTABLE({"vj_gib/gibbing1.wav","vj_gib/gibbing2.wav","vj_gib/gibbing3.wav"}),flood:GetPos(),50,100 *GetConVarNumber("host_timescale"))
-									end
-								end
-							end
-						end)
-					end
+					-- ParticleEffectAttach("cpt_blood_flood_loop",PATTACH_POINT_FOLLOW,flood,flood:LookupAttachment("origin"))
+					-- for i = 1,8 do
+						-- timer.Simple(i *0.2,function()
+							-- if IsValid(flood) then
+								-- for i = 1, flood:GetBoneCount() -1 do
+									-- if math.random(1,7) == 1 then
+										-- ParticleEffect("cpt_blood_flood",flood:GetBonePosition(i),Angle(0,0,0),nil)
+										-- sound.Play(VJ_PICKRANDOMTABLE({"vj_gib/gibbing1.wav","vj_gib/gibbing2.wav","vj_gib/gibbing3.wav"}),flood:GetPos(),50,100 *GetConVarNumber("host_timescale"))
+									-- end
+								-- end
+							-- end
+						-- end)
+					-- end
 					local animTime = flood:SequenceDuration(flood:SelectWeightedSequence(ACT_ROLL_RIGHT))
 					local animTimeB = flood:SequenceDuration(flood:SelectWeightedSequence(ACT_ROLL_LEFT))
 					flood:VJ_ACT_PLAYACTIVITY(ACT_ROLL_RIGHT,true,animTime,false)
@@ -232,6 +233,7 @@ if VJExists == true then
 							flood:DoChangeMovementType(VJ_MOVETYPE_GROUND)
 							flood.DisableFindEnemy = false
 							flood.DisableSelectSchedule = false
+							-- flood:StopParticles()
 						end
 					end)
 				end
@@ -301,6 +303,7 @@ if VJExists == true then
 					SafeRemoveEntity(inflictor)
 					projFix = false
 					switchEnt = struggle
+					-- ParticleEffectAttach("cpt_blood_flood_loop",PATTACH_POINT_FOLLOW,struggle,struggle:LookupAttachment("origin"))
 				end
 				if victim.MorphAnimation then
 					time = victim:DecideAnimationLength(victim.AnimTbl_Death[1],false)
@@ -308,6 +311,7 @@ if VJExists == true then
 						switchEnt = victim
 						SafeRemoveEntity(inflictor)
 						projFix = false
+						-- ParticleEffectAttach("cpt_blood_flood_loop",PATTACH_POINT_FOLLOW,victim,victim:LookupAttachment("origin"))
 					end
 				end
 				timer.Simple(time,function()
@@ -328,6 +332,7 @@ if VJExists == true then
 								flood.SoundTbl_FootStep = sndTbl
 							end
 						end
+						-- ParticleEffectAttach("cpt_blood_flood_loop",PATTACH_POINT_FOLLOW,flood,flood:LookupAttachment("origin"))
 						timer.Simple(0.1,function()
 							if IsValid(flood) then
 								flood:SetNoDraw(false)
@@ -350,6 +355,7 @@ if VJExists == true then
 						-- end)
 						timer.Simple(animTime,function()
 							if IsValid(flood) then
+								-- flood:StopParticles()
 								flood:DoChangeMovementType(VJ_MOVETYPE_GROUND)
 								flood.DisableFindEnemy = false
 								flood.DisableSelectSchedule = false
@@ -380,6 +386,7 @@ if VJExists == true then
 				struggle:VJ_CreateBoneMerge(struggle,oldModel,oldSkin,bg)
 				undo.ReplaceEntity(inflictor,struggle)
 				SafeRemoveEntity(inflictor)
+				-- ParticleEffectAttach("cpt_blood_flood_loop",PATTACH_POINT_FOLLOW,struggle,struggle:LookupAttachment("origin"))
 				timer.Simple(struggle.RemoveTime,function()
 					if IsValid(struggle) then
 						local flood = ents.Create("npc_vj_flood_combat")
@@ -417,6 +424,7 @@ if VJExists == true then
 						end)
 						timer.Simple(animTime,function()
 							if IsValid(flood) then
+								-- flood:StopParticles()
 								flood:DoChangeMovementType(VJ_MOVETYPE_GROUND)
 								flood.DisableFindEnemy = false
 								flood.DisableSelectSchedule = false

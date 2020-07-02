@@ -68,6 +68,10 @@ function ENT:Think()
 	self:NextThink(CurTime())
 	return true
 end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:OnRemove
+	self:StopParticles()
+end
 /*--------------------------------------------------
 	=============== VJ Prop Animatable Entity ===============
 	*** Copyright (c) 2012-2020 by DrVrej, All rights reserved. ***
