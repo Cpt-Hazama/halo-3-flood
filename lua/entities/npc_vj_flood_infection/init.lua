@@ -52,6 +52,11 @@ ENT.SoundTbl_LeapAttackDamage = {
 	"vj_halo3flood/infection/infector_bite8.mp3",
 	"vj_halo3flood/infection/infector_bite9.mp3",
 }
+ENT.SoundTbl_Impact = {
+	"vj_halo3flood/damage01.mp3",
+	"vj_halo3flood/damage02.mp3",
+	"vj_halo3flood/damage03.mp3",
+}
 ENT.SoundTbl_LeapAttack = {"vj_halo3flood/infection/infector_bite1.mp3","vj_halo3flood/infection/infector_bite2.mp3","vj_halo3flood/infection/infector_bite3.mp3","vj_halo3flood/infection/infector_bite4.mp3","vj_halo3flood/infection/infector_bite5.mp3","vj_halo3flood/infection/infector_bite6.mp3","vj_halo3flood/infection/infector_bite7.mp3","vj_halo3flood/infection/infector_bite8.mp3","vj_halo3flood/infection/infector_bite9.mp3","vj_halo3flood/infection/infector_bite10.mp3","vj_halo3flood/infection/infector_bite11.mp3"}
 ENT.SoundTbl_Death = {"vj_halo3flood/infection/pop1.mp3","vj_halo3flood/infection/pop2.mp3","vj_halo3flood/infection/pop3.mp3","vj_halo3flood/infection/pop4.mp3","vj_halo3flood/infection/pop5.mp3"}
 
@@ -82,6 +87,8 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Small")
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Small")
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
+	
+	VJ_EmitSound(self,"vj_halo3flood/explode0" .. math.random(1,2) .. ".mp3",85)
 	return true
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------

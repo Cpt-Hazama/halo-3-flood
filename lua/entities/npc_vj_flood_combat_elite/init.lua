@@ -155,6 +155,11 @@ ENT.SoundTbl_OnAllyDeath = {
 	"vj_halo3flood/vo/lmnt_deadally6.mp3",
 	"vj_halo3flood/vo/lmnt_deadally7.mp3",
 }
+ENT.SoundTbl_Impact = {
+	"vj_halo3flood/damage01.mp3",
+	"vj_halo3flood/damage02.mp3",
+	"vj_halo3flood/damage03.mp3",
+}
 // I am too lazy to port my own CE voices
 ENT.SoundTbl_Assimilation = {"vj_floodce/shared/death8.mp3"}
 ENT.Not_Finished = true -- Can it come back to life randomly?
@@ -191,6 +196,8 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
+	
+	VJ_EmitSound(self,"vj_halo3flood/explode0" .. math.random(1,2) .. ".mp3",85)
 	return true
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------

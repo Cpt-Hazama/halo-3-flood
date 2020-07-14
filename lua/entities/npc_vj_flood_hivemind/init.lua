@@ -61,6 +61,11 @@ ENT.SoundTbl_Idle = {
 	"vj_halo3flood/proto/scary_whail3.wav",
 	"vj_halo3flood/proto/scary_whail4.wav",
 }
+ENT.SoundTbl_Impact = {
+	"vj_halo3flood/damage01.mp3",
+	"vj_halo3flood/damage02.mp3",
+	"vj_halo3flood/damage03.mp3",
+}
 ENT.IdleSoundLevel = 110
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomDeathAnimationCode(dmginfo,hitgroup)

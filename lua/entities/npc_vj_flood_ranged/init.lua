@@ -62,6 +62,11 @@ ENT.SoundTbl_Pain = {
 	"vj_halo3flood/stalker/pain16.mp3",
 	"vj_halo3flood/stalker/pain17.mp3",
 }
+ENT.SoundTbl_Impact = {
+	"vj_halo3flood/damage01.mp3",
+	"vj_halo3flood/damage02.mp3",
+	"vj_halo3flood/damage03.mp3",
+}
 ENT.PureType = "ranged"
 ENT.Default = VJ_MOVETYPE_STATIONARY
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -94,6 +99,8 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
+	
+	VJ_EmitSound(self,"vj_halo3flood/explode0" .. math.random(1,2) .. ".mp3",85)
 	return true
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------

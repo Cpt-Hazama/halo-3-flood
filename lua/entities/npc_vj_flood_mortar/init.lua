@@ -50,6 +50,11 @@ ENT.SoundTbl_Idle = {
 ENT.SoundTbl_Alert = {
 	"vj_halo3flood/proto/scary_throat6.wav",
 }
+ENT.SoundTbl_Impact = {
+	"vj_halo3flood/damage01.mp3",
+	"vj_halo3flood/damage02.mp3",
+	"vj_halo3flood/damage03.mp3",
+}
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:RangeAttackCode_GetShootPos(TheProjectile)
 	TheProjectile.ParentsEnemy = self:GetEnemy()

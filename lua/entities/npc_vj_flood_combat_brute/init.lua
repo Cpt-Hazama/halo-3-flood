@@ -185,6 +185,11 @@ ENT.SoundTbl_Assimilation = {
 	"vj_halo3flood/brute/brutefloodmorph_arrival2.wav",
 	"vj_halo3flood/brute/brutefloodmorph_arrival3.wav"
 }
+ENT.SoundTbl_Impact = {
+	"vj_halo3flood/damage01.mp3",
+	"vj_halo3flood/damage02.mp3",
+	"vj_halo3flood/damage03.mp3",
+}
 ENT.Not_Finished = true -- Can it come back to life randomly?
 ENT.ArmDestroyed = false
 ENT.InfectionDestroyed = false
@@ -219,6 +224,8 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
+	
+	VJ_EmitSound(self,"vj_halo3flood/explode0" .. math.random(1,2) .. ".mp3",85)
 	return true
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------

@@ -46,6 +46,11 @@ ENT.SoundTbl_BeforeMeleeAttack = {"vj_halo3flood/carrier/h3/unarmed_melee_suicid
 ENT.SoundTbl_LeapAttack = {}
 ENT.SoundTbl_Pain = {"vj_halo3flood/carrier/h3/carswell2.mp3"}
 ENT.SoundTbl_Death = {"vj_halo3flood/carrier/hce/die1.mp3","vj_halo3flood/carrier/hce/die2.mp3"}
+ENT.SoundTbl_Impact = {
+	"vj_halo3flood/damage01.mp3",
+	"vj_halo3flood/damage02.mp3",
+	"vj_halo3flood/damage03.mp3",
+}
 ENT.GibOnDeathDamagesTable = {"All"}
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomInitialize()
@@ -55,6 +60,7 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	self:CarrierGibs()
+	VJ_EmitSound(self,"vj_halo3flood/explode0" .. math.random(1,2) .. ".mp3",85)
 	self:SpawnFlood(math.random(3,11))
 	return true
 end

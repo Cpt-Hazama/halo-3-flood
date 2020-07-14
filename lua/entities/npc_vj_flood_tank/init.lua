@@ -145,6 +145,11 @@ ENT.SoundTbl_FootStep = {
 	"vj_halo3flood/tank/longmove14.wav",
 	"vj_halo3flood/tank/longmove15.wav",
 }
+ENT.SoundTbl_Impact = {
+	"vj_halo3flood/damage01.mp3",
+	"vj_halo3flood/damage02.mp3",
+	"vj_halo3flood/damage03.mp3",
+}
 ENT.PureType = "tank"
 ENT.Default = VJ_MOVETYPE_GROUND
 ENT.MeleeAttackAnimationFaceEnemy = false
@@ -209,6 +214,8 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
 	self:CreateGibEntity("obj_vj_gib","UseAlien_Big")
+	
+	VJ_EmitSound(self,"vj_halo3flood/explode0" .. math.random(1,2) .. ".mp3",85)
 	return true
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
