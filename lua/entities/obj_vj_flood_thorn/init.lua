@@ -44,7 +44,7 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
 	timer.Simple(3,function() if IsValid(self) then self:Remove() end end)
-	util.SpriteTrail(self,0, Color(174,110,0,100), false, 45, 45, 0.6, 1/(10+1)*0.5, "VJ_Base/sprites/vj_trial1.vmt")
+	util.SpriteTrail(self,0, Color(230,255,127,100), false, 45, 45, 0.6, 1/(10+1)*0.5, "VJ_Base/sprites/vj_trial1.vmt")
 end
 /*-----------------------------------------------
 	*** Copyright (c) 2012-2015 by DrVrej, All rights reserved. ***

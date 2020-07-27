@@ -516,6 +516,14 @@ function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
+	if dmginfo:GetDamageType() == DMG_BLAST then
+		self:SetGroundEntity(NULL)
+		local dist = dmginfo:GetDamagePosition():Distance((self:GetPos() +self:OBBCenter()))
+		local throw = (dmginfo:GetDamagePosition() -(self:GetPos() +self:OBBCenter()))
+		local throwAng = throw:Angle()
+		local throwAmount = dist *2
+		self:SetVelocity(throwAng:Forward() *-throwAmount +throwAng:Up() *300)
+	end
 	if math.random(1,5) == 1 then
 		local gibs = {"models/predatorcz/halo/flood/shared.PMD/innards1.mdl","models/predatorcz/halo/flood/shared.PMD/innards3.mdl","models/predatorcz/halo/flood/shared.PMD/limb1.mdl","models/predatorcz/halo/flood/shared.PMD/limb2.mdl","models/predatorcz/halo/flood/shared.PMD/limb3.mdl","models/predatorcz/halo/flood/shared.PMD/skin1.mdl","models/predatorcz/halo/flood/shared.PMD/skin2.mdl","models/predatorcz/halo/flood/shared.PMD/skin3.mdl"}
 		if dmginfo:IsBulletDamage() then

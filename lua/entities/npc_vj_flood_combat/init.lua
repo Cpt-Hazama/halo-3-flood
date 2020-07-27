@@ -183,48 +183,12 @@ ENT.SoundTbl_Pain = {"vj_halo3flood/vo/dth_hdsht2.mp3","vj_halo3flood/vo/dth_hds
 ENT.SoundTbl_Death = {"vj_halo3flood/combatform/death1.wav","vj_halo3flood/combatform/death2.wav","vj_halo3flood/combatform/death3.wav","vj_halo3flood/combatform/death4wav","vj_halo3flood/combatform/death5.wav","vj_halo3flood/combatform/death6.wav","vj_halo3flood/combatform/death7.wav","vj_halo3flood/combatform/death8.wav","vj_halo3flood/combatform/death9.wav","vj_halo3flood/combatform/death10.wav","vj_halo3flood/combatform/death11.wav","vj_halo3flood/combatform/death12.wav"}
 ENT.SoundTbl_Assimilation = {"vj_halo3flood/combatform/reanimation_ground_human.wav","vj_halo3flood/combatform/reanimation_human.wav"}
 ENT.Not_Finished = true -- Can it come back to life randomly?
-ENT.ArmDestroyed = false
-ENT.InfectionDestroyed = false
 ENT.NextAllyKilledT = 0
-ENT.IsOverlayed = false
-ENT.Overlay = NULL
-ENT.OverlayModel = "models/player/kleiner.mdl"
-ENT.tbl_FloodBones = {
-	["ValveBiped.Bip01_Pelvis"] = "frame pelvis",
-	["ValveBiped.Bip01_L_Thigh"] = "frame l_thigh",
-	["ValveBiped.Bip01_L_Calf"] = "frame l_calf",
-	["ValveBiped.Bip01_L_Foot"] = "frame l_foot",
-	["ValveBiped.Bip01_R_Thigh"] = "frame r_thigh",
-	["ValveBiped.Bip01_R_Calf"] = "frame r_calf",
-	["ValveBiped.Bip01_R_Foot"] = "frame r_foot",
-	["ValveBiped.Bip01_Spine"] = "frame spine",
-	["ValveBiped.Bip01_Spine1"] = "frame spine1",
-	["ValveBiped.Bip01_Head1"] = "frame corpse_head",
-	["ValveBiped.forward"] = "frame corpse_jaw",
-	["ValveBiped.Bip01_L_Clavicle"] = "frame l_clavicle",
-	["ValveBiped.Bip01_L_UpperArm"] = "frame l_upperarm",
-	["ValveBiped.Bip01_R_Clavicle"] = "frame r_clavicle",
-	["ValveBiped.Bip01_R_UpperArm"] = "frame r_upperarm",
-	["ValveBiped.Bip01_R_Forearm"] = "frame r_forearm",
-	["ValveBiped.Bip01_R_Hand"] = "ValveBiped.Bip01_R_Hand",
-	["ValveBiped.Bip01_R_Finger1"] = "frame r_index1",
-	["ValveBiped.Bip01_R_Finger3"] = "frame r_ring1",
-	["ValveBiped.Bip01_R_Finger0"] = "frame r_thumb1",
-	["ValveBiped.Bip01_L_Forearm"] = "frame l_forearm",
-	["ValveBiped.Bip01_L_Hand"] = "ValveBiped.Bip01_L_Hand",
-}
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomInitialize()
 	self.tbl_Muffins = {}
 	-- self:CreateMuffins()
 	self.DidWeaponAttackAimParameter = false
-	self.RArmDestroyed = false
-	self.bodyparts = {
-		["1"] = {Hitgroup = {1}, Health = 1, Bodygroup = 0, Gib = "models/predatorcz/halo/flood/human.PMD/head.mdl", IsDead = false}, // Head
-		["2"] = {Hitgroup = {2}, Health = 30, Bodygroup = 2, Gib = "models/predatorcz/halo/flood/shared.PMD/innards2.mdl", IsDead = false}, // Torso
-		["5"] = {Hitgroup = {5}, Health = 30, Bodygroup = 3, Gib = "models/predatorcz/halo/flood/humanh3.PMD/rarm.mdl", IsDead = false}, // Right Arm
-		["4"] = {Hitgroup = {4}, Health = 30, Bodygroup = 4, Gib = "models/predatorcz/halo/flood/humanh3.PMD/larm.mdl", IsDead = false} // Left Arm
-	}
 	self:CapabilitiesAdd(bit.bor(CAP_MOVE_JUMP)) // No animations for this but these guys jump all over so this will allow them to get out of those positions
 	timer.Simple(GetConVarNumber("vj_halo_developmenttime"),function()
 		if self:IsValid() then
@@ -271,6 +235,9 @@ function ENT:CustomInitialize()
 	self.CanChaseWeapon = false
 	self.ChaseWeapon = NULL
 	self:SetCollisionBounds(Vector(15,15,60),Vector(-15,-15,0))
+	
+	self.NextCanWalkT = CurTime() +math.Rand(5,8)
+	self.ResetWalkT = CurTime()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
@@ -323,16 +290,15 @@ function ENT:CustomOnAcceptInput(key,activator,caller,data)
 	if key == "event_mattack" then
 		self.HasMeleeAttackKnockBack = false
 		self.MeleeAttackDamage = 19
-		self.MeleeAttackDamageDistance = 160
+		self.MeleeAttackDamageDistance = 120
 		self:MeleeAttackCode()
 		
 	end
 	if key == "event_pattack" then
 		self.HasMeleeAttackKnockBack = true
 		self.MeleeAttackDamage = 12
-		self.MeleeAttackDamageDistance = 160
+		self.MeleeAttackDamageDistance = 120
 		self:MeleeAttackCode()
-		
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -461,20 +427,6 @@ end
 function ENT:CustomOnThink_Muffins()
 	if table.Count(self.tbl_Muffins) > 0 then
 		if SERVER then
-			-- for bone,muf in pairs(self.tbl_Muffins) do
-				-- if IsValid(muf) then
-					-- if muf:GetPos() == self:GetPos() then SafeRemoveEntity(muf) end
-					-- local bonepos,boneang = self:GetBonePosition(bone)
-					-- muf:SetPos(bonepos)
-					-- muf:SetAngles(boneang)
-					-- if math.random(1,900) == 1 then
-						-- ParticleEffect("cpt_blood_flood_dust",muf:GetPos(),muf:GetAngles(),nil)
-						-- if math.random(1,4) == 1 then
-							-- self:MuffinInfection(muf)
-						-- end
-					-- end
-				-- end
-			-- end
 			self:MuffinFollowCode(self)
 			for bone,muf in pairs(self.tbl_Muffins) do
 				if IsValid(muf) && math.random(1,900) == 1 then
@@ -543,13 +495,17 @@ end
 function ENT:CustomOnRemove() VJ_STOPSOUND(self.CurrentAllyKilledSound) end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
-	-- if dmginfo:GetDamageType() == DMG_BLAST then
-		-- self:SetGroundEntity(NULL)
-		-- local dist = dmginfo:GetDamagePosition():Distance((self:GetPos() +self:OBBCenter()))
-		-- local throw = (dmginfo:GetDamagePosition() -(self:GetPos() +self:OBBCenter()))
-		-- local throwAmount = math.Clamp(3,1,5)
-		-- self:SetVelocity(-(throw) *throwAmount)
-	-- end
+	if dmginfo:GetDamageType() == DMG_BLAST then
+		self:SetGroundEntity(NULL)
+		local dist = dmginfo:GetDamagePosition():Distance((self:GetPos() +self:OBBCenter()))
+		local throw = (dmginfo:GetDamagePosition() -(self:GetPos() +self:OBBCenter()))
+		local throwAng = throw:Angle()
+		local throwAmount = dist *2
+		self:SetVelocity(throwAng:Forward() *-throwAmount +throwAng:Up() *300)
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_GLIDE)
+		self:MaintainActivity()
+	end
+	self.ResetWalkT = self.ResetWalkT -1
 	if math.random(1,5) == 1 then
 		local gibs = {"models/predatorcz/halo/flood/shared.PMD/innards1.mdl","models/predatorcz/halo/flood/shared.PMD/innards3.mdl","models/predatorcz/halo/flood/shared.PMD/limb1.mdl","models/predatorcz/halo/flood/shared.PMD/limb2.mdl","models/predatorcz/halo/flood/shared.PMD/limb3.mdl","models/predatorcz/halo/flood/shared.PMD/skin1.mdl","models/predatorcz/halo/flood/shared.PMD/skin2.mdl","models/predatorcz/halo/flood/shared.PMD/skin3.mdl"}
 		if dmginfo:IsBulletDamage() then
@@ -559,25 +515,6 @@ function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
 		end
 	end
 end
----------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnThink_Flood()
-	if self.IsOverlayed && IsValid(self.Overlay) then
-		-- self:SetNoDraw(true)
-		local ent = self.Overlay
-		ent:SetPos(self:GetPos())
-		ent:SetAngles(self:GetAngles())
-		for i = 0,ent:GetBoneCount() do
-			-- print(ent:GetBoneName(i))
-			for bone,fbone in pairs(self.tbl_FloodBones) do
-				if ent:GetBoneName(i) == fbone then
-					local bonepos,boneang = self:GetBonePosition(i)
-					ent:SetBonePosition(i,bonepos,boneang)
-				end
-			end
-		end
-	end
-end
-
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:ForceMeleeAttack()
 	if !self:CanDoCertainAttack("MeleeAttack") then return end
@@ -630,12 +567,11 @@ ENT.NextWepCheckT = 1
 ENT.WeaponSpread = 1
 -- local HASRAN = false
 function ENT:CustomOnThink()
+	if self.Dead then return end
 	self:GravemindSpeak()
 	self:CustomOnThink_Muffins()
-	self:CustomOnThink_Flood()
 	self:BonemergeEditor()
 
-	if self.Dead then return end
 	if self.LeapAttacking && !self.MeleeAttacking && !self:IsOnGround() && self:GetActivity() != ACT_GLIDE then
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_GLIDE)
 		self:MaintainActivity()
@@ -702,6 +638,18 @@ function ENT:CustomOnThink()
 				self:ForceMeleeAttack()
 			-- end
 		end
+	end
+	if !self.VJ_IsBeingControlled then
+		self.HasLeapAttack = !(CurTime() < self.ResetWalkT)
+	else
+		self.HasLeapAttack = true
+	end
+	if CurTime() < self.ResetWalkT && !self.VJ_IsBeingControlled then
+		self.NextCanWalkT = CurTime() +math.Rand(5,16)
+		run = walk
+	end
+	if CurTime() > self.NextCanWalkT && math.random(1,100) == 1 then
+		self.ResetWalkT = CurTime() +math.Rand(6,20)
 	end
 	self.AnimTbl_IdleStand = {idle}
 	self.AnimTbl_Walk = {walk}

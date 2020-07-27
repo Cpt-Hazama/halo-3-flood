@@ -232,7 +232,7 @@ end
 function ENT:CustomOnAcceptInput(key,activator,caller,data)
 	if key == "event_mattack" then
 		self.MeleeAttackDamage = 41
-		self.MeleeAttackDamageDistance = 180
+		self.MeleeAttackDamageDistance = 130
 		self:MeleeAttackCode()
 		
 	end
@@ -451,6 +451,8 @@ function ENT:CustomInitialize()
 			end
 		end)
 	end
+	self.NextCanWalkT = CurTime() +math.Rand(5,8)
+	self.ResetWalkT = CurTime()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
@@ -462,6 +464,17 @@ function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
+	if dmginfo:GetDamageType() == DMG_BLAST then
+		self:SetGroundEntity(NULL)
+		local dist = dmginfo:GetDamagePosition():Distance((self:GetPos() +self:OBBCenter()))
+		local throw = (dmginfo:GetDamagePosition() -(self:GetPos() +self:OBBCenter()))
+		local throwAng = throw:Angle()
+		local throwAmount = dist *2
+		self:SetVelocity(throwAng:Forward() *-throwAmount +throwAng:Up() *300)
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_GLIDE)
+		self:MaintainActivity()
+	end
+	self.ResetWalkT = self.ResetWalkT -1
 	if math.random(1,5) == 1 then
 		local gibs = {"models/predatorcz/halo/flood/shared.PMD/innards1.mdl","models/predatorcz/halo/flood/shared.PMD/innards3.mdl","models/predatorcz/halo/flood/shared.PMD/limb1.mdl","models/predatorcz/halo/flood/shared.PMD/limb2.mdl","models/predatorcz/halo/flood/shared.PMD/limb3.mdl","models/predatorcz/halo/flood/shared.PMD/skin1.mdl","models/predatorcz/halo/flood/shared.PMD/skin2.mdl","models/predatorcz/halo/flood/shared.PMD/skin3.mdl"}
 		if dmginfo:IsBulletDamage() then
@@ -539,11 +552,16 @@ function ENT:CustomOnThink_AIEnabled()
 			self:SetPlaybackRate(1)
 		end
 	end
+
 	self.HasPoseParameterLooking = IsValid(self:GetActiveWeapon())
+
+	local idle = ACT_IDLE
+	local walk = ACT_WALK
+	local run = ACT_RUN
 	if IsValid(self:GetActiveWeapon()) then
-		self.AnimTbl_IdleStand = {ACT_IDLE_STIMULATED}
-		self.AnimTbl_Walk = {ACT_WALK_STIMULATED}
-		self.AnimTbl_Run = {ACT_RUN_STIMULATED}
+		idle = ACT_IDLE_STIMULATED
+		walk = ACT_WALK_STIMULATED
+		run = ACT_RUN_STIMULATED
 		if !self.VJ_IsBeingControlled then
 			self.ConstantlyFaceEnemy = true
 			self.ConstantlyFaceEnemy_IfVisible = true
@@ -551,9 +569,6 @@ function ENT:CustomOnThink_AIEnabled()
 			self.ConstantlyFaceEnemyDistance = 3000
 		end
 	else
-		self.AnimTbl_IdleStand = {ACT_IDLE}
-		self.AnimTbl_Walk = {ACT_WALK}
-		self.AnimTbl_Run = {ACT_RUN}
 		if !self.VJ_IsBeingControlled then
 			self.ConstantlyFaceEnemy = false
 			if IsValid(self:GetEnemy()) && !self:IsUnreachable(self:GetEnemy()) then
@@ -564,11 +579,26 @@ function ENT:CustomOnThink_AIEnabled()
 			end
 		end
 	end
+	if !self.VJ_IsBeingControlled then
+		self.HasLeapAttack = !(CurTime() < self.ResetWalkT)
+	else
+		self.HasLeapAttack = true
+	end
+	if CurTime() < self.ResetWalkT && !self.VJ_IsBeingControlled then
+		self.NextCanWalkT = CurTime() +math.Rand(5,16)
+		run = walk
+	end
+	if CurTime() > self.NextCanWalkT && math.random(1,100) == 1 then
+		self.ResetWalkT = CurTime() +math.Rand(6,20)
+	end
 	-- if self.CurrentAttackAnimation == ACT_MELEE_ATTACK1 || self.CurrentAttackAnimation == ACT_MELEE_ATTACK2 then
 		-- self.MeleeAttackDamageAngleRadius = 100
 	-- elseif self.CurrentAttackAnimation == ACT_GESTURE_MELEE_ATTACK1 then
 		-- self.MeleeAttackDamageAngleRadius = -100
 	-- end
+	self.AnimTbl_IdleStand = {idle}
+	self.AnimTbl_Walk = {walk}
+	self.AnimTbl_Run = {run}
 	if IsValid(self:GetEnemy()) then
 		local enemy = self:GetEnemy()
 		local dist = self:VJ_GetNearestPointToEntityDistance(enemy)

@@ -71,6 +71,8 @@ function ENT:CustomInitialize()
 	end
 	self:SetSkin(math.random(0,6))
 	-- self:SetColor(Color(math.random(0,255),math.random(0,255),math.random(0,255)))
+	self.NextCanWalkT = CurTime() +math.Rand(5,8)
+	self.ResetWalkT = CurTime()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:FloodControl()
@@ -111,10 +113,13 @@ function ENT:CustomOnThink_AIEnabled()
 	end
 	self.Bleeds = not self.HasShield
 	self:SetNWBool("HasShield",self.HasShield)
+	local idle = ACT_IDLE
+	local walk = ACT_WALK
+	local run = ACT_RUN
 	if IsValid(self:GetActiveWeapon()) then
-		self.AnimTbl_IdleStand = {ACT_IDLE_STIMULATED}
-		self.AnimTbl_Walk = {ACT_WALK_STIMULATED}
-		self.AnimTbl_Run = {ACT_RUN_STIMULATED}
+		idle = ACT_IDLE_STIMULATED
+		walk = ACT_WALK_STIMULATED
+		run = ACT_RUN_STIMULATED
 		if !self.VJ_IsBeingControlled then
 			self.ConstantlyFaceEnemy = true
 			self.ConstantlyFaceEnemy_IfVisible = true
@@ -122,9 +127,6 @@ function ENT:CustomOnThink_AIEnabled()
 			self.ConstantlyFaceEnemyDistance = 3000
 		end
 	else
-		self.AnimTbl_IdleStand = {ACT_IDLE}
-		self.AnimTbl_Walk = {ACT_WALK}
-		self.AnimTbl_Run = {ACT_RUN}
 		if !self.VJ_IsBeingControlled then
 			self.ConstantlyFaceEnemy = false
 			if IsValid(self:GetEnemy()) && !self:IsUnreachable(self:GetEnemy()) then
@@ -180,6 +182,21 @@ function ENT:CustomOnThink_AIEnabled()
 			-- end
 		end
 	end
+	if !self.VJ_IsBeingControlled then
+		self.HasLeapAttack = !(CurTime() < self.ResetWalkT)
+	else
+		self.HasLeapAttack = true
+	end
+	if CurTime() < self.ResetWalkT && !self.VJ_IsBeingControlled then
+		self.NextCanWalkT = CurTime() +math.Rand(5,16)
+		run = walk
+	end
+	if CurTime() > self.NextCanWalkT && math.random(1,100) == 1 then
+		self.ResetWalkT = CurTime() +math.Rand(6,20)
+	end
+	self.AnimTbl_IdleStand = {idle}
+	self.AnimTbl_Walk = {walk}
+	self.AnimTbl_Run = {run}
 	-- self.NextMeleeAttackTime = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	-- self.NextAnyAttackTime_Melee = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	if GetConVarNumber("vj_halo_useweps") == 1 && !self.RArmDestroyed then

@@ -61,8 +61,21 @@ end
 function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	self:CarrierGibs()
 	VJ_EmitSound(self,"vj_halo3flood/explode0" .. math.random(1,2) .. ".mp3",85)
-	self:SpawnFlood(math.random(3,11))
+	self:SpawnFlood(math.random(3,8))
 	return true
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
+	if dmginfo:GetDamageType() == DMG_BLAST then
+		self:SetGroundEntity(NULL)
+		local dist = dmginfo:GetDamagePosition():Distance((self:GetPos() +self:OBBCenter()))
+		local throw = (dmginfo:GetDamagePosition() -(self:GetPos() +self:OBBCenter()))
+		local throwAng = throw:Angle()
+		local throwAmount = dist *2
+		self:SetVelocity(throwAng:Forward() *-throwAmount +throwAng:Up() *300)
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_GLIDE)
+		self:MaintainActivity()
+	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CarrierGibs()

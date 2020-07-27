@@ -6,7 +6,7 @@ include('shared.lua')
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/
 ENT.Model = "models/cpthazama/halo3/flood_elite.mdl" -- Leave empty if using more than one model
-ENT.StartHealth = 200
+ENT.StartHealth = 320
 ENT.MoveType = MOVETYPE_STEP
 ENT.HullType = HULL_HUMAN
 ENT.EntitiesToNoCollide = {"npc_vj_flood_infection"}
@@ -413,19 +413,21 @@ function ENT:CustomInitialize()
 	end
 	self:SetSkin(math.random(0,6))
 	-- self:SetColor(Color(math.random(0,255),math.random(0,255),math.random(0,255)))
+	self.NextCanWalkT = CurTime() +math.Rand(5,8)
+	self.ResetWalkT = CurTime()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnAcceptInput(key,activator,caller,data)
 	if key == "event_mattack" then
 		self.MeleeAttackDamage = 26
-		self.MeleeAttackDamageDistance = 180
+		self.MeleeAttackDamageDistance = 125
 		self:MeleeAttackCode()
 		
 	end
 	if key == "event_pattack" then
 		self.HasMeleeAttackKnockBack = true
 		self.MeleeAttackDamage = 15
-		self.MeleeAttackDamageDistance = 160
+		self.MeleeAttackDamageDistance = 125
 		self:MeleeAttackCode()
 		
 	end
@@ -479,6 +481,17 @@ function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
+	if dmginfo:GetDamageType() == DMG_BLAST then
+		self:SetGroundEntity(NULL)
+		local dist = dmginfo:GetDamagePosition():Distance((self:GetPos() +self:OBBCenter()))
+		local throw = (dmginfo:GetDamagePosition() -(self:GetPos() +self:OBBCenter()))
+		local throwAng = throw:Angle()
+		local throwAmount = dist *2
+		self:SetVelocity(throwAng:Forward() *-throwAmount +throwAng:Up() *300)
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_GLIDE)
+		self:MaintainActivity()
+	end
+	self.ResetWalkT = self.ResetWalkT -1
 	if self.HasShield then return end
 	if math.random(1,5) == 1 then
 		local gibs = {"models/predatorcz/halo/flood/shared.PMD/innards1.mdl","models/predatorcz/halo/flood/shared.PMD/innards3.mdl","models/predatorcz/halo/flood/shared.PMD/limb1.mdl","models/predatorcz/halo/flood/shared.PMD/limb2.mdl","models/predatorcz/halo/flood/shared.PMD/limb3.mdl","models/predatorcz/halo/flood/shared.PMD/skin1.mdl","models/predatorcz/halo/flood/shared.PMD/skin2.mdl","models/predatorcz/halo/flood/shared.PMD/skin3.mdl"}
@@ -667,6 +680,18 @@ function ENT:CustomOnThink_AIEnabled()
 				self:ForceMeleeAttack()
 			-- end
 		end
+	end
+	if !self.VJ_IsBeingControlled then
+		self.HasLeapAttack = !(CurTime() < self.ResetWalkT)
+	else
+		self.HasLeapAttack = true
+	end
+	if CurTime() < self.ResetWalkT && !self.VJ_IsBeingControlled then
+		self.NextCanWalkT = CurTime() +math.Rand(5,16)
+		run = walk
+	end
+	if CurTime() > self.NextCanWalkT && math.random(1,100) == 1 then
+		self.ResetWalkT = CurTime() +math.Rand(6,20)
 	end
 	self.AnimTbl_IdleStand = {idle}
 	self.AnimTbl_Walk = {walk}
