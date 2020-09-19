@@ -31,6 +31,13 @@ ENT.MeleeAttackKnockBack_Up2 = 220 -- How far it will push you up | Second in ma
 ENT.MeleeAttackKnockBack_Right1 = 0 -- How far it will push you right | First in math.random
 ENT.MeleeAttackKnockBack_Right2 = 0 -- How far it will push you right | Second in math.random
 
+ENT.VJC_Data = {
+    CameraMode = 2, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
+    ThirdP_Offset = Vector(0, 0, 0), -- The offset for the controller when the camera is in third person
+    FirstP_Bone = "head", -- If left empty, the base will attempt to calculate a position for first person
+    FirstP_Offset = Vector(2, 0, 5), -- The offset for the controller when the camera is in first person
+}
+
 local jUp = 1200
 local jDown = 2000
 ENT.MaxJumpLegalDistance = VJ_Set(jUp,jDown)

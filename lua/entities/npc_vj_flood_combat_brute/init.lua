@@ -16,6 +16,13 @@ ENT.VJ_NPC_Class = {"CLASS_FLOOD","CLASS_PARASITE"}
 ENT.BloodColor = "Yellow"
 ENT.CustomBlood_Particle = {"cpt_blood_flood","cpt_blood_flood","cpt_blood_flood","vj_impact1_purple"}
 
+ENT.VJC_Data = {
+    CameraMode = 2, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
+    ThirdP_Offset = Vector(0, 0, 0), -- The offset for the controller when the camera is in third person
+    FirstP_Bone = "corpse_head", -- If left empty, the base will attempt to calculate a position for first person
+    FirstP_Offset = Vector(2, 0, 4), -- The offset for the controller when the camera is in first person
+}
+
 ENT.MeleeAttackDistance = 105
 ENT.HasMeleeAttack = true -- Should the SNPC have a melee attack?
 ENT.AnimTbl_MeleeAttack = {ACT_MELEE_ATTACK1,ACT_MELEE_ATTACK2} -- Melee Attack Animations

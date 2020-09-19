@@ -15,6 +15,13 @@ ENT.EntitiesToNoCollide = {"npc_vj_flood_infection","prop_vj_flood_youdied"}
 ENT.VJ_NPC_Class = {"CLASS_FLOOD","CLASS_PARASITE"}
 ENT.CustomBlood_Particle = {"cpt_blood_flood"} -- Particle that the SNPC spawns when it's damaged
 
+ENT.VJC_Data = {
+    CameraMode = 2, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
+    ThirdP_Offset = Vector(0, 0, 0), -- The offset for the controller when the camera is in third person
+    FirstP_Bone = "spine2", -- If left empty, the base will attempt to calculate a position for first person
+    FirstP_Offset = Vector(4, 0, 4), -- The offset for the controller when the camera is in first person
+}
+
 ENT.HasMeleeAttack = false
 ENT.HasLeapAttack = true -- Should the SNPC have a leap attack?
 ENT.AnimTbl_LeapAttack = {ACT_RANGE_ATTACK1} -- Melee Attack Animations
