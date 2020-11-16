@@ -1,6 +1,7 @@
 "VertexLitGeneric"
 {
-	$baseTexture "models\cpthazama\halo3\weapons\plasmarifle_display"
+	//$baseTexture "models/cpthazama/halo3/shared/nodraw"
+	$baseTexture "models\cpthazama\halo3\weapons\plasmarifle"
 	//$translucent 1
 	"$detail" "models\cpthazama\halo3\weapons\plasmarifle_display"
 	$detailscale 1

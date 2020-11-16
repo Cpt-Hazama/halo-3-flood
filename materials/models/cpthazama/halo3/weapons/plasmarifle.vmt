@@ -2,17 +2,40 @@
 {
 	"$basetexture" "models/cpthazama/halo3/weapons/plasmarifle"
 	"$bumpmap" "models/cpthazama/halo3/weapons/plasmarifle_n"
-	$emissiveBlendEnabled 1
-    $emissiveBlendTexture    "dev/null"
-    $emissiveBlendBaseTexture    "models/cpthazama/halo3/weapons/plasmarifle_g"
-    $emissiveBlendFlowTexture    "dev/null"
-    $emissiveBlendTint "[1 1 3]"
-    $emissiveBlendStrength 1
-    $emissiveBlendScrollVector "[0 0]"
     
-  "$nodecal" 1
-    $phong 1
-   $phongexponent			1			
-	$phongboost				0.3
-	$phongfresnelranges		"[0 0.5 1]"    
+	"$nodecal" "1"
+
+	"$emissiveBlendEnabled" 		"1"
+	"$emissiveBlendTexture"    		"dev/null"
+	"$emissiveBlendBaseTexture"    	"models/cpthazama/halo3/weapons/plasmarifle_g"
+	"$emissiveBlendFlowTexture"    	"dev/null"
+	"$emissiveBlendTint" 			"[1 1 3]"
+	"$emissiveBlendStrength" 		"1"
+	"$emissiveBlendScrollVector" 	"[0 0]"
+
+	//"$detail"						"models/cpthazama/halo3/shared/cov_detail"
+	//"$detailscale"					"6"
+	//"$detailblendmode"				"2"
+
+	"$phong" 						"1"
+	"$phongexponent" 				"25"
+	"$phongboost" 					"5"
+	"$phongtint"					"[0.1 0.5 0.7]"
+	"$phongfresnelranges" 			"[0.75 0.35 1]"
+
+	"$envmap"						"env_cubemap"
+	"$envmaptint"					"[0.1 0.5 0.7]"
+
+	"Proxies"
+	{
+		"Sine"
+		{
+			"resultVar"	"$emissiveBlendStrength"
+			"sineperiod"	2
+			"sinemin"	0.25
+			"sinemax"	1.15
+		}
+	}
+
+	"$lightwarptexture"				"models/cpthazama/halo3/shared/cov_distort"
 }

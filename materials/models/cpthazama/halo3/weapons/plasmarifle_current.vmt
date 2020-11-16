@@ -8,4 +8,20 @@
 	$detailscale 1
 	$detailblendmode 5
 	$detailblendfactor 1
+
+	"Proxies"
+	{
+		"TextureScroll"
+		{
+			"texturescrollvar"	"$baseTexturetransform"
+			"texturescrollrate"	1
+			"texturescrollangle" 90
+		}
+		"TextureScroll"
+		{
+			"texturescrollvar"	"$detailTexturetransform"
+			"texturescrollrate"	1
+			"texturescrollangle" 90
+		}
+	}
 }

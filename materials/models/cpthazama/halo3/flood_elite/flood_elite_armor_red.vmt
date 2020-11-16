@@ -21,10 +21,15 @@
 	"$blendtintbybasealpha" 		"1"
 	"$blendtintcoloroverbase" 		"0"
 
-	"$envmap" "models/cpthazama/halo3/default_cube_h4_a"
-	"$envmaptint"	"[0.01 0.01 0.01]"
+	"$envmap"						"env_cubemap"
+	"$envmaptint"					"[0.5 0.1 0.1]"
+
+	//"$envmap" "models/cpthazama/halo3/default_cube_h4_a"
+	//"$envmaptint"	"[0.01 0.01 0.01]"
 
 	"$rimlight"			"1"
 	"$rimlightexponent"			"2"
 	"$rimlightboost"			"0.2"
+
+	"$lightwarptexture"				"models/cpthazama/halo3/shared/cov_distort"
 }

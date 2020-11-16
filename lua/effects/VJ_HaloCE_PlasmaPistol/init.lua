@@ -5,7 +5,14 @@ if (!file.Exists("autorun/vj_base_autorun.lua","LUA")) then return end
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 --------------------------------------------------*/
 -- Based off of the GMod lasertracer
-EFFECT.MainMat = Material("effects/stunstick")
+EFFECT.MainMat 					= Material("effects/stunstick")
+EFFECT.TracerColor				= Color(33,255,0,255)
+EFFECT.Speed 					= 10000
+EFFECT.Length 					= 100
+
+EFFECT.DynamicLightColor		= Color(33,255,0,255)
+EFFECT.DynamicLightBrightness	= 2
+EFFECT.DynamicLightSize			= 100
 
 function EFFECT:Init( data )
 	self.StartPos = data:GetStart()
@@ -21,16 +28,20 @@ function EFFECT:Init( data )
 		end
 	end
 
-	self.Dir = self.EndPos - self.StartPos
+	self.Dir = self.EndPos -self.StartPos
 	self:SetRenderBoundsWS(self.StartPos, self.EndPos)
-	self.TracerTime = math.min(1, self.StartPos:Distance(self.EndPos) / 10000) -- Calculate death time
+	
+	self.Normal = self.Dir:GetNormal()
+	self.StartTime = 0
+	self.TracerTime = (self.Dir:Length() +self.Length) / self.Speed -- Calculate death time
 	self.Length = 0.1
 
-	-- Die when it reaches its target
-	self.DieTime = CurTime() + self.TracerTime
+	self.DieTime = CurTime() +self.TracerTime
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function EFFECT:Think()
+	-- self.TracerTime = self.TracerTime -FrameTime()
+	self.StartTime = self.StartTime +FrameTime()
 	if (CurTime() > self.DieTime) then -- If it's dead then...
 		util.Decal("fadingscorch", self.EndPos +self.Dir:GetNormalized(), self.EndPos -self.Dir:GetNormalized())
 
@@ -43,6 +54,20 @@ function EFFECT:Think()
 		util.Effect("Sparks", effectdata)
 		return false
 	end
+	
+	local dLight = DynamicLight(self:EntIndex())
+	local endPos = self.StartPos +self.Normal *(self.Speed *self.StartTime)
+	if dLight then
+		dLight.r = self.DynamicLightColor.r
+		dLight.g = self.DynamicLightColor.g
+		dLight.b = self.DynamicLightColor.b
+		dLight.Pos = endPos
+		dLight.Brightness = self.DynamicLightBrightness
+		dLight.Decay = 1000
+		dLight.Size = self.DynamicLightSize
+		dLight.DieTime = CurTime() +3
+		dLight.Style = 6
+	end
 	return true
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -54,7 +79,7 @@ function EFFECT:Render()
 	render.DrawBeam(
 		self.EndPos - self.Dir * (fDelta - sinWave * self.Length),
 		self.EndPos - self.Dir * (fDelta + sinWave * self.Length),
-		5 + sinWave * 15, 8, 0, Color(33,255,0,255)
+		5 + sinWave * 10, 8, 0, self.TracerColor
 	)
 end
 /*--------------------------------------------------
