@@ -11,7 +11,7 @@
 	"$phong"				"1"
 	"$phongexponent"			"15"
 	"$phongboost"			"20"
-	"$phongtint"			"[0.08 0.15 0.45]"
+	"$phongtint"			"[0.76 0.79 0.80]"
 	"$phongfresnelranges"		"[0.67 0.83 1]"
 
 	"$phongalbedotint" 			"1"
@@ -22,7 +22,7 @@
 	"$blendtintcoloroverbase" 		"0"
 
 	"$envmap"						"env_cubemap"
-	"$envmaptint"					"[0.9 0.9 0.9]"
+	"$envmaptint"					"[0.76 0.79 0.80]"
 
 	//"$envmap" "models/cpthazama/halo3/default_cube_h4_a"
 	//"$envmaptint"	"[0.01 0.01 0.01]"
