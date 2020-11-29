@@ -72,15 +72,22 @@ function EFFECT:Think()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function EFFECT:Render()
-	local fDelta = (self.DieTime - CurTime()) / self.TracerTime
-	fDelta = math.Clamp(fDelta, 0, 1) ^ 0.5
+	local fDelta = (self.DieTime -CurTime()) /self.TracerTime
+	fDelta = math.Clamp(fDelta,0,1) ^0.5
 	render.SetMaterial(self.MainMat)
-	local sinWave = math.sin(fDelta * math.pi)
-	render.DrawBeam(
-		self.EndPos - self.Dir * (fDelta - sinWave * self.Length),
-		self.EndPos - self.Dir * (fDelta + sinWave * self.Length),
-		5 + sinWave * 10, 8, 0, self.TracerColor
-	)
+	local sinWave = math.sin(fDelta *math.pi)
+	local pos = self.EndPos -self.Dir *(fDelta -sinWave *self.Length)
+	local endPos = self.EndPos -self.Dir *(fDelta +sinWave *self.Length)
+	local width = 5 +sinWave *10
+	local startCord = 8
+	local endCord = 0
+	local col = self.TracerColor
+	render.DrawBeam(pos,endPos,width,startCord,endCord,col)
+
+	local EyeNormal = (EyePos() -pos):GetNormal()
+	EyeNormal:Mul(self.Length /2)
+	EyeNormal.z = 0
+	render.DrawQuadEasy(pos,EyeNormal,width,width,col,(CurTime() *50) %360)
 end
 /*--------------------------------------------------
 	*** Copyright (c) 2012-2018 by DrVrej, All rights reserved. ***
