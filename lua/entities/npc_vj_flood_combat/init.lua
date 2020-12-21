@@ -7,29 +7,29 @@ include('shared.lua')
 -----------------------------------------------*/
 ENT.Model = "models/cpthazama/halo3/flood_human.mdl" -- Leave empty if using more than one model
 ENT.StartHealth = 125
-ENT.MoveType = MOVETYPE_STEP
+
 ENT.HullType = HULL_HUMAN
-ENT.CanSpawnWithWeapon = tobool(GetConVarNumber("vj_halo_useweps"))
 ENT.EntitiesToNoCollide = {"npc_vj_flood_infection"}
-ENT.MeleeAttackAnimationFaceEnemy = false
 ---------------------------------------------------------------------------------------------------------------------------------------------
 ENT.VJ_NPC_Class = {"CLASS_FLOOD","CLASS_PARASITE"}
+
 ENT.BloodColor = "Yellow"
 ENT.CustomBlood_Particle = {"cpt_blood_flood","cpt_blood_flood","cpt_blood_flood","vj_impact1_red"} -- Particle that the SNPC spawns when it's damaged
 
+ENT.HasMeleeAttack = true
 ENT.MeleeAttackDistance = 105
-ENT.HasMeleeAttack = true -- Should the SNPC have a melee attack?
-ENT.AnimTbl_MeleeAttack = {ACT_MELEE_ATTACK1,ACT_MELEE_ATTACK2} -- Melee Attack Animations
-ENT.TimeUntilMeleeAttackDamage = false -- This counted in seconds | This calculates the time until it hits something
-ENT.MeleeAttackDamageType = DMG_SLASH -- Type of Damage
+ENT.AnimTbl_MeleeAttack = {ACT_MELEE_ATTACK1,ACT_MELEE_ATTACK2}
+ENT.TimeUntilMeleeAttackDamage = false
+ENT.MeleeAttackDamageType = DMG_SLASH
+ENT.MeleeAttackAnimationFaceEnemy = false
 
-ENT.HasMeleeAttackKnockBack = false -- If true, it will cause a knockback to its enemy
-ENT.MeleeAttackKnockBack_Forward1 = 350 -- How far it will push you forward | First in math.random
-ENT.MeleeAttackKnockBack_Forward2 = 450 -- How far it will push you forward | Second in math.random
-ENT.MeleeAttackKnockBack_Up1 = 220 -- How far it will push you up | First in math.random
-ENT.MeleeAttackKnockBack_Up2 = 220 -- How far it will push you up | Second in math.random
-ENT.MeleeAttackKnockBack_Right1 = 0 -- How far it will push you right | First in math.random
-ENT.MeleeAttackKnockBack_Right2 = 0 -- How far it will push you right | Second in math.random
+ENT.HasMeleeAttackKnockBack = false
+ENT.MeleeAttackKnockBack_Forward1 = 350
+ENT.MeleeAttackKnockBack_Forward2 = 450
+ENT.MeleeAttackKnockBack_Up1 = 220
+ENT.MeleeAttackKnockBack_Up2 = 220
+ENT.MeleeAttackKnockBack_Right1 = 0
+ENT.MeleeAttackKnockBack_Right2 = 0
 
 ENT.VJC_Data = {
     CameraMode = 2, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
@@ -42,29 +42,26 @@ local jUp = 1200
 local jDown = 2000
 ENT.MaxJumpLegalDistance = VJ_Set(jUp,jDown)
 
-ENT.HasFootStepSound = false -- Should the SNPC make a footstep sound when it's moving?
+ENT.HasFootStepSound = false
 
-ENT.HasLeapAttack = true -- Should the SNPC have a leap attack?
-ENT.AnimTbl_LeapAttack = {ACT_GLIDE} -- Melee Attack Animations
+ENT.HasLeapAttack = true
+ENT.AnimTbl_LeapAttack = {ACT_GLIDE}
 ENT.LeapAttackAnimationFaceEnemy = true
-ENT.LeapDistance = 600 -- The distance of the leap, for example if it is set to 500, when the SNPC is 500 Unit away, it will jump
-ENT.LeapToMeleeDistance = 400 -- How close does it have to be until it uses melee?
-ENT.TimeUntilLeapAttackDamage = 0.1 -- How much time until it runs the leap damage code?
+ENT.LeapDistance = 600
+ENT.LeapToMeleeDistance = 400
+ENT.TimeUntilLeapAttackDamage = 0.1
 ENT.NextLeapAttackTime_DoRand = 10
-ENT.NextLeapAttackTime = 5 -- How much time until it can use a leap attack?
-ENT.NextAnyAttackTime_Leap = 0.1 -- How much time until it can use a attack again? | Counted in Seconds
-ENT.LeapAttackVelocityForward = 15 -- How much forward force should it apply?
-ENT.LeapAttackVelocityUp = 400 -- How much upward force should it apply?
+ENT.NextLeapAttackTime = 5
+ENT.NextAnyAttackTime_Leap = 0.1
+ENT.LeapAttackVelocityForward = 15
+ENT.LeapAttackVelocityUp = 400
 ENT.LeapAttackDamage = 65
-ENT.LeapAttackDamageDistance = 50 -- How far does the damage go?
+ENT.LeapAttackDamageDistance = 50
 
-ENT.UsesBoneAngle = true
-ENT.UsesDamageForceOnDeath = true
-ENT.HasDeathAnimation = true -- Does it play an animation when it dies?
-ENT.AnimTbl_Death = {ACT_DIESIMPLE,ACT_DIE_LEFTSIDE,ACT_DIE_RIGHTSIDE} -- Death Animations
-ENT.DeathAnimationChance = 5 -- Put 1 if you want it to play the animation all the time
--- ====== Sound File Paths ====== --
--- Leave blank if you don't want any sounds to play
+ENT.HasDeathAnimation = true
+ENT.AnimTbl_Death = {ACT_DIESIMPLE,ACT_DIE_LEFTSIDE,ACT_DIE_RIGHTSIDE}
+ENT.DeathAnimationChance = 5
+
 ENT.SoundTbl_MeleeAttackMiss = {
 	"vj_halo3flood/shared/melee_swish1.wav",
 	"vj_halo3flood/shared/melee_swish3.wav",
@@ -73,132 +70,69 @@ ENT.SoundTbl_MeleeAttackMiss = {
 	"vj_halo3flood/shared/melee_swish7.wav",
 	"vj_halo3flood/shared/melee_swish8.wav",
 }
-ENT.SoundTbl_Idle = {"vj_halo3flood/vo/invsgt10.mp3","vj_halo3flood/vo/invsgt1.mp3","vj_halo3flood/vo/invsgt2.mp3","vj_halo3flood/vo/invsgt5.mp3","vj_halo3flood/vo/invsgt6.mp3","vj_halo3flood/vo/invsgt8.mp3","vj_halo3flood/vo/invsgt9.mp3","vj_halo3flood/vo/invsgt_fail1.mp3","vj_halo3flood/vo/invsgt_fail10.mp3","vj_halo3flood/vo/invsgt_fail2.mp3","vj_halo3flood/vo/invsgt_fail3.mp3","vj_halo3flood/vo/invsgt_fail5.mp3","vj_halo3flood/vo/invsgt_fail7.mp3","vj_halo3flood/vo/invsgt_fail8.mp3","vj_halo3flood/vo/invsgt_fail9.mp3","vj_halo3flood/combatform/pain1.wav","vj_halo3flood/combatform/pain2.wav","vj_halo3flood/combatform/pain3.wav","vj_halo3flood/combatform/pain4.wav","vj_halo3flood/combatform/pain5.wav","vj_halo3flood/combatform/pain6.wav","vj_halo3flood/combatform/pain7.wav","vj_halo3flood/combatform/pain8.wav","vj_halo3flood/combatform/pain9.wav","vj_halo3flood/combatform/pain10.wav","vj_halo3flood/combatform/pain11.wav","vj_halo3flood/combatform/pain12.wav","vj_halo3flood/combatform/pain13.wav","vj_halo3flood/combatform/pain14.wav","vj_halo3flood/combatform/pain15.wav","vj_halo3flood/combatform/pain16.wav","vj_halo3flood/combatform/pain17.wav"}
-ENT.SoundTbl_FootStep = {
-	"vj_halo3flood/combatform/humanform_longmove1.wav",
-	"vj_halo3flood/combatform/humanform_longmove2.wav",
-	"vj_halo3flood/combatform/humanform_longmove3.wav",
-	"vj_halo3flood/combatform/humanform_longmove4.wav",
-	"vj_halo3flood/combatform/humanform_longmove5.wav",
-	"vj_halo3flood/combatform/humanform_longmove6.wav",
-	"vj_halo3flood/combatform/humanform_longmove7.wav",
-	"vj_halo3flood/combatform/humanform_longmove8.wav",
-	"vj_halo3flood/combatform/humanform_longmove9.wav",
-	"vj_halo3flood/combatform/humanform_longmove10.wav",
-	"vj_halo3flood/combatform/humanform_longmove11.wav",
-	"vj_halo3flood/combatform/humanform_longmove12.wav",
-	"vj_halo3flood/combatform/humanform_longmove13.wav",
-	"vj_halo3flood/combatform/humanform_longmove14.wav",
-	"vj_halo3flood/combatform/humanform_longmove15.wav",
-}
-ENT.SoundTbl_Alert = {
-	"vj_halo3flood/combatform/spot1.wav",
-	"vj_halo3flood/combatform/scream1.wav",
-	"vj_halo3flood/combatform/scream2.wav",
-	"vj_halo3flood/combatform/scream3.wav",
-	"vj_halo3flood/combatform/scream4.wav",
-	"vj_halo3flood/combatform/scream5.wav",
-	"vj_halo3flood/combatform/scream6.wav",
-	"vj_halo3flood/combatform/scream7.wav",
-	"vj_halo3flood/combatform/scream8.wav",
-	"vj_halo3flood/combatform/scream9.wav",
-	"vj_halo3flood/vo/foundfoe10.mp3",
-	"vj_halo3flood/vo/foundfoe11.mp3",
-	"vj_halo3flood/vo/foundfoe12.mp3",
-	"vj_halo3flood/vo/foundfoe1.mp3",
-	"vj_halo3flood/vo/foundfoe2.mp3",
-	"vj_halo3flood/vo/foundfoe3.mp3",
-	"vj_halo3flood/vo/foundfoe4.mp3",
-	"vj_halo3flood/vo/foundfoe5.mp3",
-	"vj_halo3flood/vo/foundfoe6.mp3",
-	"vj_halo3flood/vo/foundfoe7.mp3",
-	"vj_halo3flood/vo/foundfoe8.mp3",
-	"vj_halo3flood/vo/foundfoe9.mp3",
-}
-ENT.SoundTbl_CombatIdle = {
-	"vj_halo3flood/vo/thrtn1.mp3",
-	"vj_halo3flood/vo/thrtn2.mp3",
-	"vj_halo3flood/vo/thrtn3.mp3",
-	"vj_halo3flood/vo/thrtn4.mp3",
-	"vj_halo3flood/vo/thrtn5.mp3",
-	"vj_halo3flood/vo/thrtn6.mp3",
-	"vj_halo3flood/vo/thrtn7.mp3",
-	"vj_halo3flood/vo/thrtn8.mp3",
-	"vj_halo3flood/vo/thrtn9.mp3",
-	"vj_halo3flood/vo/thrtn10.mp3",
-	"vj_halo3flood/vo/thrtn11.mp3",
-	"vj_halo3flood/vo/crs1.mp3",
-	"vj_halo3flood/vo/crs2.mp3",
-	"vj_halo3flood/vo/crs3.mp3",
-	"vj_halo3flood/vo/crs4.mp3",
-	"vj_halo3flood/vo/crs5.mp3",
-	"vj_halo3flood/vo/crs6.mp3",
-	"vj_halo3flood/vo/crs7.mp3",
-	"vj_halo3flood/vo/strk11.mp3",
-	"vj_halo3flood/vo/strk10.mp3",
-	"vj_halo3flood/vo/strk1.mp3",
-	"vj_halo3flood/vo/strk2.mp3",
-	"vj_halo3flood/vo/strk3.mp3",
-	"vj_halo3flood/vo/strk4.mp3",
-	"vj_halo3flood/vo/strk5.mp3",
-	"vj_halo3flood/vo/strk6.mp3",
-	"vj_halo3flood/vo/strk7.mp3",
-	"vj_halo3flood/vo/strk8.mp3",
-	"vj_halo3flood/vo/strk9.mp3",
-	"vj_halo3flood/vo/seefoe1.mp3",
-	"vj_halo3flood/vo/seefoe2.mp3",
-	"vj_halo3flood/vo/seefoe3.mp3",
-	"vj_halo3flood/vo/seefoe4.mp3",
-	"vj_halo3flood/vo/seefoe5.mp3",
-	"vj_halo3flood/vo/seefoe6.mp3",
-	"vj_halo3flood/vo/seefoe7.mp3",
-	"vj_halo3flood/vo/seefoe8.mp3",
-}
-ENT.SoundTbl_CallForHelp = {
-	"vj_halo3flood/vo/newordr_charge1.mp3",
-	"vj_halo3flood/vo/newordr_charge2.mp3",
-	"vj_halo3flood/vo/newordr_charge3.mp3",
-	"vj_halo3flood/vo/newordr_charge4.mp3",
-}
-ENT.SoundTbl_OnKilledEnemy = {
-	"vj_halo3flood/vo/chr_deadmc1.mp3",
-	"vj_halo3flood/vo/chr_deadmc2.mp3",
-	"vj_halo3flood/vo/chr_deadmc3.mp3",
-	"vj_halo3flood/vo/chr_deadmc4.mp3",
-	"vj_halo3flood/vo/chr_deadmc5.mp3",
-	"vj_halo3flood/vo/chr_deadmc6.mp3",
-	"vj_halo3flood/vo/chr_deadmc7.mp3",
-	"vj_halo3flood/vo/chr_deadmc8.mp3",
-	"vj_halo3flood/vo/chr_deadmc9.mp3",
-	"vj_halo3flood/vo/chr_deadmc10.mp3",
-}
-ENT.SoundTbl_OnAllyDeath = {
-	"vj_halo3flood/vo/lmnt_deadally1.mp3",
-	"vj_halo3flood/vo/lmnt_deadally3.mp3",
-	"vj_halo3flood/vo/lmnt_deadally4.mp3",
-	"vj_halo3flood/vo/lmnt_deadally5.mp3",
-	"vj_halo3flood/vo/lmnt_deadally6.mp3",
-	"vj_halo3flood/vo/lmnt_deadally7.mp3",
-}
 ENT.SoundTbl_Impact = {
 	"vj_halo3flood/damage01.mp3",
 	"vj_halo3flood/damage02.mp3",
 	"vj_halo3flood/damage03.mp3",
 }
-ENT.SoundTbl_BeforeMeleeAttack = {"vj_halo3flood/combatform/attack1.wav","vj_halo3flood/combatform/attack2.wav","vj_halo3flood/combatform/attack3.wav","vj_halo3flood/combatform/attack4.wav","vj_halo3flood/combatform/attack5.wav","vj_halo3flood/combatform/attack6.wav"}
-ENT.SoundTbl_Pain = {"vj_halo3flood/vo/dth_hdsht2.mp3","vj_halo3flood/vo/dth_hdsht3.mp3","vj_halo3flood/vo/dth_hdsht4.mp3","vj_halo3flood/vo/dth_hdsth1.mp3","vj_halo3flood/combatform/pain1.wav","vj_halo3flood/combatform/pain2.wav","vj_halo3flood/combatform/pain3.wav","vj_halo3flood/combatform/pain4.wav","vj_halo3flood/combatform/pain5.wav","vj_halo3flood/combatform/pain6.wav","vj_halo3flood/combatform/pain7.wav","vj_halo3flood/combatform/pain8.wav","vj_halo3flood/combatform/pain9.wav","vj_halo3flood/combatform/pain10.wav","vj_halo3flood/combatform/pain11.wav","vj_halo3flood/combatform/pain12.wav","vj_halo3flood/combatform/pain13.wav","vj_halo3flood/combatform/pain14.wav","vj_halo3flood/combatform/pain15.wav","vj_halo3flood/combatform/pain16.wav","vj_halo3flood/combatform/pain17.wav"}
-ENT.SoundTbl_Death = {"vj_halo3flood/combatform/death1.wav","vj_halo3flood/combatform/death2.wav","vj_halo3flood/combatform/death3.wav","vj_halo3flood/combatform/death4wav","vj_halo3flood/combatform/death5.wav","vj_halo3flood/combatform/death6.wav","vj_halo3flood/combatform/death7.wav","vj_halo3flood/combatform/death8.wav","vj_halo3flood/combatform/death9.wav","vj_halo3flood/combatform/death10.wav","vj_halo3flood/combatform/death11.wav","vj_halo3flood/combatform/death12.wav"}
 ENT.SoundTbl_Assimilation = {"vj_halo3flood/combatform/reanimation_ground_human.wav","vj_halo3flood/combatform/reanimation_human.wav"}
-ENT.Not_Finished = true -- Can it come back to life randomly?
+
+ENT.Not_Finished = true
 ENT.NextAllyKilledT = 0
+ENT.CanSpawnWithWeapon = tobool(GetConVarNumber("vj_halo_useweps"))
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:CustomOnAcceptInput(key,activator,caller,data)
+	if key == "event_particle small" then
+		self:EmitSound("physics/flesh/flesh_bloody_break.wav",math.random(65,75),math.random(85,100))
+		for i = 1,math.random(1,3) do
+			ParticleEffect("cpt_blood_flood",self:GetPos() +self:OBBCenter() +self:GetRight() *math.Rand(-5 *i,5 *i) +self:GetForward() *math.Rand(-5 *i,5 *i),Angle(math.Rand(0,360),math.Rand(0,360),math.Rand(0,360)),nil)
+		end
+	end
+	if key == "event_particle big" then
+		self:EmitSound("physics/flesh/flesh_bloody_break.wav",math.random(80,95),math.random(85,100))
+		for i = 1,self:GetBoneCount() -1 do
+			ParticleEffect("cpt_blood_flood",self:GetBonePosition(i),Angle(math.Rand(0,360),math.Rand(0,360),math.Rand(0,360)),nil)
+		end
+	end
+	if key == "event_emit step" then
+		VJ_EmitSound(self,self.SoundTbl_FootStep,self.FootStepSoundLevel,self:VJ_DecideSoundPitch(self.FootStepPitch1,self.FootStepPitch2))
+	end
+	if key == "event_mattack" then
+		self.HasMeleeAttackKnockBack = false
+		self.MeleeAttackDamage = 19
+		self.MeleeAttackDamageDistance = 120
+		self:MeleeAttackCode()
+		
+	end
+	if key == "event_pattack" then
+		self.HasMeleeAttackKnockBack = true
+		self.MeleeAttackDamage = 12
+		self.MeleeAttackDamageDistance = 120
+		self:MeleeAttackCode()
+	end
+end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomInitialize()
-	self.tbl_Muffins = {}
-	-- self:CreateMuffins()
+	self:SetCollisionBounds(Vector(15,15,60),Vector(-15,-15,0))
+	self:CapabilitiesAdd(bit.bor(CAP_MOVE_JUMP))
+	
+	if #self.SoundTbl_Idle <= 0 then -- Fix stupid GMod shit
+		self:HumanSounds()
+	end
+
+	self:SpawnWithWeapons()
+
+	self.CanChaseWeapon = false
+	self.ChaseWeapon = NULL
 	self.DidWeaponAttackAimParameter = false
-	self:CapabilitiesAdd(bit.bor(CAP_MOVE_JUMP)) // No animations for this but these guys jump all over so this will allow them to get out of those positions
+	self.NextCanWalkT = CurTime() +math.Rand(5,8)
+	self.ResetWalkT = CurTime()
+	self.tbl_Muffins = {}
+
+	if self.CustomInit then self:CustomInit() end
+
 	timer.Simple(GetConVarNumber("vj_halo_developmenttime"),function()
-		if self:IsValid() then
+		if IsValid(self) then
 			local flood = ents.Create("npc_vj_flood_carrier")
 			flood:SetPos(self:GetPos())
 			flood:SetAngles(self:GetAngles())
@@ -206,45 +140,154 @@ function ENT:CustomInitialize()
 			flood:Activate()
 			undo.ReplaceEntity(self,flood)
 			for i = 0, self:GetBoneCount() -1 do
-				ParticleEffect("GrubSquashBlood",self:GetBonePosition(i),Angle(0,0,0),nil)
+				ParticleEffect("cpt_blood_flood",self:GetBonePosition(i),Angle(0,0,0),nil)
 				sound.Play(VJ_PICKRANDOMTABLE({"vj_gib/gibbing1.wav","vj_gib/gibbing2.wav","vj_gib/gibbing3.wav"}),self:GetBonePosition(i),50,100 *GetConVarNumber("host_timescale"))
-			end
-			for i = 0, flood:GetBoneCount() -1 do
-				ParticleEffect("GrubSquashBlood",flood:GetBonePosition(i),Angle(0,0,0),nil)
 			end
 			self:Remove()
 		end
 	end)
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:SpawnWithWeapons()
 	if self.CanSpawnWithWeapon then
-		local vUNSCWep = {
-			"weapon_vj_halo_br",
-			"weapon_vj_halo_br",
-			"weapon_vj_halo_br",
-			"weapon_vj_halo_br",
-			"weapon_vj_halo_shotgun",
-			"weapon_vj_halo_shotgun",
-			"weapon_vj_halo_shotgun",
-			"weapon_vj_halo_smg",
-			"weapon_vj_halo_smg",
-			"weapon_vj_halo_rpg"
-		}
 		timer.Simple(0.001,function()
 			if IsValid(self) then
 				if !IsValid(self:GetActiveWeapon()) && math.random(1,3) == 1 then
-					self:Give(VJ_PICKRANDOMTABLE(vUNSCWep))
+					self:Give(VJ_PICKRANDOMTABLE(self.SpawnableWeapons))
 				end
 				if IsValid(self:GetActiveWeapon()) && GetConVarNumber("vj_halo_unlimitedammo") == 1 then
 					self:GetActiveWeapon().Primary.TakeAmmo = 0
+					self.MaxAmmo = true
 				end
 			end
 		end)
 	end
-	self.CanChaseWeapon = false
-	self.ChaseWeapon = NULL
-	self:SetCollisionBounds(Vector(15,15,60),Vector(-15,-15,0))
-	
-	self.NextCanWalkT = CurTime() +math.Rand(5,8)
-	self.ResetWalkT = CurTime()
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:HumanSounds()
+	self.SpawnableWeapons = {
+		"weapon_vj_halo_br",
+		"weapon_vj_halo_br",
+		"weapon_vj_halo_br",
+		"weapon_vj_halo_br",
+		"weapon_vj_halo_shotgun",
+		"weapon_vj_halo_shotgun",
+		"weapon_vj_halo_shotgun",
+		"weapon_vj_halo_smg",
+		"weapon_vj_halo_smg",
+		"weapon_vj_halo_rpg"
+	}
+
+	self.SoundTbl_Idle = {"vj_halo3flood/vo/invsgt10.mp3","vj_halo3flood/vo/invsgt1.mp3","vj_halo3flood/vo/invsgt2.mp3","vj_halo3flood/vo/invsgt5.mp3","vj_halo3flood/vo/invsgt6.mp3","vj_halo3flood/vo/invsgt8.mp3","vj_halo3flood/vo/invsgt9.mp3","vj_halo3flood/vo/invsgt_fail1.mp3","vj_halo3flood/vo/invsgt_fail10.mp3","vj_halo3flood/vo/invsgt_fail2.mp3","vj_halo3flood/vo/invsgt_fail3.mp3","vj_halo3flood/vo/invsgt_fail5.mp3","vj_halo3flood/vo/invsgt_fail7.mp3","vj_halo3flood/vo/invsgt_fail8.mp3","vj_halo3flood/vo/invsgt_fail9.mp3","vj_halo3flood/combatform/pain1.wav","vj_halo3flood/combatform/pain2.wav","vj_halo3flood/combatform/pain3.wav","vj_halo3flood/combatform/pain4.wav","vj_halo3flood/combatform/pain5.wav","vj_halo3flood/combatform/pain6.wav","vj_halo3flood/combatform/pain7.wav","vj_halo3flood/combatform/pain8.wav","vj_halo3flood/combatform/pain9.wav","vj_halo3flood/combatform/pain10.wav","vj_halo3flood/combatform/pain11.wav","vj_halo3flood/combatform/pain12.wav","vj_halo3flood/combatform/pain13.wav","vj_halo3flood/combatform/pain14.wav","vj_halo3flood/combatform/pain15.wav","vj_halo3flood/combatform/pain16.wav","vj_halo3flood/combatform/pain17.wav"}
+	self.SoundTbl_FootStep = {
+		"vj_halo3flood/combatform/humanform_longmove1.wav",
+		"vj_halo3flood/combatform/humanform_longmove2.wav",
+		"vj_halo3flood/combatform/humanform_longmove3.wav",
+		"vj_halo3flood/combatform/humanform_longmove4.wav",
+		"vj_halo3flood/combatform/humanform_longmove5.wav",
+		"vj_halo3flood/combatform/humanform_longmove6.wav",
+		"vj_halo3flood/combatform/humanform_longmove7.wav",
+		"vj_halo3flood/combatform/humanform_longmove8.wav",
+		"vj_halo3flood/combatform/humanform_longmove9.wav",
+		"vj_halo3flood/combatform/humanform_longmove10.wav",
+		"vj_halo3flood/combatform/humanform_longmove11.wav",
+		"vj_halo3flood/combatform/humanform_longmove12.wav",
+		"vj_halo3flood/combatform/humanform_longmove13.wav",
+		"vj_halo3flood/combatform/humanform_longmove14.wav",
+		"vj_halo3flood/combatform/humanform_longmove15.wav",
+	}
+	self.SoundTbl_Alert = {
+		"vj_halo3flood/combatform/spot1.wav",
+		"vj_halo3flood/combatform/scream1.wav",
+		"vj_halo3flood/combatform/scream2.wav",
+		"vj_halo3flood/combatform/scream3.wav",
+		"vj_halo3flood/combatform/scream4.wav",
+		"vj_halo3flood/combatform/scream5.wav",
+		"vj_halo3flood/combatform/scream6.wav",
+		"vj_halo3flood/combatform/scream7.wav",
+		"vj_halo3flood/combatform/scream8.wav",
+		"vj_halo3flood/combatform/scream9.wav",
+		"vj_halo3flood/vo/foundfoe10.mp3",
+		"vj_halo3flood/vo/foundfoe11.mp3",
+		"vj_halo3flood/vo/foundfoe12.mp3",
+		"vj_halo3flood/vo/foundfoe1.mp3",
+		"vj_halo3flood/vo/foundfoe2.mp3",
+		"vj_halo3flood/vo/foundfoe3.mp3",
+		"vj_halo3flood/vo/foundfoe4.mp3",
+		"vj_halo3flood/vo/foundfoe5.mp3",
+		"vj_halo3flood/vo/foundfoe6.mp3",
+		"vj_halo3flood/vo/foundfoe7.mp3",
+		"vj_halo3flood/vo/foundfoe8.mp3",
+		"vj_halo3flood/vo/foundfoe9.mp3",
+	}
+	self.SoundTbl_CombatIdle = {
+		"vj_halo3flood/vo/thrtn1.mp3",
+		"vj_halo3flood/vo/thrtn2.mp3",
+		"vj_halo3flood/vo/thrtn3.mp3",
+		"vj_halo3flood/vo/thrtn4.mp3",
+		"vj_halo3flood/vo/thrtn5.mp3",
+		"vj_halo3flood/vo/thrtn6.mp3",
+		"vj_halo3flood/vo/thrtn7.mp3",
+		"vj_halo3flood/vo/thrtn8.mp3",
+		"vj_halo3flood/vo/thrtn9.mp3",
+		"vj_halo3flood/vo/thrtn10.mp3",
+		"vj_halo3flood/vo/thrtn11.mp3",
+		"vj_halo3flood/vo/crs1.mp3",
+		"vj_halo3flood/vo/crs2.mp3",
+		"vj_halo3flood/vo/crs3.mp3",
+		"vj_halo3flood/vo/crs4.mp3",
+		"vj_halo3flood/vo/crs5.mp3",
+		"vj_halo3flood/vo/crs6.mp3",
+		"vj_halo3flood/vo/crs7.mp3",
+		"vj_halo3flood/vo/strk11.mp3",
+		"vj_halo3flood/vo/strk10.mp3",
+		"vj_halo3flood/vo/strk1.mp3",
+		"vj_halo3flood/vo/strk2.mp3",
+		"vj_halo3flood/vo/strk3.mp3",
+		"vj_halo3flood/vo/strk4.mp3",
+		"vj_halo3flood/vo/strk5.mp3",
+		"vj_halo3flood/vo/strk6.mp3",
+		"vj_halo3flood/vo/strk7.mp3",
+		"vj_halo3flood/vo/strk8.mp3",
+		"vj_halo3flood/vo/strk9.mp3",
+		"vj_halo3flood/vo/seefoe1.mp3",
+		"vj_halo3flood/vo/seefoe2.mp3",
+		"vj_halo3flood/vo/seefoe3.mp3",
+		"vj_halo3flood/vo/seefoe4.mp3",
+		"vj_halo3flood/vo/seefoe5.mp3",
+		"vj_halo3flood/vo/seefoe6.mp3",
+		"vj_halo3flood/vo/seefoe7.mp3",
+		"vj_halo3flood/vo/seefoe8.mp3",
+	}
+	self.SoundTbl_CallForHelp = {
+		"vj_halo3flood/vo/newordr_charge1.mp3",
+		"vj_halo3flood/vo/newordr_charge2.mp3",
+		"vj_halo3flood/vo/newordr_charge3.mp3",
+		"vj_halo3flood/vo/newordr_charge4.mp3",
+	}
+	self.SoundTbl_OnKilledEnemy = {
+		"vj_halo3flood/vo/chr_deadmc1.mp3",
+		"vj_halo3flood/vo/chr_deadmc2.mp3",
+		"vj_halo3flood/vo/chr_deadmc3.mp3",
+		"vj_halo3flood/vo/chr_deadmc4.mp3",
+		"vj_halo3flood/vo/chr_deadmc5.mp3",
+		"vj_halo3flood/vo/chr_deadmc6.mp3",
+		"vj_halo3flood/vo/chr_deadmc7.mp3",
+		"vj_halo3flood/vo/chr_deadmc8.mp3",
+		"vj_halo3flood/vo/chr_deadmc9.mp3",
+		"vj_halo3flood/vo/chr_deadmc10.mp3",
+	}
+	self.SoundTbl_AllyDeath = {
+		"vj_halo3flood/vo/lmnt_deadally1.mp3",
+		"vj_halo3flood/vo/lmnt_deadally3.mp3",
+		"vj_halo3flood/vo/lmnt_deadally4.mp3",
+		"vj_halo3flood/vo/lmnt_deadally5.mp3",
+		"vj_halo3flood/vo/lmnt_deadally6.mp3",
+		"vj_halo3flood/vo/lmnt_deadally7.mp3",
+	}
+	self.SoundTbl_BeforeMeleeAttack = {"vj_halo3flood/combatform/attack1.wav","vj_halo3flood/combatform/attack2.wav","vj_halo3flood/combatform/attack3.wav","vj_halo3flood/combatform/attack4.wav","vj_halo3flood/combatform/attack5.wav","vj_halo3flood/combatform/attack6.wav"}
+	self.SoundTbl_Pain = {"vj_halo3flood/vo/dth_hdsht2.mp3","vj_halo3flood/vo/dth_hdsht3.mp3","vj_halo3flood/vo/dth_hdsht4.mp3","vj_halo3flood/vo/dth_hdsth1.mp3","vj_halo3flood/combatform/pain1.wav","vj_halo3flood/combatform/pain2.wav","vj_halo3flood/combatform/pain3.wav","vj_halo3flood/combatform/pain4.wav","vj_halo3flood/combatform/pain5.wav","vj_halo3flood/combatform/pain6.wav","vj_halo3flood/combatform/pain7.wav","vj_halo3flood/combatform/pain8.wav","vj_halo3flood/combatform/pain9.wav","vj_halo3flood/combatform/pain10.wav","vj_halo3flood/combatform/pain11.wav","vj_halo3flood/combatform/pain12.wav","vj_halo3flood/combatform/pain13.wav","vj_halo3flood/combatform/pain14.wav","vj_halo3flood/combatform/pain15.wav","vj_halo3flood/combatform/pain16.wav","vj_halo3flood/combatform/pain17.wav"}
+	self.SoundTbl_Death = {"vj_halo3flood/combatform/death1.wav","vj_halo3flood/combatform/death2.wav","vj_halo3flood/combatform/death3.wav","vj_halo3flood/combatform/death4wav","vj_halo3flood/combatform/death5.wav","vj_halo3flood/combatform/death6.wav","vj_halo3flood/combatform/death7.wav","vj_halo3flood/combatform/death8.wav","vj_halo3flood/combatform/death9.wav","vj_halo3flood/combatform/death10.wav","vj_halo3flood/combatform/death11.wav","vj_halo3flood/combatform/death12.wav"}
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
@@ -278,63 +321,25 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	return true
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnAcceptInput(key,activator,caller,data)
-	if key == "event_particle small" then
-		self:EmitSound("physics/flesh/flesh_bloody_break.wav",math.random(65,75),math.random(85,100))
-		for i = 1,math.random(1,3) do
-			ParticleEffect("cpt_blood_flood",self:GetPos() +self:OBBCenter() +self:GetRight() *math.Rand(-5 *i,5 *i) +self:GetForward() *math.Rand(-5 *i,5 *i),Angle(math.Rand(0,360),math.Rand(0,360),math.Rand(0,360)),nil)
-		end
-	end
-	if key == "event_particle big" then
-		self:EmitSound("physics/flesh/flesh_bloody_break.wav",math.random(80,95),math.random(85,100))
-		for i = 1,self:GetBoneCount() -1 do
-			ParticleEffect("cpt_blood_flood",self:GetBonePosition(i),Angle(math.Rand(0,360),math.Rand(0,360),math.Rand(0,360)),nil)
-		end
-	end
-	if key == "event_emit step" then
-		VJ_EmitSound(self,self.SoundTbl_FootStep,self.FootStepSoundLevel,self:VJ_DecideSoundPitch(self.FootStepPitch1,self.FootStepPitch2))
-	end
-	if key == "event_mattack" then
-		self.HasMeleeAttackKnockBack = false
-		self.MeleeAttackDamage = 19
-		self.MeleeAttackDamageDistance = 120
-		self:MeleeAttackCode()
-		
-	end
-	if key == "event_pattack" then
-		self.HasMeleeAttackKnockBack = true
-		self.MeleeAttackDamage = 12
-		self.MeleeAttackDamageDistance = 120
-		self:MeleeAttackCode()
-	end
-end
----------------------------------------------------------------------------------------------------------------------------------------------
 ENT.AdjustedValues = false
 function ENT:BonemergeEditor()
 	if IsValid(self.Bonemerge) && !self.AdjustedValues then
 		self.HasDeathRagdoll = false
 		self.GibOnDeathDamagesTable = {"All"}
-		-- if tobool(GetConVarNumber("vj_halo_modeladjust")) then
-			local mdl = self.Bonemerge
-			self:ManipulateBoneAngles(15,Angle(0,-50,180)) -- Neck
-			self:ManipulateBoneAngles(32,Angle(0,0,90)) -- Right Hand
-			-- self:ManipulateBonePosition(0,Vector(0,0,GetConVarNumber("vj_halo_modeladjustz"))) -- Pelvis
-			self:ManipulateBoneAngles(1,Angle(0,0,0)) -- Left Thigh
-			self:ManipulateBoneAngles(2,Angle(0,0,0)) -- Left Calf
-			self:ManipulateBoneAngles(3,Angle(10,50,180)) -- Left Foot
-			self:ManipulateBoneAngles(7,Angle(0,0,0)) -- Right Thigh
-			self:ManipulateBoneAngles(8,Angle(0,0,0)) -- Right Calf
-			self:ManipulateBoneAngles(9,Angle(10,50,180)) -- Right Foot
+		local mdl = self.Bonemerge
+		self:ManipulateBoneAngles(15,Angle(0,-50,180)) -- Neck
+		self:ManipulateBoneAngles(32,Angle(0,0,90)) -- Right Hand
+		self:ManipulateBoneAngles(1,Angle(0,0,0)) -- Left Thigh
+		self:ManipulateBoneAngles(2,Angle(0,0,0)) -- Left Calf
+		self:ManipulateBoneAngles(3,Angle(10,50,180)) -- Left Foot
+		self:ManipulateBoneAngles(7,Angle(0,0,0)) -- Right Thigh
+		self:ManipulateBoneAngles(8,Angle(0,0,0)) -- Right Calf
+		self:ManipulateBoneAngles(9,Angle(10,50,180)) -- Right Foot
 
-			local clav = 0
-			self:ManipulateBonePosition(15,Vector(-2,0,0)) -- Neck
-			-- self:ManipulateBonePosition(22,Vector(clav,0,0)) -- LClav
-			-- self:ManipulateBonePosition(34,Vector(clav,0,0)) -- RClav
-			-- self:ManipulateBonePosition(13,Vector(1,-4,0)) -- Spine4
-			-- self:ManipulateBonePosition(14,Vector(5,0,0)) -- Spine
-			self:ManipulateBonePosition(44,Vector(-2,-1,0)) -- Spine2
-			self:ManipulateBonePosition(45,Vector(-4,0,0)) -- Spine1
-		-- end
+		local clav = 0
+		self:ManipulateBonePosition(15,Vector(-2,0,0)) -- Neck
+		self:ManipulateBonePosition(44,Vector(-2,-1,0)) -- Spine2
+		self:ManipulateBonePosition(45,Vector(-4,0,0)) -- Spine1
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -473,34 +478,6 @@ function ENT:MuffinInfection(muf)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-local function VJ_FLOOD_ALLY_DEATH(npc,attacker,inflictor)
-	if npc.IsVJBaseSNPC == true && npc:GetClass() == "npc_vj_flood_combat" then
-		for _,v in ipairs(ents.FindInSphere(npc:GetPos(),1000)) do
-			if IsValid(v) && v:IsNPC() && v != npc && v:GetClass() == "npc_vj_flood_combat" then
-				v:OnAllyDeathSoundCode()
-			end
-		end
-	end
-end
-hook.Add("OnNPCKilled","VJ_FLOODALLYDEATH_"..math.Rand(1,9999999),VJ_FLOOD_ALLY_DEATH)
----------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:OnAllyDeathSoundCode()
-	if self.HasSounds == false then return end
-		if CurTime() > self.NextAllyKilledT then
-		local randomalertsound = math.random(1,3)
-		local soundtbl = self.SoundTbl_OnAllyDeath
-		if CustomTbl != nil && #CustomTbl != 0 then soundtbl = CustomTbl end
-		if randomalertsound == 1 && VJ_PICKRANDOMTABLE(soundtbl) != false then
-			VJ_STOPSOUND(self.CurrentIdleSound)
-			self.NextIdleSoundT = self.NextIdleSoundT +7
-			self.CurrentAllyKilledSound = VJ_CreateSound(self,soundtbl,78,self:VJ_DecideSoundPitch(90,100))
-		end
-		self.NextAllyKilledT = CurTime() +math.Rand(6,12)
-	end
-end
----------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnRemove() VJ_STOPSOUND(self.CurrentAllyKilledSound) end
----------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
 	if dmginfo:GetDamageType() == DMG_BLAST then
 		self:SetGroundEntity(NULL)
@@ -572,10 +549,10 @@ ENT.Weapon_ShotsSinceLastReload = 0
 ENT.AllowWeaponReloading = false
 ENT.NextWepCheckT = 1
 ENT.WeaponSpread = 1
--- local HASRAN = false
 function ENT:CustomOnThink()
 	if self.Dead then return end
 	self:GravemindSpeak()
+	if self.FloodControl then self:FloodControl() end
 	self:CustomOnThink_Muffins()
 	self:BonemergeEditor()
 
@@ -587,9 +564,11 @@ function ENT:CustomOnThink()
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
 	end
 	self.HasPoseParameterLooking = IsValid(self:GetActiveWeapon())
-	-- self.NextMeleeAttackTime = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
-	-- self.NextAnyAttackTime_Melee = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
-	
+	if !self.HasPoseParameterLooking then -- Mkay
+		self:SetPoseParameter("aim_pitch",0)
+		self:SetPoseParameter("aim_yaw",0)
+	end
+
 	if self.VJ_EnhancedFlood then
 		if self.MeleeAttacking then
 			self:SetPlaybackRate(self.VJ_Flood_SpeedBoost)
@@ -597,11 +576,15 @@ function ENT:CustomOnThink()
 			self:SetPlaybackRate(1)
 		end
 	end
-	
+
 	local idle = ACT_IDLE
 	local walk = ACT_WALK
 	local run = ACT_RUN
-	if IsValid(self:GetActiveWeapon()) then
+	local wep = self:GetActiveWeapon()
+	if IsValid(wep) then
+		if self.MaxAmmo then
+			wep:SetClip1(wep:GetMaxClip1())
+		end
 		idle = ACT_IDLE_STIMULATED
 		walk = ACT_WALK_STIMULATED
 		run = ACT_RUN_STIMULATED
@@ -627,6 +610,7 @@ function ENT:CustomOnThink()
 	elseif self.CurrentAttackAnimation == ACT_GESTURE_MELEE_ATTACK1 then
 		self.MeleeAttackDamageAngleRadius = -100
 	end
+	if self.OnThink then self:OnThink(self:GetEnemy(),wep) end
 	if IsValid(self:GetEnemy()) then
 		local enemy = self:GetEnemy()
 		local dist = self:VJ_GetNearestPointToEntityDistance(enemy)
@@ -742,71 +726,6 @@ function ENT:CustomOnThink()
 		-- end
 	-- end
 end
---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CanDoWeaponAttack()
-	if self:VJ_HasActiveWeapon() == false then return false end
-	if self.AllowWeaponReloading == true && wep:Clip1() <= 0 then
-		return false,"NoAmmo"
-	end
-	return true
-end
----------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:WeaponAimPoseParameters(ResetPoses)
-	if (self.HasPoseParameterLooking == false) or (self.VJ_IsBeingControlled == false && self.DoingWeaponAttack == false) then return end
-	ResetPoses = ResetPoses or false
-	//self:VJ_GetAllPoseParameters(true)
-	local ent = NULL
-	if self.VJ_IsBeingControlled == true then ent = self.VJ_TheController else ent = self:GetEnemy() end
-	local p_enemy = 0 -- Pitch
-	local y_enemy = 0 -- Yaw
-	local r_enemy = 0 -- Roll
-	local ang_dif = math.AngleDifference
-	local ang_app = math.ApproachAngle
-	if IsValid(ent) && ResetPoses == false then
-		local self_pos = self:GetPos() + self:OBBCenter()
-		local enemy_pos = false //Vector(0,0,0)
-		if self.VJ_IsBeingControlled == true then enemy_pos = self.VJ_TheController:GetEyeTrace().HitPos else enemy_pos = ent:GetPos() + ent:OBBCenter() end
-		if enemy_pos == false then return end
-		local self_ang = self:GetAngles()
-		local enemy_ang = (enemy_pos - self_pos):Angle()
-		p_enemy = ang_dif(enemy_ang.p,self_ang.p)
-		if self.PoseParameterLooking_InvertPitch == true then p_enemy = -p_enemy end
-		y_enemy = ang_dif(enemy_ang.y,self_ang.y)
-		if self.PoseParameterLooking_InvertYaw == true then y_enemy = -y_enemy end
-		r_enemy = ang_dif(enemy_ang.z,self_ang.z)
-		if self.PoseParameterLooking_InvertRoll == true then r_enemy = -r_enemy end
-	end
-	local names = self.PoseParameterLooking_Names
-	for x=1, #names.pitch do
-		self:SetPoseParameter(names.pitch[x],ang_app(self:GetPoseParameter(names.pitch[x]),p_enemy,self.PoseParameterLooking_TurningSpeed))
-	end
-	for x=1, #names.yaw do
-		self:SetPoseParameter(names.yaw[x],ang_app(self:GetPoseParameter(names.yaw[x]),y_enemy,self.PoseParameterLooking_TurningSpeed))
-	end
-	for x=1, #names.roll do
-		self:SetPoseParameter(names.roll[x],ang_app(self:GetPoseParameter(names.roll[x]),r_enemy,self.PoseParameterLooking_TurningSpeed))
-	end
-	self:SetPoseParameter("aim_pitch",ang_app(self:GetPoseParameter("aim_pitch"),p_enemy,self.PoseParameterLooking_TurningSpeed))
-	self:SetPoseParameter("head_pitch",ang_app(self:GetPoseParameter("head_pitch"),p_enemy,self.PoseParameterLooking_TurningSpeed))
-	self:SetPoseParameter("aim_yaw",ang_app(self:GetPoseParameter("aim_yaw"),y_enemy,self.PoseParameterLooking_TurningSpeed))
-	self:SetPoseParameter("head_yaw",ang_app(self:GetPoseParameter("head_yaw"),y_enemy,self.PoseParameterLooking_TurningSpeed))
-	self:SetPoseParameter("aim_roll",ang_app(self:GetPoseParameter("aim_roll"),r_enemy,self.PoseParameterLooking_TurningSpeed))
-	self:SetPoseParameter("head_roll",ang_app(self:GetPoseParameter("head_roll"),r_enemy,self.PoseParameterLooking_TurningSpeed))
-	self.DidWeaponAttackAimParameter = true
-end
----------------------------------------------------------------------------------------------------------------------------------------------
--- function ENT:LeapAttackDamageSoundCode(CustomTbl)
-	-- self:VJ_ACT_PLAYACTIVITY("vjseq_attack2",false,0,false)
-	-- if self.HasSounds == false or self.HasLeapAttackDamageSound == false then return end
-	-- local randomleapsound = math.random(1,self.LeapAttackDamageSoundChance)
-	-- local soundtbl = self.SoundTbl_LeapAttackDamage
-	-- if CustomTbl != nil && #CustomTbl != 0 then soundtbl = CustomTbl end
-	-- if randomleapsound == 1 && VJ_PICKRANDOMTABLE(soundtbl) != false then
-		-- if self.IdleSounds_PlayOnAttacks == false then VJ_STOPSOUND(self.CurrentIdleSound) end
-		-- self.NextIdleSoundT_RegularChange = CurTime() + 1
-		-- self.CurrentLeapAttackDamageSound = VJ_CreateSound(self,soundtbl,self.LeapAttackDamageSoundLevel,self:VJ_DecideSoundPitch(self.LeapAttackDamageSoundPitch1,self.LeapAttackDamageSoundPitch2))
-	-- end
--- end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo,hitgroup,GetCorpse)
 	-- if IsValid(self.Bonemerge) then
@@ -823,9 +742,10 @@ function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo,hitgroup,GetCorpse)
 	end
 	if self.Not_Finished == false then return end
 	if math.random(1,4) == 1 then
+		local class = self:GetClass()
 		timer.Simple(math.random(5,25),function()
 			if IsValid(GetCorpse) then
-				local flood = ents.Create("npc_vj_flood_combat")
+				local flood = ents.Create(class)
 				flood:SetPos(GetCorpse:GetPos())
 				flood:SetAngles(GetCorpse:GetAngles())
 				flood:Spawn()
@@ -863,6 +783,41 @@ function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo,hitgroup,GetCorpse)
 			end
 		end
 	end)
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:Camo(set)
+	if set then
+		self:SetMaterial("models/cpthazama/halo3/cloak")
+		self.VJ_NoTarget = true
+		self:DrawShadow(false)
+		if IsValid(self:GetActiveWeapon()) then
+			self:GetActiveWeapon():DrawShadow(false)
+			self:GetActiveWeapon():SetMaterial("models/cpthazama/halo3/cloak")
+		end
+		for _, x in ipairs(ents.GetAll()) do
+			if (x:GetClass() != self:GetClass() && x:GetClass() != "npc_grenade_frag") && x:IsNPC() && self:Visible(x) then
+				x:AddEntityRelationship(self,D_NU,99)
+				if x.IsVJBaseSNPC == true then
+					x.MyEnemy = NULL
+					x:SetEnemy(NULL)
+					x:ClearEnemyMemory()
+				end
+				if VJ_HasValue(self.NPCTbl_Combine,x:GetClass()) or VJ_HasValue(self.NPCTbl_Resistance,x:GetClass()) then
+					x:VJ_SetSchedule(SCHED_RUN_RANDOM)
+					x:SetEnemy(NULL)
+					x:ClearEnemyMemory()
+				end
+			end
+		end
+	else
+		self:SetMaterial(" ")
+		self.VJ_NoTarget = false
+		self:DrawShadow(true)
+		if IsValid(self:GetActiveWeapon()) then
+			self:GetActiveWeapon():DrawShadow(true)
+			self:GetActiveWeapon():SetMaterial(" ")
+		end
+	end
 end
 /*-----------------------------------------------
 	*** Copyright (c) 2012-2017 by Cpt. Hazama, All rights reserved. ***

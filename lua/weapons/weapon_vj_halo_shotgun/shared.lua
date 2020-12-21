@@ -28,3 +28,4 @@ SWEP.Primary.Sound				= {"vj_halo3flood/shot1.mp3","vj_halo3flood/shot2.mp3","vj
 SWEP.PrimaryEffects_MuzzleAttachment = "muzzle"
 SWEP.PrimaryEffects_SpawnShells = false
 SWEP.PrimaryEffects_ShellType = "VJ_Weapon_ShotgunShell1"
+SWEP.Primary.TracerType			= "VJ_HaloCE_Tracer"

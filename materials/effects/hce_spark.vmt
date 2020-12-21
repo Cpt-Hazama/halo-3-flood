@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "effects/hce_spark"
+	"$additive" 1
+}

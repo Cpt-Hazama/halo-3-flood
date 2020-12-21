@@ -26,7 +26,25 @@ function EFFECT:Init( data )
 	self.TracerTime = math.min(1, self.StartPos:Distance(self.EndPos) / 10000) -- Calculate death time
 	self.Length = 0.1
 
-	-- Die when it reaches its target
+	local Emitter = ParticleEmitter(self.StartPos)
+	for i = 1,2 do
+		local size = math.random(8,10)
+		local particle = Emitter:Add("particle/particle_glow_03",self.StartPos)
+		particle:SetVelocity(self.Dir:Angle():Forward() *500)
+		particle:SetDieTime(math.Rand(0.045,0.065))
+		particle:SetStartAlpha(255)
+		particle:SetEndAlpha(0)
+		particle:SetStartSize(size)
+		particle:SetEndSize(1)
+		if i == 1 then
+			particle:SetColor(255,63,0)
+		else
+			particle:SetColor(127,0,255)
+		end
+		particle:SetAirResistance(160)
+	end
+	Emitter:Finish()
+
 	self.DieTime = CurTime() + self.TracerTime
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------

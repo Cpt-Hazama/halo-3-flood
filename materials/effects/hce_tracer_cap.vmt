@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "effects/hce_tracer_cap"
+	"$additive" 1
+}

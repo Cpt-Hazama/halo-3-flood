@@ -29,3 +29,4 @@ SWEP.Primary.Sound				= {"vj_halo3flood/weapons/br_fire.wav"}
 SWEP.Primary.DistantSound		= {"vj_halo3flood/weapons/br_lod.wav"}
 SWEP.PrimaryEffects_MuzzleAttachment = "muzzle"
 SWEP.PrimaryEffects_SpawnShells = false
+SWEP.Primary.TracerType			= "VJ_HaloCE_Tracer"

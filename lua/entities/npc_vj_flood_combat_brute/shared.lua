@@ -1,4 +1,4 @@
-ENT.Base 			= "npc_vj_creature_base"
+ENT.Base 			= "npc_vj_flood_combat"
 ENT.Type 			= "ai"
 ENT.PrintName 		= "Flood Combat Jiralhanae Form"
 ENT.Author 			= "Cpt. Hazama"

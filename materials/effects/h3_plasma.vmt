@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture" "effects/h3_plasma"
+	"$additive" 1
+	"$translucent" "1"
+}

@@ -28,3 +28,4 @@ SWEP.Primary.Ammo				= "AR2" -- Ammo type
 SWEP.Primary.Sound				= {"vj_halo3flood/fire.mp3"}
 SWEP.PrimaryEffects_MuzzleAttachment = "muzzle"
 SWEP.PrimaryEffects_SpawnShells = false
+SWEP.Primary.TracerType			= "VJ_HaloCE_Tracer"
