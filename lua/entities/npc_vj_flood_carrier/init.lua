@@ -177,8 +177,16 @@ function ENT:CustomOnThink()
 		local targetVec = Vector(scale,scale,scale)
 		self:ManipulateBoneScale(9,LerpVector(0.2,self:GetManipulateBoneScale(9),targetVec))
 	end
-	if self:GetActivity() == ACT_JUMP && !self.LeapAttacking && self:IsOnGround() then
-		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
+	if !self:IsOnGround() && !self.HasLeftGround then
+		self.HasLeftGround = true
+	elseif self:IsOnGround() && self.HasLeftGround then
+		self.HasLeftGround = false
+		self:VJ_ACT_PLAYACTIVITY(ACT_LAND,true,false,false)
+		VJ_CreateSound(self,"vj_halo3flood/damage01.mp3",70,math.random(95,110))
+	end
+	if self.HasLeftGround && !self.MeleeAttacking && self:GetActivity() != ACT_JUMP then
+		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_JUMP)
+		self:MaintainActivity()
 	end
 	-- self.NextMeleeAttackTime = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)
 	-- self.NextAnyAttackTime_Melee = VJ_GetSequenceDuration(self,self.CurrentAttackAnimation)

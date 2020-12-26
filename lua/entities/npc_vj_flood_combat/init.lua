@@ -556,13 +556,18 @@ function ENT:CustomOnThink()
 	self:CustomOnThink_Muffins()
 	self:BonemergeEditor()
 
-	if self.LeapAttacking && !self.MeleeAttacking && !self:IsOnGround() && self:GetActivity() != ACT_GLIDE then
+	if !self:IsOnGround() && !self.HasLeftGround then
+		self.HasLeftGround = true
+	elseif self:IsOnGround() && self.HasLeftGround then
+		self.HasLeftGround = false
+		self:VJ_ACT_PLAYACTIVITY(ACT_LAND,true,false,false)
+		VJ_CreateSound(self,"vj_halo3flood/damage01.mp3",70,math.random(95,110))
+	end
+	if self.HasLeftGround && !self.MeleeAttacking && self:GetActivity() != ACT_GLIDE then
 		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_GLIDE)
 		self:MaintainActivity()
 	end
-	if self:GetActivity() == ACT_GLIDE && !self.LeapAttacking && !self.MeleeAttacking && self:IsOnGround() then
-		self:StartEngineTask(GetTaskList("TASK_SET_ACTIVITY"),ACT_LAND)
-	end
+
 	self.HasPoseParameterLooking = IsValid(self:GetActiveWeapon())
 	if !self.HasPoseParameterLooking then -- Mkay
 		self:SetPoseParameter("aim_pitch",0)
